@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import listeners.KeyboardListener;
 
 /**
- * Main class for Trash Smash, maintains the game state, initializes game start and game threads, keeps game running in standard time
+ * Main class for Riven, maintains the game state, initializes game start and game threads, keeps game running in standard time
  * @author Brian Chen
  * 
  */

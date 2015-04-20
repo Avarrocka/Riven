@@ -13,6 +13,8 @@ import listeners.KeyboardListener;
 import main.Render;
 import res.Player;
 import res.NPC;
+import res.Sword;
+import res.Item;
 //import res.NPCS AND STUFF;
 
 /**
@@ -24,8 +26,11 @@ public class Update implements Runnable {
 	String mapID = "START";
 	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
+	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
+	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public NPC speakingWith;
 	public int commenceDialogue;
+	private int movementSpeed = 2;
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
 	public boolean shopping = false;
@@ -130,6 +135,15 @@ public class Update implements Runnable {
 			NPCs.add(new NPC(500, 500, "shop"));
 			NPCs.add(new NPC(320, 400, "blacksmith"));
 			shopSpawned = true;
+			shopSwords.add(new Sword(30, 90, "iron"));
+			shopSwords.add(new Sword(30, 200, "katana"));
+			shopSwords.add(new Sword(30, 310, "obsidian"));
+			shopSwords.add(new Sword(30, 420, "serrated"));
+			shopItems.add(new Item(30, 70, "pie"));
+			shopItems.add(new Item(30, 140, "fish"));
+			shopItems.add(new Item(30, 240, "cake"));
+			shopItems.add(new Item(30, 340, "hpPot"));
+			shopItems.add(new Item(30, 450, "tele"));
 		}
 	}
 
@@ -143,19 +157,19 @@ public class Update implements Runnable {
 		lck.writeLock().lock();
 		PC.setImage(0);
 		if(KeyboardListener.up) {
-			PC.setYvelocity(-2);
+			PC.setYvelocity(-movementSpeed);
 			PC.setImage(1);
 		}
 		if(KeyboardListener.down) {
-			PC.setYvelocity(2);
+			PC.setYvelocity(movementSpeed);
 			PC.setImage(2);
 		}
 		if(KeyboardListener.left) {
-			PC.setXvelocity(-2);
+			PC.setXvelocity(-movementSpeed);
 			PC.setImage(3);
 		}
 		if(KeyboardListener.right) {
-			PC.setXvelocity(2);
+			PC.setXvelocity(movementSpeed);
 			PC.setImage(4);
 		}
 		if(KeyboardListener.R){

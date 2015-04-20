@@ -18,6 +18,9 @@ import javax.imageio.ImageIO;
 import main.Update;
 import res.Player;
 import res.NPC;
+import res.Sword;
+import res.Item;
+
 //import res.NPC AND STUFF
 
 /**
@@ -31,6 +34,8 @@ public class Render implements Runnable {
 	//vast array of Buffered Images used for graphics
 	BufferedImage background;
 	BufferedImage talkBubble, dialogueBox;
+	BufferedImage shop;
+	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
@@ -75,6 +80,7 @@ public class Render implements Runnable {
 			background = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/backgroundTest.png"));
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
+			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,7 +130,20 @@ public class Render implements Runnable {
 	}
 	
 	private void drawShop(Graphics2D g){
-		
+		g.drawImage(shop,  0, 28, 1024, 550, null);
+		Main.update.shopping = true;
+		LinkedList<Sword> swordShop = Main.update.shopSwords;
+		LinkedList<Item> itemShop = Main.update.shopItems;
+		if(Main.update.speakingWith.getID() == "blacksmith"){
+			for(int i = 0; i < swordShop.size(); i++){
+				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), swordShop.get(i).getHeight(), swordShop.get(i).getWidth(), null);
+			}
+		}
+		else if(Main.update.speakingWith.getID() == "shop"){
+			for(int i = 0; i < itemShop.size(); i++){
+				g.drawImage(itemShop.get(i).getImage(), itemShop.get(i).getX(), itemShop.get(i).getY(), itemShop.get(i).getHeight(), itemShop.get(i).getWidth(), null);
+			}
+		}
 	}
 	
 	private void drawBounds(Graphics2D g){

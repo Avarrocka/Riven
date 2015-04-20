@@ -51,7 +51,7 @@ public class NPC implements Drawable{
 			dialogueLines = 3;
 			dialogue = new String[dialogueLines];
 			name = "Shopkeep Anna";	
-			dialogue[0] = "Just make sure you have the coin.";
+			dialogue[0] = "Click to buy an item. Just make sure you have the coin.";
 			dialogue[1] = "If you need anything to help with your journey - potions, food, I have it all.";
 			dialogue[2] = "Hiya! I'm Anna - the local shopkeep around these parts.";
 		}
@@ -66,7 +66,7 @@ public class NPC implements Drawable{
 			dialogueLines = 3;
 			dialogue = new String[dialogueLines];
 			name = "Blacksmith Uldred";	
-			dialogue[0] = "Don't wanna die? Give my wares a look.";
+			dialogue[0] = "Don't wanna die? Give my wares a look. Click it to purchase.";
 			dialogue[1] = "I make things.";
 			dialogue[2] = "Hey. I mend things.";
 		}
