@@ -34,7 +34,7 @@ public class Render implements Runnable {
 	//vast array of Buffered Images used for graphics
 	BufferedImage background;
 	BufferedImage talkBubble, dialogueBox;
-	BufferedImage shop;
+	BufferedImage shop, inventory;
 	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
@@ -81,6 +81,7 @@ public class Render implements Runnable {
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
+			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -98,7 +99,9 @@ public class Render implements Runnable {
 		drawPlayer(g);
 		drawBounds(g);
 		drawPrompts(g);
+		
 		drawDialogue(g);
+		drawInventory(g);
 		if(Main.appState == Main.DEAD_STATE) {
 			drawDeadScreen(g);
 		}
@@ -108,6 +111,15 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawInventory(Graphics2D g) {
+		if(Main.update.invScreen){
+			g.drawImage(inventory, 0, 30, 1024, 700, null);
+			g.setFont(new Font("Georgia", Font.BOLD, 22));
+			g.setColor(Color.yellow);
+			g.drawString("" + Main.update.PC.getGold(), 90, 215);
+		}
+	}
+
 	//Loops through the dialogue options
 	private void drawDialogue(Graphics2D g){
 		if(Main.update.commenceDialogue > 0){

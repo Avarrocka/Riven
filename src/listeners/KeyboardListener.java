@@ -18,6 +18,7 @@ public class KeyboardListener implements KeyListener {
 	public static boolean E = false, Q = false, R = false;
 	public static boolean toggle = false;
 	public static boolean escape = false;
+	public static boolean I = false;
 
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -46,6 +47,9 @@ public class KeyboardListener implements KeyListener {
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_R){
 			R = true;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_I){
+			I = !I;
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			if(Main.appState == Main.MENU_STATE) {
@@ -92,7 +96,5 @@ public class KeyboardListener implements KeyListener {
 	}
 
 	public void keyTyped(KeyEvent e) {
-		
 	}
-	
 }

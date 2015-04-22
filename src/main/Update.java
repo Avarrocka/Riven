@@ -39,6 +39,7 @@ public class Update implements Runnable {
 	public boolean shopSpawned = false;
 	public boolean shopping = false;
 	public boolean drawInfo = false;
+	public boolean invScreen = false;
 	public int insufficientGold = 0;
 	public int drawInfoIndx = 0;
 	public int dialogueOptions = 0;
@@ -195,7 +196,13 @@ public class Update implements Runnable {
 			nextDialogue = false;
 			shopping = false;
 			purchased = 0;
+			invScreen = false;
 		}
+		if(KeyboardListener.I == true){
+			invScreen = true;
+		}
+		else
+			invScreen = false;
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
