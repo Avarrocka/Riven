@@ -23,6 +23,7 @@ public class Main {
 	
 	//thread resources
 	public static Update update;
+	public static Render render;
 	
 	/**
 	 * Builds game, can be used to reset game state

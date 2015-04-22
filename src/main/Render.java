@@ -168,8 +168,16 @@ public class Render implements Runnable {
 		}
 		if(Main.update.insufficientGold > 0){
 			g.setColor(Color.red);
-			g.drawString("Insufficient funds for item.", 200, GraphicsMain.HEIGHT - 80);
+			g.drawString("Insufficient funds for item.",  440, 120);
 			Main.update.insufficientGold--;
+			if(Main.update.purchased > Main.update.insufficientGold){
+				Main.update.purchased = 0;
+			}
+		}
+		else if(Main.update.purchased > 0 && Main.update.insufficientGold == 0){
+			g.setColor(Color.green);
+			g.drawString("Item Purchased!", 440, 120);
+			Main.update.purchased--;
 		}
 		g.setColor(Color.yellow);
 		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 140, 60);

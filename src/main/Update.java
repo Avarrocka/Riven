@@ -42,6 +42,7 @@ public class Update implements Runnable {
 	public int insufficientGold = 0;
 	public int drawInfoIndx = 0;
 	public int dialogueOptions = 0;
+	public int purchased = 0;
 	//Music resources
 	private static BasicPlayer player;
 	
@@ -193,6 +194,7 @@ public class Update implements Runnable {
 			drawInfoIndx = 0;
 			nextDialogue = false;
 			shopping = false;
+			purchased = 0;
 		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
@@ -209,6 +211,7 @@ public class Update implements Runnable {
 							MousekeyListener.mouseClicked = false;
 							if(PC.getGold() >= shopItems.get(i).getValue()){
 								PC.setGold(PC.getGold() - shopItems.get(i).getValue());
+								purchased = 12;
 							}
 							else{
 								insufficientGold = 15;
