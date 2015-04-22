@@ -114,9 +114,38 @@ public class Render implements Runnable {
 	private void drawInventory(Graphics2D g) {
 		if(Main.update.invScreen){
 			g.drawImage(inventory, 0, 30, 1024, 700, null);
-			g.setFont(new Font("Georgia", Font.BOLD, 22));
+			//Drawing Gold count
+			g.setFont(new Font("Rockwell", Font.BOLD, 22));
 			g.setColor(Color.yellow);
 			g.drawString("" + Main.update.PC.getGold(), 90, 215);
+			//Draws the HP of the player character (PC) and Location
+			g.setColor(Color.red);
+			g.drawString("HP               " + Main.update.PC.getHealth() + "/100", 70, 85);
+			g.setColor(Color.black);
+			g.drawString("Location     " + Main.update.mapID, 70, 110);
+			int timeElapsed = (int)(Main.update.currentTime / 1000);
+			String time = "";
+			if(timeElapsed < 10){
+				time = "00:0" + timeElapsed;
+			}
+			else if(timeElapsed < 60){
+				time = "00:" + timeElapsed;
+			}
+			else if(timeElapsed >= 60){
+				int mins = (int)(timeElapsed / 60);
+				int secs = timeElapsed - (mins)*60;
+				if(mins < 10){
+					time = "0";
+				}
+				if(secs < 10){
+					time += mins + ":0" + secs;
+				}
+				else
+					time += mins + ":" + secs;
+			}
+			g.drawString("Playtime     " + time, 70, 135);
+			//Draws the equipped weapon
+			g.drawImage(Main.update.PC.getWeapon().getImage(), 245, 255, 90, 90, null);
 		}
 	}
 

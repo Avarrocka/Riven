@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import main.GraphicsMain;
 import main.Main;
 import main.Render;
+import res.Sword;
+import res.Item;
 
 /**
  * Class defines an enemy object
@@ -21,6 +23,8 @@ public class Player implements Drawable{
 	private int x, y, hp;
 	private int Vx, Vy;
 	private int gold;
+	private Sword weapon;
+	//private Armor armor;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
@@ -32,10 +36,11 @@ public class Player implements Drawable{
 	public Player(int x, int y) {
 		this.setX(x);
 		this.setY(y);
-		this.setHealth(1);
+		this.setHealth(100);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
 		this.setGold(150);
+		this.setWeapon(new Sword(0, 0, "Iron Sword"));
 		try {
 			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
 			up = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromUp.png"));
@@ -115,6 +120,12 @@ public class Player implements Drawable{
 	public int getGold(){
 		return this.gold;
 	}
+	public void setWeapon(Sword weapon){
+		this.weapon = weapon;
+	}
+	public Sword getWeapon(){
+		return this.weapon;
+	}
 	public void setImage(int face){
 		if(face == DEFAULT){
 			this.image = def;
@@ -138,7 +149,6 @@ public class Player implements Drawable{
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
 	}
-	
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}

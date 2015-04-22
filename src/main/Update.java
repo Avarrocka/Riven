@@ -13,7 +13,6 @@ import basicplayer1.BasicPlayer;
 import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
 import listeners.MousekeyListener;
-
 import main.Render;
 import res.Player;
 import res.NPC;
@@ -27,13 +26,15 @@ import res.Item;
  */
 public class Update implements Runnable {
 	//Update resources
-	String mapID = "START";
+	String mapID = "Rurikton";
 	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public NPC speakingWith;
 	public int commenceDialogue;
+	public long startTime = 0;
+	public long currentTime = 0;
 	private int movementSpeed = 2;
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
@@ -95,6 +96,7 @@ public class Update implements Runnable {
 	
 	private void init() {
 		playMusic();
+		startTime = System.currentTimeMillis();
 	} 
 	
 	/**
@@ -121,6 +123,7 @@ public class Update implements Runnable {
 		toggleMusic();
 		repeatMusic();
 	}
+	
 	
 	private void collisionDetection(){
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
@@ -200,6 +203,7 @@ public class Update implements Runnable {
 		}
 		if(KeyboardListener.I == true){
 			invScreen = true;
+			updateTime();
 		}
 		else
 			invScreen = false;
@@ -247,7 +251,9 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
-	
+	private void updateTime(){
+		currentTime = (System.currentTimeMillis() - startTime);
+	}
 	private void movePC(){
 		PC.setY(PC.getY() + PC.getYvelocity());
 		PC.setX(PC.getX() + PC.getXvelocity());
