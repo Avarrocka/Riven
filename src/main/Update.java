@@ -210,6 +210,7 @@ public class Update implements Runnable {
 			shopping = false;
 			purchased = 0;
 			invScreen = false;
+			KeyboardListener.I = false;
 		}
 		if(KeyboardListener.I == true){
 			invScreen = true;

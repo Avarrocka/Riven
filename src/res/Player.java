@@ -128,7 +128,7 @@ public class Player implements Drawable{
 	public void setWeapon(Sword weapon, int index){
 		if(index >= 0){
 			this.invSwords.remove(index);
-			this.invSwords.add(this.getWeapon());
+			this.invSwords.add(index, this.getWeapon());
 		}
 		this.weapon = weapon;
 	}
@@ -138,7 +138,7 @@ public class Player implements Drawable{
 	public void setArmor(Armor armor, int index){
 		if(index >= 0){
 			this.invArmor.remove(index);
-			this.invArmor.add(this.getArmor());
+			this.invArmor.add(index, this.getArmor());
 		}
 		this.armor = armor;
 	}
