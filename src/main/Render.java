@@ -137,13 +137,42 @@ public class Render implements Runnable {
 		if(Main.update.speakingWith.getID() == "blacksmith"){
 			for(int i = 0; i < swordShop.size(); i++){
 				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), swordShop.get(i).getHeight(), swordShop.get(i).getWidth(), null);
+				if(Main.update.drawInfo){
+					g.setColor(Color.white);
+					//Price
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + swordShop.get(Main.update.drawInfoIndx).getValue(),swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 20);
+					//Info
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getInfo(), swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 45);
+					//Flavor Text
+					g.setFont(new Font("Georgia", Font.PLAIN, 14));
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getDescription(), swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 65);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+				}
 			}
 		}
 		else if(Main.update.speakingWith.getID() == "shop"){
 			for(int i = 0; i < itemShop.size(); i++){
 				g.drawImage(itemShop.get(i).getImage(), itemShop.get(i).getX(), itemShop.get(i).getY(), itemShop.get(i).getHeight(), itemShop.get(i).getWidth(), null);
+				if(Main.update.drawInfo){
+					g.setColor(Color.white);
+					//Price
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + itemShop.get(Main.update.drawInfoIndx).getValue(),itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 25);
+					//Info
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getInfo(), itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 45);
+					//Flavor Text
+					g.setFont(new Font("Georgia", Font.PLAIN, 14));
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getDescription(), itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 65);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+				}
 			}
 		}
+		if(Main.update.insufficientGold > 0){
+			g.setColor(Color.red);
+			g.drawString("Insufficient funds for item.", 200, GraphicsMain.HEIGHT - 80);
+			Main.update.insufficientGold--;
+		}
+		g.setColor(Color.yellow);
+		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 140, 60);
 	}
 	
 	private void drawBounds(Graphics2D g){

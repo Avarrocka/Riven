@@ -1,7 +1,10 @@
 package main;
 
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
-
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -9,6 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import basicplayer1.BasicPlayer;
 import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
+import listeners.MousekeyListener;
 
 import main.Render;
 import res.Player;
@@ -34,6 +38,9 @@ public class Update implements Runnable {
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
 	public boolean shopping = false;
+	public boolean drawInfo = false;
+	public int insufficientGold = 0;
+	public int drawInfoIndx = 0;
 	public int dialogueOptions = 0;
 	//Music resources
 	private static BasicPlayer player;
@@ -86,7 +93,7 @@ public class Update implements Runnable {
 	
 	private void init() {
 		playMusic();
-	}
+	} 
 	
 	/**
 	 * Opens new music stream and begins playing it
@@ -135,15 +142,15 @@ public class Update implements Runnable {
 			NPCs.add(new NPC(500, 500, "shop"));
 			NPCs.add(new NPC(320, 400, "blacksmith"));
 			shopSpawned = true;
-			shopSwords.add(new Sword(30, 90, "iron"));
-			shopSwords.add(new Sword(30, 200, "katana"));
-			shopSwords.add(new Sword(30, 310, "obsidian"));
-			shopSwords.add(new Sword(30, 420, "serrated"));
-			shopItems.add(new Item(30, 70, "pie"));
-			shopItems.add(new Item(30, 140, "fish"));
-			shopItems.add(new Item(30, 240, "cake"));
-			shopItems.add(new Item(30, 340, "hpPot"));
-			shopItems.add(new Item(30, 450, "tele"));
+			shopSwords.add(new Sword(30, 90, "Iron Sword"));
+			shopSwords.add(new Sword(30, 200, "Katana"));
+			shopSwords.add(new Sword(30, 310, "Obsidian Sword"));
+			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
+			shopItems.add(new Item(30, 70, "Pie"));
+			shopItems.add(new Item(30, 140, "Fish"));
+			shopItems.add(new Item(30, 240, "Cake"));
+			shopItems.add(new Item(30, 340, "Healing Salve"));
+			shopItems.add(new Item(30, 450, "Teleport to Town"));
 		}
 	}
 
@@ -180,6 +187,55 @@ public class Update implements Runnable {
 			nextDialogue = true;
 			KeyboardListener.space = false;
 		}
+		if(KeyboardListener.escape){
+			commenceDialogue = 0;
+			drawInfo = false;
+			drawInfoIndx = 0;
+			nextDialogue = false;
+			shopping = false;
+		}
+		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith")){
+			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
+			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
+			boolean somethingsTrue = false;
+			if(speakingWith.getID() == "shop"){
+				for(int i = 0; i < shopItems.size(); i++){
+					Rectangle2D boundBox = shopItems.get(i).getBoundbox();
+					if(boundBox.contains(p)){
+						somethingsTrue = true;
+						drawInfo = true;
+						drawInfoIndx = i;
+						if(MousekeyListener.mouseClicked){
+							MousekeyListener.mouseClicked = false;
+							if(PC.getGold() >= shopItems.get(i).getValue()){
+								PC.setGold(PC.getGold() - shopItems.get(i).getValue());
+							}
+							else{
+								insufficientGold = 15;
+							}
+						}
+					}
+				}
+				if(!somethingsTrue){
+					drawInfo = false;
+				}
+			}
+			else{
+				for(int i = 0; i < shopSwords.size(); i++){
+					Rectangle2D boundBox = shopSwords.get(i).getBoundbox();
+					if(boundBox.contains(p)){
+						somethingsTrue = true;
+						drawInfo = true;
+						drawInfoIndx = i;
+					}
+				}
+				if(!somethingsTrue){
+					drawInfo = false;
+				}
+			}
+		}
+		else
+			drawInfo = false;
 	}
 	
 	private void movePC(){

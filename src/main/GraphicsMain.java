@@ -20,6 +20,7 @@ import basicplayer1.BasicPlayer;
 import res.ImagePanel;
 import listeners.ButtonListener;
 import listeners.KeyboardListener;
+import listeners.MousekeyListener;
 
 /**
  * Main graphics class for Trash Smash, generates window, starts render thread, creates main menu
@@ -43,7 +44,7 @@ public class GraphicsMain {
 	//Listeners
 	private ButtonListener l;
 	private KeyboardListener kl;
-	
+	public MousekeyListener mouse; 
 	//Menu variables
 	private ImageIcon sButton, qButton, scButton;
 	public final String MAIN_MENU = "MAINMENU", SCORES_MENU = "SCORESMENU";
@@ -69,9 +70,12 @@ public class GraphicsMain {
 	 * Loads images for use in menus.
 	 */
 	private void init() {
+		mouse = new MousekeyListener();
 		sButton = new ImageIcon(getClass().getClassLoader().getResource("UI/startButton.png"));
 		qButton = new ImageIcon(getClass().getClassLoader().getResource("UI/quitbutton.png"));
 		scButton = new ImageIcon(getClass().getClassLoader().getResource("UI/scoreButton.png"));
+		window.addMouseListener(mouse);
+		window.addMouseMotionListener(mouse);
 	}
 	
 	/**
@@ -131,7 +135,7 @@ public class GraphicsMain {
 		quitButton.addActionListener(l);
 		quitButton.setActionCommand("quit");
 		
-		scoresButton.setIcon(scButton);
+		//scoresButton.setIcon(scButton);
 		scoresButton.setBorder(null);
 		scoresButton.addActionListener(l);
 		scoresButton.setActionCommand("scores");

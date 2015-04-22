@@ -51,7 +51,7 @@ public class NPC implements Drawable{
 			dialogueLines = 3;
 			dialogue = new String[dialogueLines];
 			name = "Shopkeep Anna";	
-			dialogue[0] = "Click to buy an item. Just make sure you have the coin.";
+			dialogue[0] = "Grab the items you want. Point to learn more. Just make sure you have the coin.";
 			dialogue[1] = "If you need anything to help with your journey - potions, food, I have it all.";
 			dialogue[2] = "Hiya! I'm Anna - the local shopkeep around these parts.";
 		}

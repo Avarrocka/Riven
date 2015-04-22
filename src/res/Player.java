@@ -20,6 +20,7 @@ import main.Render;
 public class Player implements Drawable{
 	private int x, y, hp;
 	private int Vx, Vy;
+	private int gold;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
@@ -34,6 +35,7 @@ public class Player implements Drawable{
 		this.setHealth(1);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
+		this.setGold(150);
 		try {
 			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
 			up = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromUp.png"));
@@ -105,7 +107,14 @@ public class Player implements Drawable{
 	public int getHeight() {
 	 return HEIGHT;
 	}
-
+	
+	public void setGold(int gold){
+		this.gold = gold;
+	}
+	
+	public int getGold(){
+		return this.gold;
+	}
 	public void setImage(int face){
 		if(face == DEFAULT){
 			this.image = def;
