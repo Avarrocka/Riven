@@ -34,6 +34,17 @@ public class Sword implements Drawable{
 		this.setID(ID);
 		this.setX(x);
 		this.setY(y);
+		if(this.ID == "Rusted Sword"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordRust.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 5;
+			this.value = 0;
+			this.desc = "A rusted sword not capable of more than a blunt strike.";
+			this.info = "This is a starter weapon that does 5 damage per hit";
+		}
 		if(this.ID == "Iron Sword"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordIron.png"));
@@ -41,31 +52,31 @@ public class Sword implements Drawable{
 				e.printStackTrace();
 			}
 			this.damage = 10;
-			this.value = 10;
+			this.value = 100;
 			this.desc = "A simple, balanced sword made of cold iron.";
-			this.info = "This is a weapon that does 10 damage per hit";
+			this.info = "This is a basic weapon that does 10 damage per hit";
 		}
-		if(this.ID == "Katana"){
+		if(this.ID == "Scimitar"){
 			try {
-				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordKatana.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordScimitar.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			this.damage = 14;
-			this.value = 25;
-			this.desc = "An exotic Katana brought in through the ports by traders. It looks sharp.";
-			this.info = "This is a weapon that does 14 damage per hit";
+			this.value = 250;
+			this.desc = "An exotic Scimitar brought in through the ports by traders. It looks sharp.";
+			this.info = "This is a basic weapon that does 14 damage per hit";
 		}
 		if(this.ID == "Obsidian Sword"){
 			try {
-				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordObsidian.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordSteel.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			this.damage = 20;
-			this.value = 40;
+			this.value = 500;
 			this.desc = "Made of volcanic glass. This sword is brittle but undeniably dangerous.";
-			this.info = "This is a weapon that does 20 damage per hit";
+			this.info = "This an advanced weapon that does 20 damage per hit, plus an effect.";
 		}
 		if(this.ID == "Serrated Blade"){
 			try {
@@ -74,9 +85,21 @@ public class Sword implements Drawable{
 				e.printStackTrace();
 			}
 			this.damage = 25;
-			this.value = 100;
+			this.value = 1000;
 			this.desc = "Tempered steel folded over 1000 times creates a weapon of unparalleled deadliness.";
-			this.info = "This is a weapon that does 25 damage per hit";
+			this.info = "This is an advanced weapon that does 25 damage per hit, plus an effect.";
+		}
+		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		if(this.ID == "Lunus Blade"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordLunus.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 30;
+			this.value = 0;
+			this.desc = "An ancient hierloom that once belonged to the Fallen God, Lunus.";
+			this.info = "This is a legendary weapon that does 30 damage per hit, plus an effect.";
 		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}

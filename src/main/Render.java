@@ -6,9 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -16,6 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.imageio.ImageIO;
 
 import main.Update;
+import res.Armor;
 import res.Player;
 import res.NPC;
 import res.Sword;
@@ -99,7 +98,6 @@ public class Render implements Runnable {
 		drawPlayer(g);
 		drawBounds(g);
 		drawPrompts(g);
-		
 		drawDialogue(g);
 		drawInventory(g);
 		if(Main.appState == Main.DEAD_STATE) {
@@ -114,10 +112,15 @@ public class Render implements Runnable {
 	private void drawInventory(Graphics2D g) {
 		if(Main.update.invScreen){
 			g.drawImage(inventory, 0, 30, 1024, 700, null);
-			//Drawing Gold count
 			g.setFont(new Font("Rockwell", Font.BOLD, 22));
+			//Drawing Gold count
 			g.setColor(Color.yellow);
-			g.drawString("" + Main.update.PC.getGold(), 90, 215);
+			g.drawString("" + Main.update.PC.getGold(), 250, 670);
+			//Drawing Attack count
+			g.setColor(Color.black);
+			g.drawString("" + Main.update.PC.getWeapon().getDamage(), 90, 206);
+			//Drawing Armor count
+			g.drawString("" + Main.update.PC.getArmor().getArmor(), 90, 253);
 			//Draws the HP of the player character (PC) and Location
 			g.setColor(Color.red);
 			g.drawString("HP               " + Main.update.PC.getHealth() + "/100", 70, 85);
@@ -145,7 +148,24 @@ public class Render implements Runnable {
 			}
 			g.drawString("Playtime     " + time, 70, 135);
 			//Draws the equipped weapon
-			g.drawImage(Main.update.PC.getWeapon().getImage(), 245, 255, 90, 90, null);
+			g.drawImage(Main.update.PC.getWeapon().getImage(), 252, 257, 91, 91, null);
+			//Draws the equipped armor
+			g.drawImage(Main.update.PC.getArmor().getImage(), 252, 421, 91, 91, null);
+			//Draws all the items in inventory
+			g.drawString("Items -", 400, 120);
+			for(int i = 0; i < Main.update.PC.invItems.size(); i++){
+				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 130, 50, 50, null);
+			}
+			//Draws all the swords in inventory
+			g.drawString("Swords -", 400, 250);
+			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 260, 50, 50, null);
+			}
+			//Draws all the armor in inventory
+			g.drawString("Armor -", 400, 380);
+			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 390, 50, 50, null);
+			}
 		}
 	}
 
@@ -164,7 +184,7 @@ public class Render implements Runnable {
 					Main.update.nextDialogue = false;
 				}
 			}
-			if(Main.update.commenceDialogue == 1 && (speak.getID() == "shop" || speak.getID() == "blacksmith")){
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "shop" || speak.getID() == "blacksmith" || speak.getID() == "armorsmith")){
 				drawShop(g);
 			}
 		}
@@ -175,6 +195,7 @@ public class Render implements Runnable {
 		Main.update.shopping = true;
 		LinkedList<Sword> swordShop = Main.update.shopSwords;
 		LinkedList<Item> itemShop = Main.update.shopItems;
+		LinkedList<Armor> armorShop = Main.update.shopArmor;
 		if(Main.update.speakingWith.getID() == "blacksmith"){
 			for(int i = 0; i < swordShop.size(); i++){
 				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), swordShop.get(i).getHeight(), swordShop.get(i).getWidth(), null);
@@ -203,6 +224,22 @@ public class Render implements Runnable {
 					//Flavor Text
 					g.setFont(new Font("Georgia", Font.PLAIN, 14));
 					g.drawString(itemShop.get(Main.update.drawInfoIndx).getDescription(), itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 65);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+				}
+			}
+		}
+		else if(Main.update.speakingWith.getID() == "armorsmith"){
+			for(int i = 0; i < armorShop.size(); i++){
+				g.drawImage(armorShop.get(i).getImage(), armorShop.get(i).getX(), armorShop.get(i).getY(), armorShop.get(i).getHeight(), armorShop.get(i).getWidth(), null);
+				if(Main.update.drawInfo){
+					g.setColor(Color.white);
+					//Price
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + armorShop.get(Main.update.drawInfoIndx).getValue(),armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 25);
+					//Info
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getInfo(), armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 45);
+					//Flavor Text
+					g.setFont(new Font("Georgia", Font.PLAIN, 14));
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getDescription(), armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 65);
 					g.setFont(new Font("Georgia", Font.PLAIN, 18));
 				}
 			}

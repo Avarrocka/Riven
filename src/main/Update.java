@@ -14,6 +14,7 @@ import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Render;
+import res.Armor;
 import res.Player;
 import res.NPC;
 import res.Sword;
@@ -26,11 +27,12 @@ import res.Item;
  */
 public class Update implements Runnable {
 	//Update resources
-	String mapID = "Rurikton";
+	String mapID = "Alexton";
 	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
+	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
 	public NPC speakingWith;
 	public int commenceDialogue;
 	public long startTime = 0;
@@ -146,9 +148,11 @@ public class Update implements Runnable {
 		if(!shopSpawned){
 			NPCs.add(new NPC(500, 500, "shop"));
 			NPCs.add(new NPC(320, 400, "blacksmith"));
+			NPCs.add(new NPC(400, 600, "armorsmith"));
 			shopSpawned = true;
+			//Add basic Sword
 			shopSwords.add(new Sword(30, 90, "Iron Sword"));
-			shopSwords.add(new Sword(30, 200, "Katana"));
+			shopSwords.add(new Sword(30, 200, "Scimitar"));
 			shopSwords.add(new Sword(30, 310, "Obsidian Sword"));
 			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 			shopItems.add(new Item(30, 70, "Pie"));
@@ -156,6 +160,12 @@ public class Update implements Runnable {
 			shopItems.add(new Item(30, 240, "Cake"));
 			shopItems.add(new Item(30, 340, "Healing Salve"));
 			shopItems.add(new Item(30, 450, "Teleport to Town"));
+			shopArmor.add(new Armor(30, 90, "Leather Armor"));
+			shopArmor.add(new Armor(30, 200, "Plated Armor"));
+			shopArmor.add(new Armor(30, 310, "Steel Armor"));
+			shopArmor.add(new Armor(30, 420, "Darksteel Armor"));
+			//Legendary Armor is unobtainable.
+			//shopArmor.add(new Armor(30, 90, "Solus Armor"));
 		}
 	}
 
@@ -204,14 +214,16 @@ public class Update implements Runnable {
 		if(KeyboardListener.I == true){
 			invScreen = true;
 			updateTime();
+			manageInventory();
 		}
 		else
 			invScreen = false;
-		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith")){
+		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
 			boolean somethingsTrue = false;
 			if(speakingWith.getID() == "shop"){
+				System.out.print("Speaking W/shop");
 				for(int i = 0; i < shopItems.size(); i++){
 					Rectangle2D boundBox = shopItems.get(i).getBoundbox();
 					if(boundBox.contains(p)){
@@ -222,6 +234,7 @@ public class Update implements Runnable {
 							MousekeyListener.mouseClicked = false;
 							if(PC.getGold() >= shopItems.get(i).getValue()){
 								PC.setGold(PC.getGold() - shopItems.get(i).getValue());
+								PC.addItem(shopItems.get(i));
 								purchased = 12;
 							}
 							else{
@@ -234,13 +247,50 @@ public class Update implements Runnable {
 					drawInfo = false;
 				}
 			}
-			else{
+			if(speakingWith.getID() == "blacksmith"){
+				System.out.print("Speaking W/blacksmith");
 				for(int i = 0; i < shopSwords.size(); i++){
 					Rectangle2D boundBox = shopSwords.get(i).getBoundbox();
 					if(boundBox.contains(p)){
 						somethingsTrue = true;
 						drawInfo = true;
 						drawInfoIndx = i;
+						if(MousekeyListener.mouseClicked){
+							MousekeyListener.mouseClicked = false;
+							if(PC.getGold() >= shopSwords.get(i).getValue()){
+								PC.setGold(PC.getGold() - shopSwords.get(i).getValue());
+								PC.addItem(shopSwords.get(i));
+								purchased = 12;
+							}
+							else{
+								insufficientGold = 15;
+							}
+						}
+					}
+				}
+				if(!somethingsTrue){
+					drawInfo = false;
+				}
+			}
+			if(speakingWith.getID() == "armorsmith"){
+				System.out.print("Speaking W/Armorsmith");
+				for(int i = 0; i < shopArmor.size(); i++){
+					Rectangle2D boundBox = shopArmor.get(i).getBoundbox();
+					if(boundBox.contains(p)){
+						somethingsTrue = true;
+						drawInfo = true;
+						drawInfoIndx = i;
+						if(MousekeyListener.mouseClicked){
+							MousekeyListener.mouseClicked = false;
+							if(PC.getGold() >= shopArmor.get(i).getValue()){
+								PC.setGold(PC.getGold() - shopArmor.get(i).getValue());
+								PC.addItem(shopArmor.get(i));
+								purchased = 12;
+							}
+							else{
+								insufficientGold = 15;
+							}
+						}
 					}
 				}
 				if(!somethingsTrue){
@@ -251,6 +301,46 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
+	private void manageInventory() {
+		/*for(int i = 0; i < Main.update.PC.invItems.size(); i++){
+				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 130, 50, 50, null);
+			}
+			//Draws all the swords in inventory
+			g.drawString("Swords -", 400, 250);
+			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 260, 50, 50, null);
+			}
+			//Draws all the armor in inventory
+			g.drawString("Armor -", 400, 380);
+			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 390, 50, 50, null);
+			}
+		*/
+		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
+		if(MousekeyListener.mouseClicked){
+			MousekeyListener.mouseClicked = false;
+			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+				Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 260, 50, 50);
+				if(boundBox.contains(p)){
+					PC.setWeapon(Main.update.PC.invSwords.get(i), i);
+				}
+			}
+			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+				Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 390, 50, 50);
+				if(boundBox.contains(p)){
+					PC.setArmor(Main.update.PC.invArmor.get(i), i);
+				}
+			}
+			//Add usage for items.
+			/*for(int i = 0; i < Main.update.PC.invItems.size(); i++){
+				Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 260, 50, 50);
+				if(boundBox.contains(p)){
+					PC.setWeapon(Main.update.PC.invSwords.get(i), i);
+				}
+			}*/
+		}
+	}
+
 	private void updateTime(){
 		currentTime = (System.currentTimeMillis() - startTime);
 	}

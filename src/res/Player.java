@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.imageio.ImageIO;
@@ -24,7 +25,10 @@ public class Player implements Drawable{
 	private int Vx, Vy;
 	private int gold;
 	private Sword weapon;
-	//private Armor armor;
+	private Armor armor;
+	public volatile LinkedList<Sword> invSwords = new LinkedList<Sword>(); 
+	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
+	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>(); 
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
@@ -39,8 +43,9 @@ public class Player implements Drawable{
 		this.setHealth(100);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
-		this.setGold(150);
-		this.setWeapon(new Sword(0, 0, "Iron Sword"));
+		this.setGold(15000);
+		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
+		this.setArmor(new Armor(0, 0, "Cape"), -1);
 		try {
 			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
 			up = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromUp.png"));
@@ -120,11 +125,34 @@ public class Player implements Drawable{
 	public int getGold(){
 		return this.gold;
 	}
-	public void setWeapon(Sword weapon){
+	public void setWeapon(Sword weapon, int index){
+		if(index >= 0){
+			this.invSwords.remove(index);
+			this.invSwords.add(this.getWeapon());
+		}
 		this.weapon = weapon;
 	}
 	public Sword getWeapon(){
 		return this.weapon;
+	}
+	public void setArmor(Armor armor, int index){
+		if(index >= 0){
+			this.invArmor.remove(index);
+			this.invArmor.add(this.getArmor());
+		}
+		this.armor = armor;
+	}
+	public Armor getArmor(){
+		return this.armor;
+	}
+	public void addItem(Item item){
+		invItems.add(item);
+	}
+	public void addItem(Armor armor){
+		invArmor.add(armor);
+	}
+	public void addItem(Sword sword){
+		invSwords.add(sword);
 	}
 	public void setImage(int face){
 		if(face == DEFAULT){

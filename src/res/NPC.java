@@ -50,7 +50,7 @@ public class NPC implements Drawable{
 			speak = true;
 			dialogueLines = 3;
 			dialogue = new String[dialogueLines];
-			name = "Shopkeep Anna";	
+			name = "Shopkeeper Anna";	
 			dialogue[0] = "Grab the items you want. Point to learn more. Just make sure you have the coin.";
 			dialogue[1] = "If you need anything to help with your journey - potions, food, I have it all.";
 			dialogue[2] = "Hiya! I'm Anna - the local shopkeep around these parts.";
@@ -66,6 +66,21 @@ public class NPC implements Drawable{
 			dialogueLines = 3;
 			dialogue = new String[dialogueLines];
 			name = "Blacksmith Uldred";	
+			dialogue[0] = "If you touch it, you buy it. Ask me about any item by pointing to it.";
+			dialogue[1] = "Got a variety of sharp weapons and pointy sticks to jab your enemies with.";
+			dialogue[2] = "Hey. You look like a weak little guy. Better arm yourself to stand a chance.";
+		}
+		if(ID == "armorsmith"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/averaDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/averaHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 3;
+			dialogue = new String[dialogueLines];
+			name = "Armorsmith Avera";	
 			dialogue[0] = "Don't wanna die? Give my wares a look. Click it to purchase.";
 			dialogue[1] = "I make things.";
 			dialogue[2] = "Hey. I mend things.";
