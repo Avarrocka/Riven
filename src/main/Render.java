@@ -157,7 +157,7 @@ public class Render implements Runnable {
 				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 130, 50, 50, null);
 			}
 			//Draws all the swords in inventory
-			g.drawString("Swords -", 400, 250);
+			g.drawString("Weapons -", 400, 250);
 			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
 				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 260, 50, 50, null);
 			}
@@ -165,6 +165,34 @@ public class Render implements Runnable {
 			g.drawString("Armor -", 400, 380);
 			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
 				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 390, 50, 50, null);
+			}
+			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
+				if(Main.update.drawWhich == 1){
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					if(!Main.update.PC.invItems.isEmpty()){
+						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					}
+				}
+				else if (Main.update.drawWhich == 2){
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+				}
+				else if(Main.update.drawWhich == 3){
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+				}
 			}
 		}
 	}
@@ -246,19 +274,28 @@ public class Render implements Runnable {
 		}
 		if(Main.update.insufficientGold > 0){
 			g.setColor(Color.red);
-			g.drawString("Insufficient funds for item.",  440, 120);
+			g.drawString("Insufficient funds for item.",  420, 60);
 			Main.update.insufficientGold--;
 			if(Main.update.purchased > Main.update.insufficientGold){
 				Main.update.purchased = 0;
 			}
 		}
+		if(Main.update.alreadyHave > 0){
+			g.setColor(Color.red);
+			g.drawString("You already have this item.",  420, 60);
+			Main.update.alreadyHave--;
+			if(Main.update.purchased > Main.update.alreadyHave){
+				Main.update.purchased = 0;
+			}
+		}
 		else if(Main.update.purchased > 0 && Main.update.insufficientGold == 0){
 			g.setColor(Color.green);
-			g.drawString("Item Purchased!", 440, 120);
+			g.drawString("Item Purchased!", 420, 60);
 			Main.update.purchased--;
 		}
 		g.setColor(Color.yellow);
 		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 140, 60);
+		//Item description
 	}
 	
 	private void drawBounds(Graphics2D g){

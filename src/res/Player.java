@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.imageio.ImageIO;
 
+import listeners.KeyboardListener;
 import main.GraphicsMain;
 import main.Main;
 import main.Render;
@@ -29,6 +30,7 @@ public class Player implements Drawable{
 	public volatile LinkedList<Sword> invSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>(); 
+	private boolean hpBuff = false;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
@@ -43,7 +45,7 @@ public class Player implements Drawable{
 		this.setHealth(100);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
-		this.setGold(15000);
+		this.setGold(12000);
 		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
 		this.setArmor(new Armor(0, 0, "Cape"), -1);
 		try {
@@ -140,6 +142,14 @@ public class Player implements Drawable{
 			this.invArmor.remove(index);
 			this.invArmor.add(index, this.getArmor());
 		}
+		if(armor.getID() == "Darksteel Armor" && !hpBuff){
+			this.setHealth(this.getHealth() + 20);
+			hpBuff = true;
+		}
+		else if(hpBuff && armor.getID() != "Darksteel Armor"){
+			this.setHealth(this.getHealth() - 20);
+			hpBuff = !hpBuff;
+		}
 		this.armor = armor;
 	}
 	public Armor getArmor(){
@@ -179,5 +189,37 @@ public class Player implements Drawable{
 	}
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+	}
+
+	public void activateItem(Item item, int i) {
+		invItems.remove(i);
+		Item using = item;
+		if(using.getID() == "Fish"){
+			if(this.getHealth() + using.getHeal() <= 100)
+				this.setHealth(this.getHealth() + using.getHeal());
+			Main.update.fastTime = 1200;
+		}
+		else if(using.getID() == "Cake"){
+			if(this.getHealth() + using.getHeal() <= 100)
+				this.setHealth(this.getHealth() + using.getHeal());
+			Main.update.slowedTime = 1200;
+		}
+		else if(using.getID() == "Pie"){
+			if(this.getHealth() + using.getHeal() <= 100)
+				this.setHealth(this.getHealth() + using.getHeal());
+			Main.update.slowedTime = 600;
+		}
+		else if(using.getID() == "Healing Salve"){
+			this.setHealth(100);
+			if(hpBuff){
+				this.setHealth(120);
+			}
+		}
+		else if(using.getID() == "Teleport to Town"){
+			Main.update.mapID = "Alexton";
+			KeyboardListener.escape = true;
+			this.setX(GraphicsMain.WIDTH/2 - 96);
+			this.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
+		}
 	}
 }
