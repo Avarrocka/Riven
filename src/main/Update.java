@@ -395,23 +395,23 @@ public class Update implements Runnable {
 		for(int i = 0; i < NPCs.size(); i++){
 			NPC rn = NPCs.get(i);
 			if(nb.intersects(rn.getSmall())){
+				Rectangle2D rm = rn.getSmall();
 				if(PC.getXvelocity() != 0){
-					if((Rx >= rn.getX() && Rx <= rn.getX()+rn.getWidth())){
-						System.out.print("unswag");
+					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth())){
 						PC.setX(PC.getX() - movementSpeed);
 						PC.setYvelocity(0);
 					}
-					else if(Lx <= rn.getX() + rn.getWidth()){
+					else if(Lx <= rm.getX() + rm.getWidth()){
 						PC.setX(PC.getX() + movementSpeed);
 						PC.setYvelocity(0);
 					}
 				}
 				else if(PC.getYvelocity() != 0){
-					if((Dy >= rn.getY() && Dy <= rn.getY()+rn.getHeight()-5)){
+					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight())){
 						PC.setY(PC.getY() - (movementSpeed));
 						PC.setXvelocity(0);
 					}
-					else if(Uy <= rn.getY() + rn.getHeight()){
+					else if(Uy <= rm.getY() + rm.getHeight()){
 						PC.setY(PC.getY() + (movementSpeed));
 						PC.setXvelocity(0);
 					}
