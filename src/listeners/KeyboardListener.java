@@ -15,7 +15,7 @@ public class KeyboardListener implements KeyListener {
 	//Button switches
 	public static boolean left = false, right = false;
 	public static boolean up = false, down = false, space = false;
-	public static boolean E = false, Q = false, R = false;
+	public static boolean E = false, Q = false, R = false, W = false;
 	public static boolean toggle = false;
 	public static boolean escape = false;
 	public static boolean I = false;
@@ -32,6 +32,9 @@ public class KeyboardListener implements KeyListener {
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_DOWN){
 			down = true;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_W){
+			W = true;
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			space = true;
@@ -83,6 +86,9 @@ public class KeyboardListener implements KeyListener {
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_E){
 			E = false;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_W){
+			W = false;
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_Q){
 			Q = false;

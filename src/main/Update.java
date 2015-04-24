@@ -42,6 +42,7 @@ public class Update implements Runnable {
 	private int movementSpeed = 2;
 	public int slowedTime = 0;
 	public int fastTime = 0;
+	public int healingTime = 0;
 	public Rectangle2D nb;
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
@@ -51,7 +52,9 @@ public class Update implements Runnable {
 	public boolean portalOnline = false;
 	public boolean gem = false;
 	public boolean shooting = false;
-	public int shootingTime = 0;
+	public boolean healing = false;
+	public int qCD = 0;
+	public int wCD = 0;
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
 	public int alreadyHave = 0;
@@ -278,17 +281,22 @@ public class Update implements Runnable {
 				commenceDialogue = speakingWith.getDialogueLines();
 			}
 		}
+		if(KeyboardListener.W){
+			if(wCD == 0){
+				healing = true;
+				meditate();
+				wCD = 4000;
+			}
+		}
 		if(KeyboardListener.space){
 			nextDialogue = true;
 			KeyboardListener.space = false;
 		}
 		if(KeyboardListener.Q){
-			if(shootingTime == 0){
-				int sX = PC.getX();
-				int sY = PC.getY();
+			if(qCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				shootingTime = 300;
+				qCD = 300;
 			}				
 		}
 		if(KeyboardListener.escape){
@@ -409,6 +417,12 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
+	private void meditate() {
+		healingTime = 200;
+		PC.setHealth(PC.getHealth() + 5);
+		healing = false;
+	}
+
 	private void spawnGrapplingHook() {
 		int X = MousekeyListener.getX();
 		int Y = MousekeyListener.getY();
@@ -471,61 +485,66 @@ public class Update implements Runnable {
 	}
 
 	private void updateTimes(){
-		if(shootingTime > 0 && !shooting)
-			shootingTime--;
+		if(qCD > 0 && !shooting)
+			qCD--;
+		if(wCD > 0 && !healing){
+			wCD--;
+		}
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
 	private void movePC(){
-		nb = new Rectangle2D.Double(PC.getX() + 4, PC.getY() + 4, PC.getWidth() - 8, PC.getHeight() - 8);
-		boolean touch = false;
-		int Rx = PC.getX()+PC.getWidth();
-		int Lx = PC.getX();
-		int Uy = PC.getY();
-		int Dy = PC.getY() + PC.getHeight();
-		
-		for(int i = 0; i < NPCs.size(); i++){
-			NPC rn = NPCs.get(i);
-			if(nb.intersects(rn.getSmall())){
-				Rectangle2D rm = rn.getSmall();
-				if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
-					PC.setX(PC.getX() - movementSpeed);
-				}
-				else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
-					PC.setX(PC.getX() + movementSpeed);
-				}
-				if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
-						PC.setY(PC.getY() - (movementSpeed));
+		if(!(healingTime > 0)){
+			nb = new Rectangle2D.Double(PC.getX() + 4, PC.getY() + 4, PC.getWidth() - 8, PC.getHeight() - 8);
+			boolean touch = false;
+			int Rx = PC.getX()+PC.getWidth();
+			int Lx = PC.getX();
+			int Uy = PC.getY();
+			int Dy = PC.getY() + PC.getHeight();
+			
+			for(int i = 0; i < NPCs.size(); i++){
+				NPC rn = NPCs.get(i);
+				if(nb.intersects(rn.getSmall())){
+					Rectangle2D rm = rn.getSmall();
+					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
+						PC.setX(PC.getX() - movementSpeed);
 					}
-				else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
-						PC.setY(PC.getY() + (movementSpeed));
-				}			
+					else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
+						PC.setX(PC.getX() + movementSpeed);
+					}
+					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
+							PC.setY(PC.getY() - (movementSpeed));
+						}
+					else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
+							PC.setY(PC.getY() + (movementSpeed));
+					}			
+				}
 			}
+			if(!touch){
+				PC.setY(PC.getY() + PC.getYvelocity());
+				PC.setX(PC.getX() + PC.getXvelocity());
+				PC.setXvelocity(0);
+				PC.setYvelocity(0);
+			}
+			else{
+				PC.setXvelocity(0);
+				PC.setYvelocity(0);
+			}
+			
+			//Done code regarding boundaries.
+			if(PC.getX() <= 2){
+				PC.setX(3);
+			}
+			if(PC.getX() >= 970){
+				PC.setX(969);
+			}
+			if(PC.getY() <= 26){
+				PC.setY(27);
+			}
+			if(PC.getY() >= 700){
+				PC.setY(699);
+			}
+			PC.updateBoundbox();
 		}
-		if(!touch){
-			PC.setY(PC.getY() + PC.getYvelocity());
-			PC.setX(PC.getX() + PC.getXvelocity());
-			PC.setXvelocity(0);
-			PC.setYvelocity(0);
-		}
-		else{
-			PC.setXvelocity(0);
-			PC.setYvelocity(0);
-		}
-		
-		//Done code regarding boundaries.
-		if(PC.getX() <= 2){
-			PC.setX(3);
-		}
-		if(PC.getX() >= 970){
-			PC.setX(969);
-		}
-		if(PC.getY() <= 26){
-			PC.setY(27);
-		}
-		if(PC.getY() >= 700){
-			PC.setY(699);
-		}
-		PC.updateBoundbox();
 	}
 	/**
 	 * Switching between Muting and Un-muting the music.

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -34,7 +35,8 @@ public class Render implements Runnable {
 	//vast array of Buffered Images used for graphics
 	BufferedImage background;
 	BufferedImage talkBubble, dialogueBox, interactBox;
-	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2, qAbility;
+	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
+	BufferedImage qAbility, wAbility;
 	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
@@ -83,9 +85,14 @@ public class Render implements Runnable {
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
 			hook = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook.png"));
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
+			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
@@ -102,7 +109,7 @@ public class Render implements Runnable {
 		//Things are Drawn to the Screen here.
 		drawBackground(g);
 		drawNPC(g);
-		drawGrapple(g);
+		drawAbilities(g);
 		drawPlayer(g);
 		drawBounds(g);
 		drawPortal(g);
@@ -121,10 +128,12 @@ public class Render implements Runnable {
 	
 	private void drawCooldowns(Graphics2D g) {
 		g.drawImage(qAbility, 3, 25, 32, 48, null);
-		g.drawString(""+Main.update.shootingTime, 8, 70);
+		g.drawString(""+Main.update.qCD, 8, 70);
+		g.drawImage(wAbility, 35, 25, 32, 48, null);
+		g.drawString(""+Main.update.wCD, 38, 70);
 	}
 
-	private void drawGrapple(Graphics2D g) {
+	private void drawAbilities(Graphics2D g) {
 		Line2D grapple = Main.update.grapple;
 		if(grapple != null){
 			g.draw(grapple);
@@ -132,6 +141,13 @@ public class Render implements Runnable {
 				g.drawImage(hook, (int)grapple.getX2(), (int)grapple.getY2()-20, 30, 30, null);
 			else
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
+		}
+		if(Main.update.healingTime > 0){
+			Ellipse2D medi = new Ellipse2D.Double(Main.update.PC.getX(), Main.update.PC.getY(), Main.update.PC.getWidth(), Main.update.PC.getHeight());
+			g.setColor(Color.GREEN);
+			g.fill(medi);
+			g.draw(medi);
+			Main.update.healingTime--;
 		}
 	}
 
