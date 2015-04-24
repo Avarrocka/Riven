@@ -203,4 +203,7 @@ public class NPC implements Drawable{
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
+	public void updateSmall(){
+		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
+	}
 }

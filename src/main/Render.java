@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -32,8 +33,8 @@ public class Render implements Runnable {
 	private Queue<BufferedImage> dblBuffer = new LinkedList<BufferedImage>();
 	//vast array of Buffered Images used for graphics
 	BufferedImage background;
-	BufferedImage talkBubble, dialogueBox;
-	BufferedImage shop, inventory, bPortal, rPortal;
+	BufferedImage talkBubble, dialogueBox, interactBox;
+	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2, qAbility;
 	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
@@ -80,7 +81,11 @@ public class Render implements Runnable {
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
+			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
+			hook = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook.png"));
+			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
+			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
@@ -97,12 +102,14 @@ public class Render implements Runnable {
 		//Things are Drawn to the Screen here.
 		drawBackground(g);
 		drawNPC(g);
+		drawGrapple(g);
 		drawPlayer(g);
-		//drawBounds(g);
+		drawBounds(g);
 		drawPortal(g);
 		drawPrompts(g);
 		drawDialogue(g);
 		drawInventory(g);
+		drawCooldowns(g);
 		if(Main.appState == Main.DEAD_STATE) {
 			drawDeadScreen(g);
 		}
@@ -112,6 +119,22 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawCooldowns(Graphics2D g) {
+		g.drawImage(qAbility, 3, 25, 32, 48, null);
+		g.drawString(""+Main.update.shootingTime, 8, 70);
+	}
+
+	private void drawGrapple(Graphics2D g) {
+		Line2D grapple = Main.update.grapple;
+		if(grapple != null){
+			g.draw(grapple);
+			if(grapple.getY2() <= Main.update.PC.getY())
+				g.drawImage(hook, (int)grapple.getX2(), (int)grapple.getY2()-20, 30, 30, null);
+			else
+				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
+		}
+	}
+
 	private void drawPortal(Graphics2D g) {
 		if(Main.update.portalOnline){
 			g.drawImage(rPortal, 800, 300, 100, 100, null);
@@ -337,15 +360,16 @@ public class Render implements Runnable {
 		Rectangle2D nb = Main.update.nb;
 		g.draw(nb);
 		for(int i = 0; i < Main.update.NPCs.size(); i++){
-			g.draw(Main.update.NPCs.get(i).getBoundbox());
+			g.draw(Main.update.NPCs.get(i).getSmall());
 		}
 	}
 	
 	private void drawPrompts(Graphics2D g){
-		g.setFont(new Font("Georgia", Font.PLAIN, 18));
-		g.setColor(Color.white);
 		if(Main.update.dialogueOptions > 0){
-			g.drawString("Press R to Interact", 440, 120);
+			g.setFont(new Font("Georgia", Font.PLAIN, 18));
+			g.setColor(Color.black);
+			g.drawImage(interactBox, 413, 90, 200, 75, null);
+			g.drawString("Press R to Interact", 440, 130);
 			Main.update.dialogueOptions--;
 		}
 	}

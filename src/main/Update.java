@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -34,6 +35,7 @@ public class Update implements Runnable {
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
 	public NPC speakingWith;
+	public Line2D grapple;
 	public int commenceDialogue;
 	public long startTime = 0;
 	public long currentTime = 0;
@@ -48,6 +50,8 @@ public class Update implements Runnable {
 	public boolean invScreen = false;
 	public boolean portalOnline = false;
 	public boolean gem = false;
+	public boolean shooting = false;
+	public int shootingTime = 0;
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
 	public int alreadyHave = 0;
@@ -105,6 +109,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
+		grapple = new Line2D.Double(0,0,0,0);
 		nb = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
@@ -189,9 +194,56 @@ public class Update implements Runnable {
 	private void handleMovement(){
 		handlePCCommands();
 		movePC();
-		//moveNPC();
+		updateTimes();
+		if(shooting){
+			moveGrapple();
+			moveNPC();
+		}
 	}
 	
+	private void moveNPC() {
+		if(grapple != null){
+			Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
+			for(int i = 0; i < NPCs.size(); i++){
+				if(NPCs.get(i).getSmall().contains(p)){
+					NPCHooked(i);
+				}
+			}
+		}
+	}
+	
+	private void NPCHooked(int i){
+		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
+		if(p.getX()-16 > NPCs.get(i).getX())
+			NPCs.get(i).setX((int)p.getX()-(NPCs.get(i).getWidth()-20));
+		else{
+			NPCs.get(i).setX((int)p.getX());
+		}
+		NPCs.get(i).setY((int)p.getY() - (NPCs.get(i).getHeight()-40));
+		NPCs.get(i).updateSmall();
+		NPCs.get(i).updateBoundbox();
+	}
+
+	private void moveGrapple() {
+		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
+		if(grapple.getX2() >= p.getX()){
+			grapple.setLine(p, new Point((int)grapple.getX2() - 2, (int)grapple.getY2()));
+		}
+		else if(grapple.getX2() <= p.getX()){
+			grapple.setLine(p, new Point((int)grapple.getX2() + 2, (int)grapple.getY2()));
+		}
+		if(grapple.getY2() >= p.getY()){
+			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() - 2));
+		}
+		else if(grapple.getY2() <= p.getY()){
+			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() + 2));
+		}
+		if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
+			grapple = null;
+			shooting = false;
+		}
+	}
+
 	private void handlePCCommands(){
 		lck.writeLock().lock();
 		PC.setImage(0);
@@ -230,6 +282,15 @@ public class Update implements Runnable {
 			nextDialogue = true;
 			KeyboardListener.space = false;
 		}
+		if(KeyboardListener.Q){
+			if(shootingTime == 0){
+				int sX = PC.getX();
+				int sY = PC.getY();
+				spawnGrapplingHook();
+				shooting = true;
+				shootingTime = 300;
+			}				
+		}
 		if(KeyboardListener.escape){
 			KeyboardListener.escape = false;
 			//Cancels all UIs
@@ -246,7 +307,6 @@ public class Update implements Runnable {
 		}
 		if(KeyboardListener.I == true){
 			invScreen = true;
-			updateTime();
 			manageInventory();
 		}
 		else
@@ -349,6 +409,14 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
+	private void spawnGrapplingHook() {
+		int X = MousekeyListener.getX();
+		int Y = MousekeyListener.getY();
+		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
+		Point p2 = new Point(X, Y);
+		grapple = new Line2D.Double(p, p2);
+	}
+
 	private void manageInventory() {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
@@ -402,7 +470,9 @@ public class Update implements Runnable {
 		}
 	}
 
-	private void updateTime(){
+	private void updateTimes(){
+		if(shootingTime > 0 && !shooting)
+			shootingTime--;
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
 	private void movePC(){
