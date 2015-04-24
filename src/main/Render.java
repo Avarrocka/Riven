@@ -98,7 +98,7 @@ public class Render implements Runnable {
 		drawBackground(g);
 		drawNPC(g);
 		drawPlayer(g);
-		drawBounds(g);
+		//drawBounds(g);
 		drawPortal(g);
 		drawPrompts(g);
 		drawDialogue(g);
