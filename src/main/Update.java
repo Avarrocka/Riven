@@ -40,6 +40,7 @@ public class Update implements Runnable {
 	private int movementSpeed = 2;
 	public int slowedTime = 0;
 	public int fastTime = 0;
+	public Rectangle2D nb;
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
 	public boolean shopping = false;
@@ -102,6 +103,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
+		nb = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
 	} 
@@ -383,10 +385,63 @@ public class Update implements Runnable {
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
 	private void movePC(){
-		PC.setY(PC.getY() + PC.getYvelocity());
-		PC.setX(PC.getX() + PC.getXvelocity());
-		PC.setXvelocity(0);
-		PC.setYvelocity(0);
+		nb = new Rectangle2D.Double(PC.getX() + 4, PC.getY() + 4, PC.getWidth() - 8, PC.getHeight() - 8);
+		boolean touch = false;
+		int Rx = PC.getX()+PC.getWidth();
+		int Lx = PC.getX();
+		int Uy = PC.getY();
+		int Dy = PC.getY() + PC.getHeight();
+		
+		for(int i = 0; i < NPCs.size(); i++){
+			NPC rn = NPCs.get(i);
+			if(nb.intersects(rn.getSmall())){
+				if(PC.getXvelocity() != 0){
+					if((Rx >= rn.getX() && Rx <= rn.getX()+rn.getWidth())){
+						System.out.print("unswag");
+						PC.setX(PC.getX() - movementSpeed);
+						PC.setYvelocity(0);
+					}
+					else if(Lx <= rn.getX() + rn.getWidth()){
+						PC.setX(PC.getX() + movementSpeed);
+						PC.setYvelocity(0);
+					}
+				}
+				else if(PC.getYvelocity() != 0){
+					if((Dy >= rn.getY() && Dy <= rn.getY()+rn.getHeight()-5)){
+						PC.setY(PC.getY() - (movementSpeed));
+						PC.setXvelocity(0);
+					}
+					else if(Uy <= rn.getY() + rn.getHeight()){
+						PC.setY(PC.getY() + (movementSpeed));
+						PC.setXvelocity(0);
+					}
+				}				
+			}
+		}
+		if(!touch){
+			PC.setY(PC.getY() + PC.getYvelocity());
+			PC.setX(PC.getX() + PC.getXvelocity());
+			PC.setXvelocity(0);
+			PC.setYvelocity(0);
+		}
+		else{
+			PC.setXvelocity(0);
+			PC.setYvelocity(0);
+		}
+		
+		//Done code regarding boundaries.
+		if(PC.getX() <= 2){
+			PC.setX(3);
+		}
+		if(PC.getX() >= 970){
+			PC.setX(969);
+		}
+		if(PC.getY() <= 26){
+			PC.setY(27);
+		}
+		if(PC.getY() >= 700){
+			PC.setY(699);
+		}
 		PC.updateBoundbox();
 	}
 	/**

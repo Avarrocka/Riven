@@ -96,7 +96,7 @@ public class Render implements Runnable {
 		drawBackground(g);
 		drawNPC(g);
 		drawPlayer(g);
-		drawBounds(g);
+		//drawBounds(g);
 		drawPrompts(g);
 		drawDialogue(g);
 		drawInventory(g);
@@ -302,6 +302,12 @@ public class Render implements Runnable {
 		Rectangle2D PlayerCharacter = Main.update.PC.getBoundbox();
 		g.setColor(Color.blue);
 		g.draw(PlayerCharacter);
+		g.setColor(Color.white);
+		Rectangle2D nb = Main.update.nb;
+		g.draw(nb);
+		for(int i = 0; i < Main.update.NPCs.size(); i++){
+			g.draw(Main.update.NPCs.get(i).getBoundbox());
+		}
 	}
 	
 	private void drawPrompts(Graphics2D g){

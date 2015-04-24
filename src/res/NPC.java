@@ -23,6 +23,7 @@ public class NPC implements Drawable{
 	private String[] dialogue;
 	private boolean speak;
 	private Rectangle2D boundBox;
+	private Rectangle2D smallBB;
 	private int dialogueLines;
 	private int x, y;
 	private int Vx, Vy;
@@ -87,6 +88,7 @@ public class NPC implements Drawable{
 		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+5, WIDTH-20, HEIGHT-24);
 	}
 
 	/**
@@ -178,6 +180,9 @@ public class NPC implements Drawable{
 	}
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
+	}
+	public Rectangle2D getSmall(){
+		return this.smallBB;
 	}
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
