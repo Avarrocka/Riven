@@ -22,6 +22,7 @@ public class NPC implements Drawable{
 	private String name;
 	private String[] dialogue;
 	private boolean speak;
+	public boolean gem = false;
 	private Rectangle2D boundBox;
 	private Rectangle2D smallBB;
 	private int dialogueLines;
@@ -86,9 +87,24 @@ public class NPC implements Drawable{
 			dialogue[1] = "I make things.";
 			dialogue[2] = "Hey. I mend things.";
 		}
+		if(ID == "stranger"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/strangerDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/strangerHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 3;
+			dialogue = new String[dialogueLines];
+			name = "Shifty Stranger";	
+			dialogue[0] = "Seriously - here take a soul gem. Tell nobody that I'm here. We both benefit, alright?";
+			dialogue[1] = "Oh soul gems? I have a bunch of them. You... didn't tell anyone I'm here right?";
+			dialogue[2] = "Uhhh - why are you here? I'm just... investigating and researching.";
+		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
-		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+5, WIDTH-20, HEIGHT-24);
+		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
 	}
 
 	/**

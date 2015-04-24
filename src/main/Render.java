@@ -33,7 +33,7 @@ public class Render implements Runnable {
 	//vast array of Buffered Images used for graphics
 	BufferedImage background;
 	BufferedImage talkBubble, dialogueBox;
-	BufferedImage shop, inventory;
+	BufferedImage shop, inventory, bPortal, rPortal;
 	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
@@ -76,11 +76,13 @@ public class Render implements Runnable {
 	//Loads all image objects into game from Assets folder
 	private void init() { 
 		try {
-			background = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/backgroundTest.png"));
+			background = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/resolution1.png"));
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
+			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
+			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,7 +98,8 @@ public class Render implements Runnable {
 		drawBackground(g);
 		drawNPC(g);
 		drawPlayer(g);
-		//drawBounds(g);
+		drawBounds(g);
+		drawPortal(g);
 		drawPrompts(g);
 		drawDialogue(g);
 		drawInventory(g);
@@ -109,6 +112,14 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawPortal(Graphics2D g) {
+		if(Main.update.portalOnline){
+			g.drawImage(rPortal, 800, 300, 100, 100, null);
+		}
+		else
+			g.drawImage(bPortal, 800, 300, 100, 100, null);		
+	}
+
 	private void drawInventory(Graphics2D g) {
 		if(Main.update.invScreen){
 			g.drawImage(inventory, 0, 30, 1024, 700, null);
@@ -152,19 +163,24 @@ public class Render implements Runnable {
 			//Draws the equipped armor
 			g.drawImage(Main.update.PC.getArmor().getImage(), 252, 421, 91, 91, null);
 			//Draws all the items in inventory
-			g.drawString("Items -", 400, 120);
+			g.drawString("Items -", 400, 80);
 			for(int i = 0; i < Main.update.PC.invItems.size(); i++){
-				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 130, 50, 50, null);
+				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 90, 50, 50, null);
 			}
 			//Draws all the swords in inventory
-			g.drawString("Weapons -", 400, 250);
+			g.drawString("Weapons -", 400, 210);
 			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
-				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 260, 50, 50, null);
+				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 220, 50, 50, null);
 			}
 			//Draws all the armor in inventory
-			g.drawString("Armor -", 400, 380);
+			g.drawString("Armor -", 400, 340);
 			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
-				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 390, 50, 50, null);
+				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 350, 50, 50, null);
+			}
+			//Draws all the Quest Items in inventory
+			g.drawString("Quest -", 400, 470);
+			for(int i = 0; i < Main.update.PC.qItems.size(); i++){
+				g.drawImage(Main.update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
 			}
 			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
 				if(Main.update.drawWhich == 1){
@@ -193,6 +209,14 @@ public class Render implements Runnable {
 					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
 					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 				}
+				else if(Main.update.drawWhich == 4){
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+				}
 			}
 		}
 	}
@@ -214,6 +238,13 @@ public class Render implements Runnable {
 			}
 			if(Main.update.commenceDialogue == 1 && (speak.getID() == "shop" || speak.getID() == "blacksmith" || speak.getID() == "armorsmith")){
 				drawShop(g);
+			}
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "stranger")){
+				Item soulGem = new Item(0, 0, "Soul Gem");
+				if(!Main.update.gem){
+					Main.update.PC.addQuestItem(soulGem);
+					Main.update.gem = true;
+				}
 			}
 		}
 	}

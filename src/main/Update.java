@@ -46,6 +46,8 @@ public class Update implements Runnable {
 	public boolean shopping = false;
 	public boolean drawInfo = false;
 	public boolean invScreen = false;
+	public boolean portalOnline = false;
+	public boolean gem = false;
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
 	public int alreadyHave = 0;
@@ -159,9 +161,10 @@ public class Update implements Runnable {
 	private void spawnNPCs() {
 		if(mapID == "Alexton"){
 			if(!shopSpawned){
-				NPCs.add(new NPC(500, 500, "shop"));
-				NPCs.add(new NPC(320, 400, "blacksmith"));
-				NPCs.add(new NPC(400, 300, "armorsmith"));
+				NPCs.add(new NPC(200, 300, "shop"));
+				NPCs.add(new NPC(320, 300, "blacksmith"));
+				NPCs.add(new NPC(440, 300, "armorsmith"));
+				NPCs.add(new NPC(560, 300, "stranger"));
 				shopSpawned = true;
 				shopSwords.add(new Sword(30, 90, "Iron Sword"));
 				shopSwords.add(new Sword(30, 200, "Scimitar"));
@@ -206,15 +209,15 @@ public class Update implements Runnable {
 			PC.setYvelocity(-movementSpeed);
 			PC.setImage(1);
 		}
-		if(KeyboardListener.down) {
+		else if(KeyboardListener.down) {
 			PC.setYvelocity(movementSpeed);
 			PC.setImage(2);
 		}
-		if(KeyboardListener.left) {
+		else if(KeyboardListener.left) {
 			PC.setXvelocity(-movementSpeed);
 			PC.setImage(3);
 		}
-		if(KeyboardListener.right) {
+		else if(KeyboardListener.right) {
 			PC.setXvelocity(movementSpeed);
 			PC.setImage(4);
 		}
@@ -248,6 +251,16 @@ public class Update implements Runnable {
 		}
 		else
 			invScreen = false;
+		if(KeyboardListener.toggle){
+			if(gem){
+				portalOnline = true;
+				for(int i = 0; i < PC.qItems.size(); i++){
+					if(PC.qItems.get(i).getID() == "Soul Gem"){
+						PC.qItems.remove(i);
+					}
+				}
+			}
+		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
@@ -340,7 +353,7 @@ public class Update implements Runnable {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 		for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
-			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 260, 50, 50);
+			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 220, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
@@ -352,7 +365,7 @@ public class Update implements Runnable {
 			}
 		}
 		for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
-			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 390, 50, 50);
+			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 350, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
@@ -364,7 +377,7 @@ public class Update implements Runnable {
 			}
 		}
 		for(int i = 0; i < Main.update.PC.invItems.size(); i++){
-			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 130, 50, 50);
+			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 90, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
@@ -372,6 +385,14 @@ public class Update implements Runnable {
 				}
 				drawInvIndx = i;
 				drawWhich = 1;
+				somethingsTrue = true;
+			}
+		}
+		for(int i = 0; i < Main.update.PC.qItems.size(); i++){
+			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 480, 50, 50);
+			if(boundBox.contains(p)){
+				drawInvIndx = i;
+				drawWhich = 4;
 				somethingsTrue = true;
 			}
 		}
@@ -396,26 +417,18 @@ public class Update implements Runnable {
 			NPC rn = NPCs.get(i);
 			if(nb.intersects(rn.getSmall())){
 				Rectangle2D rm = rn.getSmall();
-				if(PC.getXvelocity() != 0){
-					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth())){
-						PC.setX(PC.getX() - movementSpeed);
-						PC.setYvelocity(0);
-					}
-					else if(Lx <= rm.getX() + rm.getWidth()){
-						PC.setX(PC.getX() + movementSpeed);
-						PC.setYvelocity(0);
-					}
+				if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
+					PC.setX(PC.getX() - movementSpeed);
 				}
-				else if(PC.getYvelocity() != 0){
-					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight())){
+				else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
+					PC.setX(PC.getX() + movementSpeed);
+				}
+				if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
 						PC.setY(PC.getY() - (movementSpeed));
-						PC.setXvelocity(0);
 					}
-					else if(Uy <= rm.getY() + rm.getHeight()){
+				else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
 						PC.setY(PC.getY() + (movementSpeed));
-						PC.setXvelocity(0);
-					}
-				}				
+				}			
 			}
 		}
 		if(!touch){

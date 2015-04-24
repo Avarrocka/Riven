@@ -88,6 +88,16 @@ public class Item implements Drawable{
 			this.desc = "A magical tablet with a spell sealed inside. The picture reminds you of home.";
 			this.info = "This is an utility item that instantly teleports the user to the Alexton.";
 		}
+		if(this.ID == "Soul Gem"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Items/soulGem.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.value = 20;
+			this.desc = "A magical gem.";
+			this.info = "This is a quest item that can be brought to the Portal Guardian to repair the portal.";
+		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
 	

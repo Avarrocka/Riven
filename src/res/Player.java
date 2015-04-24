@@ -29,7 +29,8 @@ public class Player implements Drawable{
 	private Armor armor;
 	public volatile LinkedList<Sword> invSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
-	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>(); 
+	public volatile LinkedList<Item> qItems = new LinkedList<Item>();
+	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>();
 	private boolean hpBuff = false;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
@@ -163,6 +164,9 @@ public class Player implements Drawable{
 	}
 	public void addItem(Sword sword){
 		invSwords.add(sword);
+	}
+	public void addQuestItem(Item item){
+		qItems.add(item);
 	}
 	public void setImage(int face){
 		if(face == DEFAULT){
