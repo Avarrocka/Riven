@@ -53,6 +53,7 @@ public class Update implements Runnable {
 	public boolean gem = false;
 	public boolean shooting = false;
 	public boolean healing = false;
+	public boolean hk = false;
 	public int qCD = 0;
 	public int wCD = 0;
 	public int drawWhich = 0;
@@ -62,8 +63,10 @@ public class Update implements Runnable {
 	public int dialogueOptions = 0;
 	public int purchased = 0;
 	public int drawInvIndx = 0;
+	Random RNG = new Random();
 	//Music resources
 	private static BasicPlayer player;
+	private static BasicPlayer voice;
 	
 	//Thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
@@ -113,6 +116,7 @@ public class Update implements Runnable {
 	
 	private void init() {
 		grapple = new Line2D.Double(0,0,0,0);
+		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
@@ -216,6 +220,11 @@ public class Update implements Runnable {
 	}
 	
 	private void NPCHooked(int i){
+		if(qCD == 801){
+			playSFX("hooked");
+			hk = true;
+			qCD--;
+		}
 		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
 		if(p.getX()-16 > NPCs.get(i).getX())
 			NPCs.get(i).setX((int)p.getX()-(NPCs.get(i).getWidth()-20));
@@ -226,24 +235,68 @@ public class Update implements Runnable {
 		NPCs.get(i).updateSmall();
 		NPCs.get(i).updateBoundbox();
 	}
-
+	
+	private void playSFX(String s){
+		if(s == "hooked"){
+			int a = RNG.nextInt(2);
+			if(a == 0){
+				try {
+					voice.stop();
+					voice.open(getClass().getClassLoader().getResource("Music/hookHit.mp3"));
+				    voice.play();
+				} catch (BasicPlayerException e) {
+				    e.printStackTrace();
+				}
+			}
+			else if(a == 1){
+				try {
+					voice.stop();
+					voice.open(getClass().getClassLoader().getResource("Music/hookHit2.mp3"));
+				    voice.play();
+				} catch (BasicPlayerException e) {
+				    e.printStackTrace();
+				}
+			}		
+		}
+		if(s == "not hooked"){
+			try {
+				voice.stop();
+				voice.open(getClass().getClassLoader().getResource("Music/hookMissed.mp3"));
+			    voice.play();
+			} catch (BasicPlayerException e) {
+			    e.printStackTrace();
+			}
+		}
+		if(s == "meditate"){
+			try {
+				voice.stop();
+				voice.open(getClass().getClassLoader().getResource("Music/meditate.mp3"));
+			    voice.play();
+			} catch (BasicPlayerException e) {
+			    e.printStackTrace();
+			}
+		}
+	}
 	private void moveGrapple() {
 		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
 		if(grapple.getX2() >= p.getX()){
-			grapple.setLine(p, new Point((int)grapple.getX2() - 2, (int)grapple.getY2()));
+			grapple.setLine(p, new Point((int)grapple.getX2() - 4, (int)grapple.getY2()));
 		}
 		else if(grapple.getX2() <= p.getX()){
-			grapple.setLine(p, new Point((int)grapple.getX2() + 2, (int)grapple.getY2()));
+			grapple.setLine(p, new Point((int)grapple.getX2() + 4, (int)grapple.getY2()));
 		}
 		if(grapple.getY2() >= p.getY()){
-			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() - 2));
+			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() - 4));
 		}
 		else if(grapple.getY2() <= p.getY()){
-			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() + 2));
+			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() + 4));
 		}
 		if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
 			grapple = null;
 			shooting = false;
+			if(!hk)
+				playSFX("not hooked");
+			hk = false;
 		}
 	}
 
@@ -283,9 +336,10 @@ public class Update implements Runnable {
 		}
 		if(KeyboardListener.W){
 			if(wCD == 0){
+				playSFX("meditate");
 				healing = true;
 				meditate();
-				wCD = 4000;
+				wCD = 30;
 			}
 		}
 		if(KeyboardListener.space){
@@ -296,7 +350,7 @@ public class Update implements Runnable {
 			if(qCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				qCD = 300;
+				qCD = 801;
 			}				
 		}
 		if(KeyboardListener.escape){
@@ -418,9 +472,7 @@ public class Update implements Runnable {
 			drawInfo = false;
 	}
 	private void meditate() {
-		healingTime = 200;
-		PC.setHealth(PC.getHealth() + 5);
-		healing = false;
+		healingTime = 80;
 	}
 
 	private void spawnGrapplingHook() {
@@ -485,6 +537,13 @@ public class Update implements Runnable {
 	}
 
 	private void updateTimes(){
+		if(healingTime == 1){
+			PC.heal(20);
+			healingTime--;
+		}
+		if(healingTime == 0){
+			healing = false;
+		}
 		if(qCD > 0 && !shooting)
 			qCD--;
 		if(wCD > 0 && !healing){

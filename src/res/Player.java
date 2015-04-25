@@ -31,9 +31,15 @@ public class Player implements Drawable{
 	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Item> qItems = new LinkedList<Item>();
 	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>();
+	int motionSpeed = 60;
+	BufferedImage Left[] = new BufferedImage[4];
+	BufferedImage Right[] = new BufferedImage[4];
+	BufferedImage Up[] = new BufferedImage[4];
+	BufferedImage Down[] = new BufferedImage[4];
+	private boolean revMov = false;
 	private boolean hpBuff = false;
 	private static final int WIDTH = 56, HEIGHT = 64;
-	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
+	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
 	private BufferedImage image;
 	private Rectangle2D boundBox;
 	private BufferedImage def, up, down, right, left;
@@ -43,7 +49,7 @@ public class Player implements Drawable{
 	public Player(int x, int y) {
 		this.setX(x);
 		this.setY(y);
-		this.setHealth(100);
+		this.setHealth(1);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
 		this.setGold(12000);
@@ -55,6 +61,38 @@ public class Player implements Drawable{
 			down = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDown.png"));
 			right = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromLeft.png"));
 			left = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromRight.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			Left[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL1.png"));
+			Left[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL2.png"));
+			Left[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL3.png"));
+			Left[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			Right[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CR1.png"));
+			Right[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CR2.png"));
+			Right[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CR3.png"));
+			Right[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CR4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			Up[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CU1.png"));
+			Up[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CU2.png"));
+			Up[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CU3.png"));
+			Up[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CU4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			Down[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD1.png"));
+			Down[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD2.png"));
+			Down[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD3.png"));
+			Down[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD4.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -169,21 +207,133 @@ public class Player implements Drawable{
 		qItems.add(item);
 	}
 	public void setImage(int face){
-		if(face == DEFAULT){
-			this.image = def;
+		if(motionSpeed == 0){
+			motionSpeed = 60;
+			revMov = !revMov;
 		}
-		else if(face == UP){
-			this.image = up;
+		if(!revMov){
+			if(face == DEFAULT){
+				this.image = def;
+			}
+			else if(face == UP){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Up[0];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Up[1];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Up[2];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Up[3];
+				}
+			}
+			else if(face == DOWN){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Down[0];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Down[1];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Down[2];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Down[3];
+				}
+			}
+			else if(face == RIGHT){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Right[0];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Right[1];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Right[2];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Right[3];
+				}
+			}
+			else if(face == LEFT){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Left[0];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Left[1];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Left[2];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Left[3];
+				}
+			}
 		}
-		else if(face == DOWN){
-			this.image = down;
+		else if(revMov){
+			if(face == DEFAULT){
+				this.image = def;
+			}
+			else if(face == UP){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Up[3];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Up[2];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Up[1];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Up[0];
+				}
+			}
+			else if(face == DOWN){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Down[3];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Down[2];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Down[1];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Down[0];
+				}
+			}
+			else if(face == RIGHT){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Right[3];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Right[2];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Right[1];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Right[0];
+				}
+			}
+			else if(face == LEFT){
+				if(60 >= motionSpeed && 45 < motionSpeed){
+					this.image = Left[3];
+				}
+				else if(45 >= motionSpeed && 30 < motionSpeed){
+					this.image = Left[2];
+				}
+				else if(30 >= motionSpeed && 15 < motionSpeed){
+					this.image = Left[1];
+				}
+				else if(15 >= motionSpeed && 0 < motionSpeed){
+					this.image = Left[0];
+				}
+			}
 		}
-		else if(face == RIGHT){
-			this.image = right;
-		}
-		else if(face == LEFT){
-			this.image = left;
-		}
+		motionSpeed--;
 	}
 	public BufferedImage getImage() {
 		return image;
@@ -194,7 +344,20 @@ public class Player implements Drawable{
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
-
+	public void heal(int heal){
+		if(hpBuff){
+			if(this.hp + heal <= 120)
+				this.hp = this.hp+heal;
+			else
+				this.hp = 120;
+		}
+		else{
+			if(this.hp + heal <= 100)
+				this.hp = this.hp+heal;
+			else
+				this.hp = 100;
+		}		
+	}
 	public void activateItem(Item item, int i) {
 		invItems.remove(i);
 		Item using = item;

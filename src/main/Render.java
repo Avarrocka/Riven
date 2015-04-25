@@ -36,7 +36,7 @@ public class Render implements Runnable {
 	BufferedImage background;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
-	BufferedImage qAbility, wAbility;
+	BufferedImage qAbility, wAbility, meditateAura;
 	BufferedImage sword[] = new BufferedImage[7];
 	
 	//thread resources
@@ -59,19 +59,16 @@ public class Render implements Runnable {
 		long lastTime = System.nanoTime();
 		double nanoPerUpdate = 1000000000D/50D;
 		double delta = 0D;
-		
-		
-			while(Update.running) {
-				long now = System.nanoTime();
-				delta += (now - lastTime) / nanoPerUpdate;
-				lastTime = now;
-				
-				while(delta >= 1) {
-					draw();
-					delta--;
-				}
+		while(Update.running) {
+			long now = System.nanoTime();
+			delta += (now - lastTime) / nanoPerUpdate;
+			lastTime = now;
+			
+			while(delta >= 1) {
+				draw();
+				delta--;
 			}
-		
+		}
 		if(Update.running = false) {
 			return;
 		}
@@ -93,6 +90,7 @@ public class Render implements Runnable {
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
 			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
+			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
@@ -110,9 +108,9 @@ public class Render implements Runnable {
 		drawBackground(g);
 		drawNPC(g);
 		drawAbilities(g);
-		drawPlayer(g);
-		drawBounds(g);
 		drawPortal(g);
+		drawPlayer(g);
+		//drawBounds(g);
 		drawPrompts(g);
 		drawDialogue(g);
 		drawInventory(g);
@@ -127,6 +125,8 @@ public class Render implements Runnable {
 	}
 	
 	private void drawCooldowns(Graphics2D g) {
+		g.setFont(new Font("Arial", Font.PLAIN, 12));
+		g.setColor(Color.white);
 		g.drawImage(qAbility, 3, 25, 32, 48, null);
 		g.drawString(""+Main.update.qCD, 8, 70);
 		g.drawImage(wAbility, 35, 25, 32, 48, null);
@@ -143,10 +143,7 @@ public class Render implements Runnable {
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
 		}
 		if(Main.update.healingTime > 0){
-			Ellipse2D medi = new Ellipse2D.Double(Main.update.PC.getX(), Main.update.PC.getY(), Main.update.PC.getWidth(), Main.update.PC.getHeight());
-			g.setColor(Color.GREEN);
-			g.fill(medi);
-			g.draw(medi);
+			g.drawImage(meditateAura, Main.update.PC.getX(), Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
 			Main.update.healingTime--;
 		}
 	}
@@ -234,27 +231,33 @@ public class Render implements Runnable {
 				}
 				else if (Main.update.drawWhich == 2){
 					g.setFont(new Font("Rockwell", Font.BOLD, 20));
-					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-					g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					if(!Main.update.PC.invSwords.isEmpty()){
+						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					}
 				}
 				else if(Main.update.drawWhich == 3){
 					g.setFont(new Font("Rockwell", Font.BOLD, 20));
-					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-					g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					if(!Main.update.PC.invArmor.isEmpty()){
+						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					}
 				}
 				else if(Main.update.drawWhich == 4){
-					g.setFont(new Font("Rockwell", Font.BOLD, 20));
-					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
-					g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-					g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					if(!Main.update.PC.qItems.isEmpty()){
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
+						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
+						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
+						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					}
 				}
 			}
 		}
