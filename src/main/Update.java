@@ -28,25 +28,26 @@ import res.Item;
  */
 public class Update implements Runnable {
 	//Update resources
-	public String mapID = "Alexton";
+	public String mapID = "";
 	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
+	public volatile LinkedList<Rectangle2D> leaveArea = new LinkedList<Rectangle2D>();
+	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
+	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
 	public NPC speakingWith;
 	public Line2D grapple;
 	public long startTime = 0;
 	public long currentTime = 0;
 	private int movementSpeed = 2;
 	public int commenceDialogue;
-	public int slowedTime = 0;
-	public int fastTime = 0;
 	public int healingTime = 0;
 	public int splashScreenTime = 0;
 	public Rectangle2D nb;
 	public boolean nextDialogue = false;
-	public boolean shopSpawned = false;
+	public boolean NPCsSpawned = false;
 	public boolean shopping = false;
 	public boolean drawInfo = false;
 	public boolean invScreen = false;
@@ -55,6 +56,7 @@ public class Update implements Runnable {
 	public boolean shooting = false;
 	public boolean healing = false;
 	public boolean hk = false;
+	public boolean areasSpawned = false;
 	public int qCD = 0;
 	public int wCD = 0;
 	public int drawWhich = 0;
@@ -65,6 +67,7 @@ public class Update implements Runnable {
 	public int purchased = 0;
 	public int drawInvIndx = 0;
 	Random RNG = new Random();
+	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	//Music resources
 	private static BasicPlayer player;
 	private static BasicPlayer voice;
@@ -116,6 +119,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
+		mapID = "Taverly";
 		splashScreenTime = 250;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -144,7 +148,7 @@ public class Update implements Runnable {
 	private void update() {
 		if(splashScreenTime == 0){
 			handleMovement();
-			spawnNPCs();
+			spawnThings();
 			collisionDetection();
 			toggleMusic();
 			repeatMusic();
@@ -152,7 +156,69 @@ public class Update implements Runnable {
 	}
 	
 	
+	private void spawnThings() {
+		spawnNPCs();
+		spawnLeaveAreas();
+		//spawnEnemies();
+	}
+
+	private void spawnLeaveAreas() {
+		if(mapID == "Taverly" && !areasSpawned){
+			leaveArea.add(new Rectangle2D.Double(0, 140, 10, 40));
+			leaveAreaName.add("Turandal1");
+			moveDir.add(LEFT);
+			areasSpawned = true;
+		}
+		if(mapID == "Turandal1" && !areasSpawned){
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 140, 10, 40));
+			leaveAreaName.add("Taverly");
+			moveDir.add(RIGHT);
+			areasSpawned = true;
+		}
+	}
+
 	private void collisionDetection(){
+		collisionWithNPCs(); //For interaction
+		if(!leaveArea.isEmpty() && !leaveAreaName.isEmpty()){
+			collisionWithLAreas();
+		}
+	}
+	
+	private void collisionWithLAreas() {
+		Rectangle2D PlayerCharacter = PC.getBoundbox();
+		Rectangle2D LArea;
+		for(int i = 0; i < leaveArea.size(); i++){
+			LArea = leaveArea.get(i);
+			if(PlayerCharacter.intersects(LArea)){
+				if(moveDir.get(i) == LEFT){
+					PC.setX(GraphicsMain.WIDTH - 80 -(int)LArea.getX());
+					PC.setY((int)LArea.getY());
+				}
+				else if(moveDir.get(i) == RIGHT){
+					PC.setX(((int)Math.abs(LArea.getX() - GraphicsMain.WIDTH)) + 20);
+					PC.setY((int)LArea.getY());
+				}
+				if(moveDir.get(i) == UP){
+					PC.setX(GraphicsMain.WIDTH - 20 -(int)LArea.getX());
+					PC.setY((int)LArea.getY());
+				}
+				if(moveDir.get(i) == DOWN){
+					PC.setX(GraphicsMain.WIDTH - 20 -(int)LArea.getX());
+					PC.setY((int)LArea.getY());
+				}
+				mapID = leaveAreaName.get(i);
+				splashScreenTime = 250;
+				areasSpawned = false;
+				leaveArea.clear();
+				leaveAreaName.clear();
+				NPCs.clear();
+				moveDir.clear();
+				NPCsSpawned = false;
+			}
+		}
+	}
+
+	private void collisionWithNPCs(){
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D NPCharacter;
 		for(int i = 0; i < NPCs.size(); i++){
@@ -175,13 +241,13 @@ public class Update implements Runnable {
 	}
 	
 	private void spawnNPCs() {
-		if(mapID == "Alexton"){
-			if(!shopSpawned){
-				NPCs.add(new NPC(200, 300, "shop"));
-				NPCs.add(new NPC(320, 300, "blacksmith"));
-				NPCs.add(new NPC(440, 300, "armorsmith"));
-				NPCs.add(new NPC(560, 300, "stranger"));
-				shopSpawned = true;
+		if(mapID == "Taverly"){
+			if(!NPCsSpawned){
+				NPCs.add(new NPC(640, 180, "shop"));
+				NPCs.add(new NPC(244 , 180, "blacksmith"));
+				NPCs.add(new NPC(365, 180, "armorsmith"));
+				NPCs.add(new NPC(365, 650, "magister"));
+				NPCsSpawned = true;
 				shopSwords.add(new Sword(30, 90, "Iron Sword"));
 				shopSwords.add(new Sword(30, 200, "Scimitar"));
 				shopSwords.add(new Sword(30, 310, "Obsidian Sword"));
@@ -200,19 +266,57 @@ public class Update implements Runnable {
 				//shopSwords.add(new Sword(30, 90, "Lunus Blade"));
 			}
 		}
+		else if(mapID == "Turandal1"){
+			if(!NPCsSpawned){
+				NPCsSpawned = true;
+				NPCs.add(new NPC(560, 200, "stranger"));
+			}
+		}
 	}
 
 	private void handleMovement(){
 		handlePCCommands();
 		movePC();
+		moveNPCs();
 		updateTimes();
 		if(shooting){
 			moveGrapple();
-			moveNPC();
+			pullNPC();
 		}
 	}
-	
-	private void moveNPC() {
+	private void moveNPCs() {
+		if(mapID != "Taverly"){
+			for(int i = 0; i < NPCs.size(); i++){
+				if(NPCs.get(i) != speakingWith){
+					int a = RNG.nextInt(50);
+					if(a == 1){
+						if(!(NPCs.get(i).getX() + 3 >= NPCs.get(i).getHighBoundX())){
+							NPCs.get(i).setX(NPCs.get(i).getX()+3);
+						}
+					}
+					else if(a == 2){
+						if(!(NPCs.get(i).getX() - 3 <= NPCs.get(i).getLowBoundX())){
+							NPCs.get(i).setX(NPCs.get(i).getX()-3);
+						}
+					}
+					else if(a == 3){
+						if(!(NPCs.get(i).getY() -3 <= NPCs.get(i).getLowBoundY())){
+							NPCs.get(i).setY(NPCs.get(i).getY()-3);
+						}
+					}
+					else if(a == 3){
+						if(!(NPCs.get(i).getY() + 3 >= NPCs.get(i).getHighBoundY())){
+							NPCs.get(i).setY(NPCs.get(i).getY()+3);
+						}
+					}
+					NPCs.get(i).updateBoundbox();
+					NPCs.get(i).updateSmall();
+				}
+			}
+		}
+	}
+
+	private void pullNPC() {
 		if(grapple != null){
 			Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
 			for(int i = 0; i < NPCs.size(); i++){
@@ -307,15 +411,6 @@ public class Update implements Runnable {
 	private void handlePCCommands(){
 		lck.writeLock().lock();
 		PC.setImage(0);
-		if(slowedTime > 0){
-			movementSpeed = 1;
-			slowedTime--;
-		}
-		else if(fastTime > 0){
-			movementSpeed = 3;
-			fastTime--;
-		}
-		else
 			movementSpeed = 2;
 		if(KeyboardListener.up) {
 			PC.setYvelocity(-movementSpeed);
@@ -565,7 +660,7 @@ public class Update implements Runnable {
 			int Lx = PC.getX();
 			int Uy = PC.getY();
 			int Dy = PC.getY() + PC.getHeight();
-			
+			//Checks for NPC Collisionbox
 			for(int i = 0; i < NPCs.size(); i++){
 				NPC rn = NPCs.get(i);
 				if(nb.intersects(rn.getSmall())){

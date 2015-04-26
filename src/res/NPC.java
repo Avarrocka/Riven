@@ -28,6 +28,10 @@ public class NPC implements Drawable{
 	private int dialogueLines;
 	private int x, y;
 	private int Vx, Vy;
+	private int xBoundaryLow;
+	private int xBoundaryHigh;
+	private int yBoundaryLow;
+	private int yBoundaryHigh;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
@@ -42,6 +46,10 @@ public class NPC implements Drawable{
 		this.setXvelocity(0);
 		this.setYvelocity(0);
 		this.setID(ID);
+		this.xBoundaryLow = x - 40;
+		this.xBoundaryHigh = x + 40;
+		this.yBoundaryLow = y - 40;
+		this.yBoundaryHigh = y + 40;
 		if(ID == "shop"){
 			try {
 				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/annaDef.png"));
@@ -87,6 +95,21 @@ public class NPC implements Drawable{
 			dialogue[1] = "I make things.";
 			dialogue[2] = "Hey. I mend things.";
 		}
+		if(ID == "magister"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/philiaDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/philiaHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 3;
+			dialogue = new String[dialogueLines];
+			name = "Magister Philia";	
+			dialogue[0] = "The city of Varrock cannot risk being subject to the evil powers at work here.";
+			dialogue[1] = "On order of Crown Prince Joffrey, all citizens of Taverly are in quarantine.";
+			dialogue[2] = "Hail, traveler. I'm afraid you can't get past this point.";
+		}
 		if(ID == "stranger"){
 			try {
 				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/strangerDef.png"));
@@ -95,12 +118,18 @@ public class NPC implements Drawable{
 				e.printStackTrace();
 			}
 			speak = true;
-			dialogueLines = 3;
+			dialogueLines = 6;
 			dialogue = new String[dialogueLines];
 			name = "Shifty Stranger";	
-			dialogue[0] = "Seriously - here take a soul gem. Tell nobody that I'm here. We both benefit, alright?";
-			dialogue[1] = "Oh soul gems? I have a bunch of them. You... didn't tell anyone I'm here right?";
-			dialogue[2] = "Uhhh - why are you here? I'm just... investigating and researching.";
+			dialogue[0] = "Excuse me, I've said too much. Please, don't mind me.";
+			dialogue[1] = "Ugh - here. Take a soul gem. Tell nobody that I'm here. We'll both benefit, alright?";
+			dialogue[2] = "Soul gems? I've got - Wait, you're not with the Arcane Council are you?";
+			dialogue[3] = "Me? Haha, I'm just a... researcher is all. What are you all the way out here for?";
+			dialogue[4] = "Oh damn, who are you?";
+			dialogue[5] = "To trap a soul inside a gem would require a recently deceased human - ";
+			if(Main.update.gem){
+				updateLines();
+			}
 		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
@@ -200,10 +229,33 @@ public class NPC implements Drawable{
 	public Rectangle2D getSmall(){
 		return this.smallBB;
 	}
+	public int getLowBoundX(){
+		return this.xBoundaryLow;
+	}
+	public int getLowBoundY(){
+		return this.yBoundaryLow;
+	}
+	public int getHighBoundX(){
+		return this.xBoundaryHigh;
+	}
+	public int getHighBoundY(){
+		return this.yBoundaryHigh;
+	}
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
 	public void updateSmall(){
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
+	}
+	public void updateLines(){
+		if(ID == "stranger"){
+			dialogueLines = 5;
+			dialogue = new String[dialogueLines];
+			dialogue[0] = "Excuse me, I've said too much. Please, don't mind me.";
+			dialogue[1] = "Its unfair really. I mean - you bring ONE body back from the dead...";
+			dialogue[2] = "To practice magic, I've got to stay hidden, see - I'm on the run from the Council.";
+			dialogue[3] = "The darned Arcane Council revoked my permit for practicing magic a while back.";
+			dialogue[4] = "Wondering why I'm out here?";
+		}
 	}
 }

@@ -86,7 +86,7 @@ public class Item implements Drawable{
 			}
 			this.value = 20;
 			this.desc = "A magical tablet with a spell sealed inside. The picture reminds you of home.";
-			this.info = "This is an utility item that instantly teleports the user to the Alexton.";
+			this.info = "This is an utility item that instantly teleports the user to Taverly.";
 		}
 		if(this.ID == "Soul Gem"){
 			try {

@@ -364,17 +364,14 @@ public class Player implements Drawable{
 		if(using.getID() == "Fish"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
-			Main.update.fastTime = 1200;
 		}
 		else if(using.getID() == "Cake"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
-			Main.update.slowedTime = 1200;
 		}
 		else if(using.getID() == "Pie"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
-			Main.update.slowedTime = 600;
 		}
 		else if(using.getID() == "Healing Salve"){
 			this.setHealth(100);
@@ -383,7 +380,7 @@ public class Player implements Drawable{
 			}
 		}
 		else if(using.getID() == "Teleport to Town"){
-			Main.update.mapID = "Alexton";
+			Main.update.mapID = "Taverly";
 			Main.update.splashScreenTime = 250;
 			KeyboardListener.escape = true;
 			this.setX(GraphicsMain.WIDTH/2 - 96);

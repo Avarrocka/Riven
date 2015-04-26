@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.imageio.ImageIO;
 
+import listeners.KeyboardListener;
 import main.Update;
 import res.Armor;
 import res.Player;
@@ -33,12 +34,13 @@ public class Render implements Runnable {
 	private Graphics2D g;
 	private Queue<BufferedImage> dblBuffer = new LinkedList<BufferedImage>();
 	//vast array of Buffered Images used for graphics
-	BufferedImage background;
+	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
 	BufferedImage qAbility, wAbility, meditateAura;
 	BufferedImage sword[] = new BufferedImage[7];
-	BufferedImage Alexton, TurandalForest;
+	BufferedImage TaverlySplash, TurandalSplash;
+	BufferedImage TurandalForest1;
 	//thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
 	
@@ -76,7 +78,7 @@ public class Render implements Runnable {
 	//Loads all image objects into game from Assets folder
 	private void init() { 
 		try {
-			background = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/resolution1.png"));
+			Taverly = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlyTown.png"));
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
@@ -97,8 +99,14 @@ public class Render implements Runnable {
 			e.printStackTrace();
 		}
 		try {
-			Alexton = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Alexton.png"));
-			TurandalForest = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Turandal Forest.png"));
+			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
+			TurandalSplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalSplash.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
+			TurandalForest1 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -115,9 +123,9 @@ public class Render implements Runnable {
 			drawBackground(g);
 			drawNPC(g);
 			drawAbilities(g);
-			drawPortal(g);
+			//drawPortal(g);
 			drawPlayer(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawPrompts(g);
 			drawDialogue(g);
 			drawInventory(g);
@@ -136,11 +144,17 @@ public class Render implements Runnable {
 	}
 	
 	private void drawSplashscreen(Graphics2D g) {
-		if(Main.update.mapID == "Alexton"){
+		if(Main.update.mapID == "Taverly"){
 			g.setFont(new Font("Rockwell", Font.BOLD, 48));
 			g.setColor(Color.WHITE);
-			g.drawImage(Alexton, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-			g.drawString("ALEXTON", 375, 720);
+			g.drawImage(TaverlySplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+			g.drawString("TAVERLY", 375, 720);
+		}
+		else if(Main.update.mapID == "Turandal1"){
+			g.setFont(new Font("Rockwell", Font.BOLD, 48));
+			g.setColor(Color.WHITE);
+			g.drawImage(TurandalSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+			g.drawString("TURANDAL FOREST", 300, 720);
 		}
 		Main.update.splashScreenTime--;
 	}
@@ -308,6 +322,7 @@ public class Render implements Runnable {
 				if(!Main.update.gem){
 					Main.update.PC.addQuestItem(soulGem);
 					Main.update.gem = true;
+					Main.update.speakingWith.updateLines();
 				}
 			}
 		}
@@ -403,6 +418,9 @@ public class Render implements Runnable {
 		for(int i = 0; i < Main.update.NPCs.size(); i++){
 			g.draw(Main.update.NPCs.get(i).getSmall());
 		}
+		for(int i = 0; i < Main.update.leaveArea.size(); i++){
+			g.draw(Main.update.leaveArea.get(i));
+		}
 	}
 	
 	private void drawPrompts(Graphics2D g){
@@ -427,7 +445,12 @@ public class Render implements Runnable {
 	}
 
 	private void drawBackground(Graphics2D g){
-		g.drawImage(background, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+		if(Main.update.mapID == "Taverly"){
+			g.drawImage(Taverly, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+		}
+		if(Main.update.mapID == "Turandal1"){
+			g.drawImage(TurandalForest1, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+		}
 	}
 	
 	private void drawPlayer(Graphics2D g){
