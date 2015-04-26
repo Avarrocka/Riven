@@ -384,6 +384,7 @@ public class Player implements Drawable{
 		}
 		else if(using.getID() == "Teleport to Town"){
 			Main.update.mapID = "Alexton";
+			Main.update.splashScreenTime = 250;
 			KeyboardListener.escape = true;
 			this.setX(GraphicsMain.WIDTH/2 - 96);
 			this.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);

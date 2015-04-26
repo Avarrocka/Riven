@@ -38,7 +38,7 @@ public class Render implements Runnable {
 	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
 	BufferedImage qAbility, wAbility, meditateAura;
 	BufferedImage sword[] = new BufferedImage[7];
-	
+	BufferedImage Alexton, TurandalForest;
 	//thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
 	
@@ -96,6 +96,12 @@ public class Render implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		try {
+			Alexton = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Alexton.png"));
+			TurandalForest = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Turandal Forest.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -105,16 +111,21 @@ public class Render implements Runnable {
 		BufferedImage screen = new BufferedImage(GraphicsMain.WIDTH, GraphicsMain.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = (Graphics2D) screen.getGraphics();
 		//Things are Drawn to the Screen here.
-		drawBackground(g);
-		drawNPC(g);
-		drawAbilities(g);
-		drawPortal(g);
-		drawPlayer(g);
-		//drawBounds(g);
-		drawPrompts(g);
-		drawDialogue(g);
-		drawInventory(g);
-		drawCooldowns(g);
+		if(Main.update.splashScreenTime == 0){
+			drawBackground(g);
+			drawNPC(g);
+			drawAbilities(g);
+			drawPortal(g);
+			drawPlayer(g);
+			//drawBounds(g);
+			drawPrompts(g);
+			drawDialogue(g);
+			drawInventory(g);
+			drawCooldowns(g);
+		}
+		else{
+			drawSplashscreen(g);
+		}
 		if(Main.appState == Main.DEAD_STATE) {
 			drawDeadScreen(g);
 		}
@@ -124,6 +135,16 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawSplashscreen(Graphics2D g) {
+		if(Main.update.mapID == "Alexton"){
+			g.setFont(new Font("Rockwell", Font.BOLD, 48));
+			g.setColor(Color.WHITE);
+			g.drawImage(Alexton, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+			g.drawString("ALEXTON", 375, 720);
+		}
+		Main.update.splashScreenTime--;
+	}
+
 	private void drawCooldowns(Graphics2D g) {
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		g.setColor(Color.white);
@@ -222,6 +243,7 @@ public class Render implements Runnable {
 				if(Main.update.drawWhich == 1){
 					g.setFont(new Font("Rockwell", Font.BOLD, 20));
 					if(!Main.update.PC.invItems.isEmpty()){
+						System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);

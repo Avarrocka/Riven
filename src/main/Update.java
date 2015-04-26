@@ -36,13 +36,14 @@ public class Update implements Runnable {
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
 	public NPC speakingWith;
 	public Line2D grapple;
-	public int commenceDialogue;
 	public long startTime = 0;
 	public long currentTime = 0;
 	private int movementSpeed = 2;
+	public int commenceDialogue;
 	public int slowedTime = 0;
 	public int fastTime = 0;
 	public int healingTime = 0;
+	public int splashScreenTime = 0;
 	public Rectangle2D nb;
 	public boolean nextDialogue = false;
 	public boolean shopSpawned = false;
@@ -115,6 +116,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
+		splashScreenTime = 250;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
@@ -140,11 +142,13 @@ public class Update implements Runnable {
 	 * Executes all game actions
 	 */
 	private void update() {
-		handleMovement();
-		spawnNPCs();
-		collisionDetection();
-		toggleMusic();
-		repeatMusic();
+		if(splashScreenTime == 0){
+			handleMovement();
+			spawnNPCs();
+			collisionDetection();
+			toggleMusic();
+			repeatMusic();
+		}
 	}
 	
 	
@@ -220,7 +224,7 @@ public class Update implements Runnable {
 	}
 	
 	private void NPCHooked(int i){
-		if(qCD == 801){
+		if(qCD == 301){
 			playSFX("hooked");
 			hk = true;
 			qCD--;
@@ -350,7 +354,7 @@ public class Update implements Runnable {
 			if(qCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				qCD = 801;
+				qCD = 301;
 			}				
 		}
 		if(KeyboardListener.escape){
@@ -516,8 +520,10 @@ public class Update implements Runnable {
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
 					PC.activateItem(Main.update.PC.invItems.get(i), i);
+					drawInvIndx = i-1;
 				}
-				drawInvIndx = i;
+				else
+					drawInvIndx = i;
 				drawWhich = 1;
 				somethingsTrue = true;
 			}
