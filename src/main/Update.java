@@ -252,10 +252,10 @@ public class Update implements Runnable {
 				shopSwords.add(new Sword(30, 200, "Scimitar"));
 				shopSwords.add(new Sword(30, 310, "Obsidian Sword"));
 				shopSwords.add(new Sword(30, 420, "Serrated Blade"));
-				shopItems.add(new Item(30, 70, "Pie"));
-				shopItems.add(new Item(30, 140, "Fish"));
-				shopItems.add(new Item(30, 240, "Cake"));
-				shopItems.add(new Item(30, 340, "Healing Salve"));
+				shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
+				shopItems.add(new Item(30, 180, "Fish Steak"));
+				shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
+				shopItems.add(new Item(30, 360, "Healing Salve"));
 				shopItems.add(new Item(30, 450, "Teleport to Town"));
 				shopArmor.add(new Armor(30, 90, "Leather Armor"));
 				shopArmor.add(new Armor(30, 200, "Plated Armor"));
@@ -328,7 +328,7 @@ public class Update implements Runnable {
 	}
 	
 	private void NPCHooked(int i){
-		if(qCD == 301){
+		if(qCD == 801){
 			playSFX("hooked");
 			hk = true;
 			qCD--;
@@ -438,7 +438,7 @@ public class Update implements Runnable {
 				playSFX("meditate");
 				healing = true;
 				meditate();
-				wCD = 30;
+				wCD = 3000;
 			}
 		}
 		if(KeyboardListener.space){
@@ -449,7 +449,7 @@ public class Update implements Runnable {
 			if(qCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				qCD = 301;
+				qCD = 801;
 			}				
 		}
 		if(KeyboardListener.escape){

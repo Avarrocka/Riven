@@ -34,27 +34,27 @@ public class Item implements Drawable{
 		this.setID(ID);
 		this.setX(x);
 		this.setY(y);
-		if(this.ID == "Cake"){
+		if(this.ID == "Chocolate Raspberry Cake"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Items/cake.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			this.heal = 40;
-			this.value = 5;
-			this.desc = "A cake. You can have it and eat it too."; 
-			this.info = "This is a food item that heals for 40HP. It slows the user for a short period after consumption.";
+			this.value = 25;
+			this.desc = "A cake. You can have it AND eat it too."; 
+			this.info = "This is a food item that heals the user for 40HP after being consumed.";
 		}
-		if(this.ID == "Fish"){
+		if(this.ID == "Fish Steak"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Items/fish.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			this.heal = 20;
-			this.value = 2;
-			this.desc = "A fresh caught fish. It looks a bit raw, but nutritious.";
-			this.info = "This is a food item that heals for 20HP. It speeds up the user for a short period after consumption.";
+			this.value = 12;
+			this.desc = "A freshly caught fish grilled to perfection and stuffed with sage and herbs.";
+			this.info = "This is a food item that heals the user for 20HP after being consumed.";
 		}
 		if(this.ID == "Healing Salve"){
 			try {
@@ -63,20 +63,20 @@ public class Item implements Drawable{
 				e.printStackTrace();
 			}
 			this.heal = 10000;
-			this.value = 20;
+			this.value = 30;
 			this.desc = "A travelling apothecary said it has magical healing properties. Smells bad.";
-			this.info = "This is a food item that heals for the user fully. No side effects known.";
+			this.info = "This food item heals the user fully. However, it puts all skills on cooldown.";
 		}
-		if(this.ID == "Pie"){
+		if(this.ID == "Cinnamon Pumpkin Pie"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Items/pie.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.heal = 60;
-			this.value = 7;
+			this.heal = 30;
+			this.value = 15;
 			this.desc = "Let them eat pie. Them being us, of course.";
-			this.info = "This is a food item that heals for 60HP. It slows the user for a period after consumption.";
+			this.info = "This is a food item that heals the user for 30HP after being consumed.";
 		}
 		if(this.ID == "Teleport to Town"){
 			try {
@@ -84,9 +84,9 @@ public class Item implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.value = 20;
-			this.desc = "A magical tablet with a spell sealed inside. The picture reminds you of home.";
-			this.info = "This is an utility item that instantly teleports the user to Taverly.";
+			this.value = 55;
+			this.desc = "A magical tablet with a spell sealed inside. You can make out faint scratches resembling \"Taverly\"";
+			this.info = "This utility item can be activated to teleport the user to Taverly.";
 		}
 		if(this.ID == "Soul Gem"){
 			try {
@@ -94,11 +94,11 @@ public class Item implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.value = 20;
+			this.value = 0;
 			this.desc = "A magical gem.";
 			this.info = "This is a quest item that can be brought to the Portal Guardian to repair the portal.";
 		}
-		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
 	public void draw(Graphics2D g) {

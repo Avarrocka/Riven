@@ -257,7 +257,7 @@ public class Render implements Runnable {
 				if(Main.update.drawWhich == 1){
 					g.setFont(new Font("Rockwell", Font.BOLD, 20));
 					if(!Main.update.PC.invItems.isEmpty()){
-						System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
+						//System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
@@ -352,7 +352,7 @@ public class Render implements Runnable {
 		}
 		else if(Main.update.speakingWith.getID() == "shop"){
 			for(int i = 0; i < itemShop.size(); i++){
-				g.drawImage(itemShop.get(i).getImage(), itemShop.get(i).getX(), itemShop.get(i).getY(), itemShop.get(i).getHeight(), itemShop.get(i).getWidth(), null);
+				g.drawImage(itemShop.get(i).getImage(), itemShop.get(i).getX(), itemShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price

@@ -361,19 +361,30 @@ public class Player implements Drawable{
 	public void activateItem(Item item, int i) {
 		invItems.remove(i);
 		Item using = item;
-		if(using.getID() == "Fish"){
+		if(using.getID() == "Fish Steak"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
+			else{
+				this.setHealth(100);
+			}
 		}
-		else if(using.getID() == "Cake"){
+		else if(using.getID() == "Chocolate Raspberry Cake"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
+			else{
+				this.setHealth(100);
+			}
 		}
-		else if(using.getID() == "Pie"){
+		else if(using.getID() == "Cinnamon Pumpkin Pie"){
 			if(this.getHealth() + using.getHeal() <= 100)
 				this.setHealth(this.getHealth() + using.getHeal());
+			else{
+				this.setHealth(100);
+			}
 		}
 		else if(using.getID() == "Healing Salve"){
+			Main.update.qCD = 801;
+			Main.update.wCD = 3001;
 			this.setHealth(100);
 			if(hpBuff){
 				this.setHealth(120);
