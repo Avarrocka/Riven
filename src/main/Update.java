@@ -16,6 +16,7 @@ import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Render;
 import res.Armor;
+import res.Enemy;
 import res.Player;
 import res.NPC;
 import res.Sword;
@@ -34,6 +35,7 @@ public class Update implements Runnable {
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
+	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
 	public volatile LinkedList<Rectangle2D> leaveArea = new LinkedList<Rectangle2D>();
 	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
 	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
@@ -45,6 +47,7 @@ public class Update implements Runnable {
 	public int commenceDialogue;
 	public int healingTime = 0;
 	public int splashScreenTime = 0;
+	public int enemySpawnTime = 200;
 	public Rectangle2D nb;
 	public boolean nextDialogue = false;
 	public boolean NPCsSpawned = false;
@@ -152,14 +155,37 @@ public class Update implements Runnable {
 			collisionDetection();
 			toggleMusic();
 			repeatMusic();
+			updateObjects();
 		}
 	}
 	
 	
+	private void updateObjects() {
+		for(int i = 0; i < NPCs.size(); i++){
+			NPCs.get(i).updateBoundbox();
+			NPCs.get(i).updateSmall();
+		}
+		for(int i = 0; i < enemies.size(); i++){
+			enemies.get(i).update();
+		}
+	}
+
 	private void spawnThings() {
 		spawnNPCs();
 		spawnLeaveAreas();
-		//spawnEnemies();
+		if(!(mapID == "Taverly")){
+			spawnEnemies();
+		}
+	}
+
+	private void spawnEnemies() {
+		if(enemySpawnTime == 0){
+			enemies.add(new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime"));
+			enemySpawnTime = 1000;
+		}
+		else{
+			enemySpawnTime--;
+		}
 	}
 
 	private void spawnLeaveAreas() {
@@ -213,6 +239,7 @@ public class Update implements Runnable {
 				leaveAreaName.clear();
 				NPCs.clear();
 				moveDir.clear();
+				enemies.clear();
 				NPCsSpawned = false;
 			}
 		}
@@ -317,32 +344,31 @@ public class Update implements Runnable {
 	}
 
 	private void pullNPC() {
-		if(grapple != null){
-			Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
-			for(int i = 0; i < NPCs.size(); i++){
-				if(NPCs.get(i).getSmall().contains(p)){
-					NPCHooked(i);
-				}
-			}
-		}
-	}
-	
-	private void NPCHooked(int i){
+ 		if(grapple != null){
+ 			Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
+ 			for(int i = 0; i < enemies.size(); i++){
+ 				if(enemies.get(i).getSmall().contains(p)){
+ 					NPCHooked(i);
+ 				}
+ 			}
+ 		}
+ 	}
+ 	
+ 	private void NPCHooked(int i){
 		if(qCD == 801){
-			playSFX("hooked");
-			hk = true;
-			qCD--;
-		}
-		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
-		if(p.getX()-16 > NPCs.get(i).getX())
-			NPCs.get(i).setX((int)p.getX()-(NPCs.get(i).getWidth()-20));
-		else{
-			NPCs.get(i).setX((int)p.getX());
-		}
-		NPCs.get(i).setY((int)p.getY() - (NPCs.get(i).getHeight()-40));
-		NPCs.get(i).updateSmall();
-		NPCs.get(i).updateBoundbox();
-	}
+ 			playSFX("hooked");
+ 			hk = true;
+ 			qCD--;
+ 		}
+ 		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
+ 		if(p.getX()-16 > enemies.get(i).getX())
+ 			enemies.get(i).setX((int)p.getX()-(enemies.get(i).getWidth()-20));
+ 		else{
+ 			enemies.get(i).setX((int)p.getX());
+ 		}
+ 		enemies.get(i).setY((int)p.getY() - (enemies.get(i).getHeight()-40));
+ 		enemies.get(i).update();
+ 	}
 	
 	private void playSFX(String s){
 		if(s == "hooked"){

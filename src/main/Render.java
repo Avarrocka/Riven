@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import listeners.KeyboardListener;
 import main.Update;
 import res.Armor;
+import res.Enemy;
 import res.Player;
 import res.NPC;
 import res.Sword;
@@ -122,6 +123,7 @@ public class Render implements Runnable {
 		if(Main.update.splashScreenTime == 0){
 			drawBackground(g);
 			drawNPC(g);
+			drawEnemies(g);
 			drawAbilities(g);
 			//drawPortal(g);
 			drawPlayer(g);
@@ -143,6 +145,14 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawEnemies(Graphics2D g) {
+		LinkedList<Enemy> enemies = Main.update.enemies;
+		for(int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			e.draw(g);
+		}
+	}
+
 	private void drawSplashscreen(Graphics2D g) {
 		if(Main.update.mapID == "Taverly"){
 			g.setFont(new Font("Rockwell", Font.BOLD, 48));
@@ -420,6 +430,9 @@ public class Render implements Runnable {
 		}
 		for(int i = 0; i < Main.update.leaveArea.size(); i++){
 			g.draw(Main.update.leaveArea.get(i));
+		}
+		for(int i = 0; i < Main.update.enemies.size(); i++){
+			g.draw(Main.update.enemies.get(i).getSmall());
 		}
 	}
 	
