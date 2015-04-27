@@ -56,18 +56,18 @@ public class Sword implements Drawable{
 			this.desc = "A simple, balanced sword made of cold iron.";
 			this.info = "This is a basic weapon that does 10 damage per hit";
 		}
-		if(this.ID == "Scimitar"){
+		if(this.ID == "Katana"){
 			try {
-				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordScimitar.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordKatana.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.damage = 14;
+			this.damage = 15;
 			this.value = 250;
-			this.desc = "An exotic Scimitar brought in through the ports by traders. It looks sharp.";
-			this.info = "This is a basic weapon that does 14 damage per hit";
+			this.desc = "Tempered steel folded over 1000 times creates a weapon with a deadly edge.";
+			this.info = "This is a basic weapon that does 15 damage per hit";
 		}
-		if(this.ID == "Obsidian Sword"){
+		if(this.ID == "Steel Sword"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordSteel.png"));
 			} catch (IOException e) {
@@ -75,7 +75,7 @@ public class Sword implements Drawable{
 			}
 			this.damage = 20;
 			this.value = 500;
-			this.desc = "Made of volcanic glass. This sword is brittle but undeniably dangerous.";
+			this.desc = "Tried and true, this weapon of refined steel slices through foes like butter.";
 			this.info = "This an advanced weapon that does 20 damage per hit, plus an effect.";
 		}
 		if(this.ID == "Serrated Blade"){
@@ -86,22 +86,44 @@ public class Sword implements Drawable{
 			}
 			this.damage = 25;
 			this.value = 1000;
-			this.desc = "Tempered steel folded over 1000 times creates a weapon of unparalleled deadliness.";
+			this.desc = "Hundreds of thorns and edges adorn this darksteel blade to maximize gore.";
 			this.info = "This is an advanced weapon that does 25 damage per hit, plus an effect.";
 		}
-		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		if(this.ID == "Blessed Blade"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordBlessed.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 35;
+			this.value = 1000;
+			this.desc = "Caladbolg, blessed by the wind, causes each agile strike to deal devastating damage.";
+			this.info = "This is a legendary weapon that does 35 damage per hit.";
+		}
+		if(this.ID == "Blighted Blade"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordBlighted.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 35;
+			this.value = 1000;
+			this.desc = "Claíomh Saolus, a blade rumored to absorb the souls of those it has slain.";
+			this.info = "This is a legendary weapon that does 35 damage per hit.";
+		}
 		if(this.ID == "Lunus Blade"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordLunus.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.damage = 30;
+			this.damage = 45;
 			this.value = 0;
 			this.desc = "An ancient hierloom that once belonged to the Fallen God, Lunus.";
-			this.info = "This is a legendary weapon that does 30 damage per hit, plus an effect.";
+			this.info = "This is a mythical weapon that does 45 damage per hit, plus an effect.";
 		}
-		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		
+		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
 	public void draw(Graphics2D g) {

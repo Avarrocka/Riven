@@ -275,22 +275,19 @@ public class Update implements Runnable {
 				NPCs.add(new NPC(365, 180, "armorsmith"));
 				NPCs.add(new NPC(365, 650, "magister"));
 				NPCsSpawned = true;
-				shopSwords.add(new Sword(30, 90, "Iron Sword"));
-				shopSwords.add(new Sword(30, 200, "Scimitar"));
-				shopSwords.add(new Sword(30, 310, "Obsidian Sword"));
-				shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 				shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
 				shopItems.add(new Item(30, 180, "Fish Steak"));
 				shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
 				shopItems.add(new Item(30, 360, "Healing Salve"));
 				shopItems.add(new Item(30, 450, "Teleport to Town"));
-				shopArmor.add(new Armor(30, 90, "Leather Armor"));
-				shopArmor.add(new Armor(30, 200, "Plated Armor"));
+				shopArmor.add(new Armor(30, 90, "Plated Armor"));
+				shopArmor.add(new Armor(30, 200, "Tempered Armor"));
 				shopArmor.add(new Armor(30, 310, "Steel Armor"));
 				shopArmor.add(new Armor(30, 420, "Darksteel Armor"));
-				//Legendary Armor is unobtainable.
-				//shopArmor.add(new Armor(30, 90, "Solus Armor"));
-				//shopSwords.add(new Sword(30, 90, "Lunus Blade"));
+				shopSwords.add(new Sword(30, 90, "Iron Sword"));
+				shopSwords.add(new Sword(30, 200, "Katana"));
+				shopSwords.add(new Sword(30, 310, "Steel Sword"));
+				shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 			}
 		}
 		else if(mapID == "Turandal1"){
@@ -463,7 +460,7 @@ public class Update implements Runnable {
 			if(wCD == 0){
 				playSFX("meditate");
 				healing = true;
-				meditate();
+				healingTime = 100;
 				wCD = 3000;
 			}
 		}
@@ -595,9 +592,6 @@ public class Update implements Runnable {
 		}
 		else
 			drawInfo = false;
-	}
-	private void meditate() {
-		healingTime = 80;
 	}
 
 	private void spawnGrapplingHook() {

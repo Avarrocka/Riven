@@ -54,7 +54,7 @@ public class Player implements Drawable{
 		this.setYvelocity(0);
 		this.setGold(12000);
 		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
-		this.setArmor(new Armor(0, 0, "Cape"), -1);
+		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
 		try {
 			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
 			up = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromUp.png"));

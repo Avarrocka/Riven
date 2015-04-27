@@ -346,7 +346,7 @@ public class Render implements Runnable {
 		LinkedList<Armor> armorShop = Main.update.shopArmor;
 		if(Main.update.speakingWith.getID() == "blacksmith"){
 			for(int i = 0; i < swordShop.size(); i++){
-				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), swordShop.get(i).getHeight(), swordShop.get(i).getWidth(), null);
+				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price
@@ -378,7 +378,7 @@ public class Render implements Runnable {
 		}
 		else if(Main.update.speakingWith.getID() == "armorsmith"){
 			for(int i = 0; i < armorShop.size(); i++){
-				g.drawImage(armorShop.get(i).getImage(), armorShop.get(i).getX(), armorShop.get(i).getY(), armorShop.get(i).getHeight(), armorShop.get(i).getWidth(), null);
+				g.drawImage(armorShop.get(i).getImage(), armorShop.get(i).getX(), armorShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price

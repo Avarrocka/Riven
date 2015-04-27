@@ -34,27 +34,16 @@ public class Armor implements Drawable{
 		this.setID(ID);
 		this.setX(x);
 		this.setY(y);
-		if(this.ID == "Cape"){
-			try {
-				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorCape.png"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			this.armor = 5;
-			this.value = 0;
-			this.desc = "A warm cloak imbued with a shaman's blessing to cause hits to glance.";
-			this.info = "This is starting armor that grants 5 Armor.";
-		}
 		if(this.ID == "Leather Armor"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorLeather.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.armor = 10;
-			this.value = 100;
-			this.desc = "Many sheets of laminated leather were packed together to create a tightly bound tunic.";
-			this.info = "This is basic armor that grants 10 Armor.";
+			this.armor = 5;
+			this.value = 0;
+			this.desc = "A well-fitting leather cassock that sometimes causes hits to glance.";
+			this.info = "This is basic armor that grants 5 Armor.";
 		}
 		if(this.ID == "Plated Armor"){
 			try {
@@ -62,10 +51,21 @@ public class Armor implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.armor = 14;
+			this.armor = 10;
+			this.value = 100;
+			this.desc = "Thin metal plates are added onto a leather breastplate to provide adequate protection.";
+			this.info = "This is basic armor that grants 10 Armor.";
+		}
+		if(this.ID == "Tempered Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorTempered.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 15;
 			this.value = 250;
-			this.desc = "Thousands of forged iron plates combine to create a heavy suit of mail.";
-			this.info = "This is basic armor that grants 14 Armor.";
+			this.desc = "Cold iron cast into a sturdy breastplate that looks as intimidating as it is heavy.";
+			this.info = "This is basic armor that grants 15 Armor.";
 		}
 		if(this.ID == "Steel Armor"){
 			try {
@@ -75,8 +75,8 @@ public class Armor implements Drawable{
 			}
 			this.armor = 20;
 			this.value = 500;
-			this.desc = "Refined steel plates interlock to create a steel plate. This plate looks to be of high craftsmanship.";
-			this.info = "This is advanced armor that grants 20 Armor and 20 Health.";
+			this.desc = "Refined steel plates interlock to create a work of high craftsmanship.";
+			this.info = "This is advanced armor that grants 20 Armor.";
 		}
 		if(this.ID == "Darksteel Armor"){
 			try {
@@ -89,18 +89,40 @@ public class Armor implements Drawable{
 			this.desc = "A heirloom armor passed through generations. It is said to bear an ancient curse of protection.";
 			this.info = "This is advanced armor that grants 25 Armor, plus an effect.";
 		}
+		if(this.ID == "Blessed Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorBlessed.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 35;
+			this.value = 0;
+			this.desc = "Once worn by Paladin Uther the Lightbringer, this plate's legacy is renown all throughout the lands.";
+			this.info = "This is legendary armor that grants 35 Armor.";
+		}
+		if(this.ID == "Blighted Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorBlighted.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 35;
+			this.value = 0;
+			this.desc = "Forged for the Lich King Arthas, this plate is said to have a life and will of it's own.";
+			this.info = "This is legendary armor that grants 35 Armor.";
+		}
 		if(this.ID == "Solus Armor"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorSolus.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.armor = 30;
+			this.armor = 45;
 			this.value = 0;
-			this.desc = "A legendary plate imbued with the blessing of the Sun Goddess, Solus.";
-			this.info = "This is legendary armor that grants 30 Armor, plus an effect.";
+			this.desc = "A divine plate created by the Gods. A swirling inferno protects the user and incinerates foes.";
+			this.info = "This is mythical armor that grants 45 Armor, plus an effect.";
 		}
-		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
 	public void draw(Graphics2D g) {
