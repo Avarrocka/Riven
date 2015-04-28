@@ -222,7 +222,7 @@ public class Update implements Runnable {
 			areasSpawned = true;
 		}
 		if(mapID == "Turandal1" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 140, 10, 40));
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 125, 10, 40));
 			leaveAreaName.add("Taverly");
 			moveDir.add(RIGHT);
 			areasSpawned = true;
