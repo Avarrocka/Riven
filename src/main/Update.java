@@ -16,6 +16,7 @@ import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Render;
 import res.Armor;
+import res.CollisionRects;
 import res.Enemy;
 import res.Player;
 import res.NPC;
@@ -37,8 +38,10 @@ public class Update implements Runnable {
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
 	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
 	public volatile LinkedList<Rectangle2D> leaveArea = new LinkedList<Rectangle2D>();
+	public volatile LinkedList<Rectangle2D> collisionRectangles = new LinkedList<Rectangle2D>();
 	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
 	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
+	public CollisionRects creator = new CollisionRects();
 	public NPC speakingWith;
 	public Line2D grapple;
 	public long startTime = 0;
@@ -69,6 +72,12 @@ public class Update implements Runnable {
 	public int dialogueOptions = 0;
 	public int purchased = 0;
 	public int drawInvIndx = 0;
+	public int moneyDrop = 0;
+	public int moneyDraw = 0;
+	public int lootDraw = 0;
+	public Armor dropArmor = null;
+	public Sword dropSword = null;
+	public Item dropItem = null;
 	Random RNG = new Random();
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	//Music resources
@@ -167,11 +176,18 @@ public class Update implements Runnable {
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			enemies.get(i).update();
+			if(enemies.get(i).getHP() <= 0){
+				moneyDrop = enemies.get(i).rollMoney(enemies.get(i).getID());
+				moneyDraw = 60;
+				PC.setGold(PC.getGold() + moneyDrop);
+				enemies.get(i).rollLoot();
+				enemies.remove(i);
+			}
 		}
 	}
 
 	private void spawnThings() {
-		spawnNPCs();
+		spawnMap();
 		spawnLeaveAreas();
 		if(!(mapID == "Taverly")){
 			spawnEnemies();
@@ -180,8 +196,18 @@ public class Update implements Runnable {
 
 	private void spawnEnemies() {
 		if(enemySpawnTime == 0){
-			enemies.add(new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime"));
-			enemySpawnTime = 1000;
+			Enemy e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime");
+			Rectangle2D eBox = e.getBoundbox();
+			boolean notInCorners = true;
+			for(int i = 0; i < collisionRectangles.size(); i++){
+				if(collisionRectangles.get(i).intersects(eBox)){
+					notInCorners = false;
+				}
+			}
+			if(notInCorners){
+				enemySpawnTime = 200;
+				enemies.add(e);
+			}
 		}
 		else{
 			enemySpawnTime--;
@@ -190,7 +216,7 @@ public class Update implements Runnable {
 
 	private void spawnLeaveAreas() {
 		if(mapID == "Taverly" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(0, 140, 10, 40));
+			leaveArea.add(new Rectangle2D.Double(0, 125, 10, 40));
 			leaveAreaName.add("Turandal1");
 			moveDir.add(LEFT);
 			areasSpawned = true;
@@ -233,10 +259,11 @@ public class Update implements Runnable {
 					PC.setY((int)LArea.getY());
 				}
 				mapID = leaveAreaName.get(i);
-				splashScreenTime = 250;
+				splashScreenTime = 50; //Splash Screen Draw Time
 				areasSpawned = false;
 				leaveArea.clear();
 				leaveAreaName.clear();
+				collisionRectangles.clear();
 				NPCs.clear();
 				moveDir.clear();
 				enemies.clear();
@@ -267,34 +294,32 @@ public class Update implements Runnable {
 		}
 	}
 	
-	private void spawnNPCs() {
-		if(mapID == "Taverly"){
-			if(!NPCsSpawned){
-				NPCs.add(new NPC(640, 180, "shop"));
-				NPCs.add(new NPC(244 , 180, "blacksmith"));
-				NPCs.add(new NPC(365, 180, "armorsmith"));
-				NPCs.add(new NPC(365, 650, "magister"));
-				NPCsSpawned = true;
-				shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
-				shopItems.add(new Item(30, 180, "Fish Steak"));
-				shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
-				shopItems.add(new Item(30, 360, "Healing Salve"));
-				shopItems.add(new Item(30, 450, "Teleport to Town"));
-				shopArmor.add(new Armor(30, 90, "Plated Armor"));
-				shopArmor.add(new Armor(30, 200, "Tempered Armor"));
-				shopArmor.add(new Armor(30, 310, "Steel Armor"));
-				shopArmor.add(new Armor(30, 420, "Darksteel Armor"));
-				shopSwords.add(new Sword(30, 90, "Iron Sword"));
-				shopSwords.add(new Sword(30, 200, "Katana"));
-				shopSwords.add(new Sword(30, 310, "Steel Sword"));
-				shopSwords.add(new Sword(30, 420, "Serrated Blade"));
-			}
+	private void spawnMap() {
+		if(mapID == "Taverly" && !NPCsSpawned){
+			NPCsSpawned = true;
+			collisionRectangles = creator.createRectangles(mapID);
+			NPCs.add(new NPC(640, 180, "shop"));
+			NPCs.add(new NPC(244 , 180, "blacksmith"));
+			NPCs.add(new NPC(365, 180, "armorsmith"));
+			NPCs.add(new NPC(365, 650, "magister"));
+			shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
+			shopItems.add(new Item(30, 180, "Fish Steak"));
+			shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
+			shopItems.add(new Item(30, 360, "Healing Salve"));
+			shopItems.add(new Item(30, 450, "Teleport to Town"));
+			shopArmor.add(new Armor(30, 90, "Plated Armor"));
+			shopArmor.add(new Armor(30, 200, "Tempered Armor"));
+			shopArmor.add(new Armor(30, 310, "Steel Armor"));
+			shopArmor.add(new Armor(30, 420, "Darksteel Armor"));
+			shopSwords.add(new Sword(30, 90, "Iron Sword"));
+			shopSwords.add(new Sword(30, 200, "Katana"));
+			shopSwords.add(new Sword(30, 310, "Steel Sword"));
+			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 		}
-		else if(mapID == "Turandal1"){
-			if(!NPCsSpawned){
-				NPCsSpawned = true;
-				NPCs.add(new NPC(560, 200, "stranger"));
-			}
+		else if(mapID == "Turandal1" && !NPCsSpawned){
+			NPCsSpawned = true;
+			collisionRectangles = creator.createRectangles(mapID);
+			NPCs.add(new NPC(560, 200, "stranger"));
 		}
 	}
 
@@ -353,6 +378,7 @@ public class Update implements Runnable {
  	
  	private void NPCHooked(int i){
 		if(qCD == 801){
+			enemies.get(i).setHP(enemies.get(i).getHP() - 51);
  			playSFX("hooked");
  			hk = true;
  			qCD--;
@@ -695,6 +721,41 @@ public class Update implements Runnable {
 							PC.setY(PC.getY() - (movementSpeed));
 						}
 					else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
+							PC.setY(PC.getY() + (movementSpeed));
+					}			
+				}
+			}
+			for(int i = 0; i < enemies.size(); i++){
+				Enemy rn = enemies.get(i);
+				if(nb.intersects(rn.getSmall())){
+					Rectangle2D rm = rn.getSmall();
+					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
+						PC.setX(PC.getX() - movementSpeed);
+					}
+					else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
+						PC.setX(PC.getX() + movementSpeed);
+					}
+					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
+							PC.setY(PC.getY() - (movementSpeed));
+						}
+					else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
+							PC.setY(PC.getY() + (movementSpeed));
+					}			
+				}
+			}
+			for(int i = 0; i < collisionRectangles.size(); i++){
+				Rectangle2D rn = collisionRectangles.get(i);
+				if(nb.intersects(rn)){
+					if((Rx >= rn.getX() && Rx <= rn.getX()+rn.getWidth() && PC.getYvelocity() == 0)){
+						PC.setX(PC.getX() - movementSpeed);
+					}
+					else if(Lx <= rn.getX() + rn.getWidth() && PC.getYvelocity() == 0){
+						PC.setX(PC.getX() + movementSpeed);
+					}
+					if((Dy >= rn.getY() && Dy <= rn.getY()+rn.getHeight() && PC.getXvelocity() == 0)){
+							PC.setY(PC.getY() - (movementSpeed));
+						}
+					else if(Uy <= rn.getY() + rn.getHeight() && PC.getXvelocity() == 0){
 							PC.setY(PC.getY() + (movementSpeed));
 					}			
 				}

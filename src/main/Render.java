@@ -124,6 +124,7 @@ public class Render implements Runnable {
 			drawBackground(g);
 			drawNPC(g);
 			drawEnemies(g);
+			drawHealth(g);
 			drawAbilities(g);
 			//drawPortal(g);
 			drawPlayer(g);
@@ -145,6 +146,23 @@ public class Render implements Runnable {
 		}
 	}
 	
+	private void drawHealth(Graphics2D g) {
+		LinkedList<Enemy> enemies = Main.update.enemies;
+		for(int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			if(e.getMaxHealth() != e.getHP()){
+				Rectangle2D maxHP = new Rectangle2D.Double(e.getX()-5, e.getY() - 5, e.getMaxHealth(), 5);
+				Rectangle2D curHP = new Rectangle2D.Double(e.getX()-5, e.getY()-5, e.getHP(), 5);
+				g.setColor(Color.red);
+				g.fill(maxHP);
+				g.draw(maxHP);
+				g.setColor(Color.green);
+				g.fill(curHP);
+				g.draw(curHP);
+			}
+		}
+	}
+
 	private void drawEnemies(Graphics2D g) {
 		LinkedList<Enemy> enemies = Main.update.enemies;
 		for(int i = 0; i < enemies.size(); i++) {
@@ -434,6 +452,9 @@ public class Render implements Runnable {
 		for(int i = 0; i < Main.update.enemies.size(); i++){
 			g.draw(Main.update.enemies.get(i).getSmall());
 		}
+		for(int i = 0; i < Main.update.collisionRectangles.size(); i++){
+			g.draw(Main.update.collisionRectangles.get(i));
+		}
 	}
 	
 	private void drawPrompts(Graphics2D g){
@@ -443,6 +464,12 @@ public class Render implements Runnable {
 			g.drawImage(interactBox, 413, 90, 200, 75, null);
 			g.drawString("Press R to Interact", 440, 130);
 			Main.update.dialogueOptions--;
+		}
+		if(Main.update.moneyDraw > 0){
+			g.setFont(new Font("Arial", Font.BOLD, 20));
+			g.setColor(Color.yellow);
+			g.drawString("+" + Main.update.moneyDrop, Main.update.PC.getX()+27, Main.update.PC.getY()-((60-Main.update.moneyDraw)/4));
+			Main.update.moneyDraw--;
 		}
 	}
 	

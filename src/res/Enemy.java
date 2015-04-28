@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -28,12 +29,14 @@ public class Enemy implements Drawable{
 	private int yBoundaryHigh;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private int health;
+	private int maxHealth;
 	private int damage;
 	private int motionSpeed = 21;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
 	private BufferedImage movement[];
 	public boolean revMov = false;
+	Random RNG = new Random();
 	/**
 	 * Constructor. Creates a player character.
 	 */
@@ -55,11 +58,12 @@ public class Enemy implements Drawable{
 				e.printStackTrace();
 			}
 			this.image = movement[0];
-			this.health = 30;
-			this.damage = 4;
+			this.health = 50;
+			this.damage = 10;
 		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
+		this.maxHealth = health;
 	}
 
 	@Override
@@ -95,7 +99,12 @@ public class Enemy implements Drawable{
 	public void setID(String ID){
 		this.ID = ID;
 	}
-	
+	public void setHP(int HP){
+		this.health = HP;
+	}
+	public int getHP(){
+		return this.health;
+	}
 	public String getID(){
 		return this.ID;
 	}
@@ -119,6 +128,9 @@ public class Enemy implements Drawable{
 	}
 	public int getHighBoundY(){
 		return this.yBoundaryHigh;
+	}
+	public int getMaxHealth(){
+		return this.maxHealth;
 	}
 	public void update(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
@@ -151,4 +163,15 @@ public class Enemy implements Drawable{
 		}
 		motionSpeed--;
 	}
+	public int rollMoney(String s){
+		if(s == "slime"){
+			return RNG.nextInt(10) + 1;
+		}
+		else
+			return 0;
+	}
+	public void rollLoot() {
+		
+	}
+
 }
