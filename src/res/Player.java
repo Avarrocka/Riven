@@ -22,8 +22,9 @@ import res.Item;
  *
  */
 public class Player implements Drawable{
-	private int x, y, hp;
+	private int x, y, hp, mhp;
 	private int Vx, Vy;
+	private int EXP;
 	private int gold;
 	private Sword weapon;
 	private Armor armor;
@@ -31,18 +32,22 @@ public class Player implements Drawable{
 	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Item> qItems = new LinkedList<Item>();
 	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>();
-	int motionSpeed = 60;
+	private int motionSpeed = 60;
+	private int reqLvl = 12;
+	private int level;
 	BufferedImage Left[] = new BufferedImage[4];
 	BufferedImage Right[] = new BufferedImage[4];
 	BufferedImage Up[] = new BufferedImage[4];
 	BufferedImage Down[] = new BufferedImage[4];
 	private boolean revMov = false;
 	private boolean hpBuff = false;
+	private int baseAttack, baseDefense;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
 	private BufferedImage image;
 	private Rectangle2D boundBox;
 	private BufferedImage def, up, down, right, left;
+	public boolean oozeQuest;
 	/**
 	 * Constructor. Creates a player character.
 	 */
@@ -53,6 +58,11 @@ public class Player implements Drawable{
 		this.setXvelocity(0);
 		this.setYvelocity(0);
 		this.setGold(12000);
+		this.mhp = 100;
+		this.baseAttack = 5;
+		this.baseDefense = 5;
+		this.EXP = 0;
+		this.level = 1;
 		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
 		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
 		try {
@@ -182,12 +192,12 @@ public class Player implements Drawable{
 			this.invArmor.add(index, this.getArmor());
 		}
 		if(armor.getID() == "Darksteel Armor" && !hpBuff){
-			this.setHealth(this.getHealth() + 20);
+			mhp = mhp+20;
 			hpBuff = true;
 		}
 		else if(hpBuff && armor.getID() != "Darksteel Armor"){
-			this.setHealth(this.getHealth() - 20);
-			hpBuff = !hpBuff;
+			mhp = mhp-20;
+			hpBuff = false;
 		}
 		this.armor = armor;
 	}
@@ -344,51 +354,66 @@ public class Player implements Drawable{
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
-	public void heal(int heal){
-		if(hpBuff){
-			if(this.hp + heal <= 120)
-				this.hp = this.hp+heal;
-			else
-				this.hp = 120;
+	public int getEXP(){
+		return this.EXP;
+	}
+	public void setEXP(int EXP){
+		this.EXP += EXP;
+		if(this.EXP >= reqLvl){
+			this.EXP = this.EXP - reqLvl;
+			this.levelUp();
+			this.updateLevelCurve();
 		}
-		else{
-			if(this.hp + heal <= 100)
-				this.hp = this.hp+heal;
-			else
-				this.hp = 100;
-		}		
+	}
+	public int getLevel(){
+		return this.level;
+	}
+	private void levelUp() {
+		level++;
+		this.baseAttack += 2;
+		this.baseDefense += 2;
+		this.mhp += 10;
+	}
+	public int getReqLvl(){
+		return this.reqLvl;
+	}
+	private void updateLevelCurve(){
+		reqLvl = ((int) (reqLvl*1.5));
+	}
+	public void heal(int heal){
+		if(this.hp + heal <= mhp)
+			this.hp = this.hp+heal;
+		else
+			this.hp = mhp;	
 	}
 	public void activateItem(Item item, int i) {
 		invItems.remove(i);
 		Item using = item;
 		if(using.getID() == "Fish Steak"){
-			if(this.getHealth() + using.getHeal() <= 100)
+			if(this.getHealth() + using.getHeal() <= mhp)
 				this.setHealth(this.getHealth() + using.getHeal());
 			else{
-				this.setHealth(100);
+				this.setHealth(mhp);
 			}
 		}
 		else if(using.getID() == "Chocolate Raspberry Cake"){
-			if(this.getHealth() + using.getHeal() <= 100)
+			if(this.getHealth() + using.getHeal() <= mhp)
 				this.setHealth(this.getHealth() + using.getHeal());
 			else{
-				this.setHealth(100);
+				this.setHealth(mhp);
 			}
 		}
 		else if(using.getID() == "Cinnamon Pumpkin Pie"){
-			if(this.getHealth() + using.getHeal() <= 100)
+			if(this.getHealth() + using.getHeal() <= mhp)
 				this.setHealth(this.getHealth() + using.getHeal());
 			else{
-				this.setHealth(100);
+				this.setHealth(mhp);
 			}
 		}
 		else if(using.getID() == "Healing Salve"){
 			Main.update.qCD = 801;
 			Main.update.wCD = 3001;
-			this.setHealth(100);
-			if(hpBuff){
-				this.setHealth(120);
-			}
+			this.setHealth(mhp);
 		}
 		else if(using.getID() == "Teleport to Town"){
 			Main.update.mapID = "Taverly";
@@ -397,5 +422,16 @@ public class Player implements Drawable{
 			this.setX(GraphicsMain.WIDTH/2 - 96);
 			this.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 		}
+	}
+
+	public int getDamage() {
+		return baseAttack + this.getWeapon().getDamage();
+	}
+	public int getDefense(){
+		return baseDefense + this.getArmor().getArmor();
+	}
+
+	public int getMaxHealth() {
+		return mhp;
 	}
 }

@@ -228,14 +228,21 @@ public class Render implements Runnable {
 			g.drawString("" + Main.update.PC.getGold(), 250, 670);
 			//Drawing Attack count
 			g.setColor(Color.black);
-			g.drawString("" + Main.update.PC.getWeapon().getDamage(), 90, 206);
+			g.drawString("" + Main.update.PC.getDamage(), 90, 206);
 			//Drawing Armor count
-			g.drawString("" + Main.update.PC.getArmor().getArmor(), 90, 253);
+			g.drawString("" + Main.update.PC.getDefense(), 90, 253);
 			//Draws the HP of the player character (PC) and Location
+			g.setFont(new Font("Rockwell", Font.BOLD, 18));
 			g.setColor(Color.red);
-			g.drawString("HP               " + Main.update.PC.getHealth() + "/100", 70, 85);
+			g.drawString("HP               " + Main.update.PC.getHealth() + "/" + Main.update.PC.getMaxHealth(), 70, 80);
 			g.setColor(Color.black);
-			g.drawString("Location     " + Main.update.mapID, 70, 110);
+			g.drawString("EXP:            " + Main.update.PC.getEXP() + "/" + Main.update.PC.getReqLvl() + " to level", 70, 100);
+			g.drawString("Location     " + Main.update.mapID, 70, 120);
+			g.setColor(Color.blue);
+			g.setFont(new Font("Rockwell", Font.BOLD, 25));
+			g.drawString("Level " + Main.update.PC.getLevel(), 235, 200);
+			g.setColor(Color.black);
+			g.setFont(new Font("Rockwell", Font.BOLD, 18));
 			int timeElapsed = (int)(Main.update.currentTime / 1000);
 			String time = "";
 			if(timeElapsed < 10){
@@ -256,7 +263,7 @@ public class Render implements Runnable {
 				else
 					time += mins + ":" + secs;
 			}
-			g.drawString("Playtime     " + time, 70, 135);
+			g.drawString("Playtime     " + time, 70, 140);
 			//Draws the equipped weapon
 			g.drawImage(Main.update.PC.getWeapon().getImage(), 252, 257, 91, 91, null);
 			//Draws the equipped armor

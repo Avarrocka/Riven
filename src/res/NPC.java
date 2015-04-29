@@ -131,6 +131,28 @@ public class NPC implements Drawable{
 				updateLines();
 			}
 		}
+		if(ID == "guard"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/priamDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/priamHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 6;
+			dialogue = new String[dialogueLines];
+			name = "Guard Priam";	
+			dialogue[0] = "Whatever. Just rough up about ten oozes and I'll teach you a few tactics with the sword.";
+			dialogue[1] = "Rewards? Well I don't suppose you'd accept half my sandwhich as payment?";
+			dialogue[2] = "You think you could pop a couple for me? If you clean up about 10 I could go on lunch break.";
+			dialogue[3] = "I mean what are they going to do - slobber all over the cobblestone?";
+			dialogue[4] = "Stuck here guarding this stupid gate all day. Against what? Oozes? Slimes?";
+			dialogue[5] = "Ugh being a guard is such a bore. I'm literally losing my mind here.";
+			if(Main.update.oozeQuest){
+				Main.update.PC.oozeQuest = true;
+				updateLines();
+			}
+		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);

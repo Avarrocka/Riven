@@ -58,13 +58,17 @@ public class Update implements Runnable {
 	public boolean drawInfo = false;
 	public boolean invScreen = false;
 	public boolean portalOnline = false;
+	//quest variables
 	public boolean gem = false;
+	public boolean oozeQuest = false;
+	//ability cooldowns/checks
 	public boolean shooting = false;
 	public boolean healing = false;
-	public boolean hk = false;
-	public boolean areasSpawned = false;
+	public boolean hasBeenHooked = false;
 	public int qCD = 0;
 	public int wCD = 0;
+	public boolean areasSpawned = false;
+	//dialogue variables/inventory
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
 	public int alreadyHave = 0;
@@ -380,7 +384,7 @@ public class Update implements Runnable {
 		if(qCD == 801){
 			enemies.get(i).setHP(enemies.get(i).getHP() - 51);
  			playSFX("hooked");
- 			hk = true;
+ 			hasBeenHooked = true;
  			qCD--;
  		}
  		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
@@ -451,9 +455,9 @@ public class Update implements Runnable {
 		if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
 			grapple = null;
 			shooting = false;
-			if(!hk)
+			if(!hasBeenHooked)
 				playSFX("not hooked");
-			hk = false;
+			hasBeenHooked = false;
 		}
 	}
 
@@ -696,6 +700,7 @@ public class Update implements Runnable {
 		if(wCD > 0 && !healing){
 			wCD--;
 		}
+		//PC.setEXP(1);
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
 	private void movePC(){
@@ -713,15 +718,19 @@ public class Update implements Runnable {
 					Rectangle2D rm = rn.getSmall();
 					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
 						PC.setX(PC.getX() - movementSpeed);
+						continue;
 					}
 					else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
 						PC.setX(PC.getX() + movementSpeed);
+						continue;
 					}
-					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
-							PC.setY(PC.getY() - (movementSpeed));
-						}
+					else if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
+						PC.setY(PC.getY() - (movementSpeed));
+						continue;
+					}
 					else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
-							PC.setY(PC.getY() + (movementSpeed));
+						PC.setY(PC.getY() + (movementSpeed));
+						continue;
 					}			
 				}
 			}
@@ -731,15 +740,19 @@ public class Update implements Runnable {
 					Rectangle2D rm = rn.getSmall();
 					if((Rx >= rm.getX() && Rx <= rm.getX()+rm.getWidth() && PC.getYvelocity() == 0)){
 						PC.setX(PC.getX() - movementSpeed);
+						continue;
 					}
 					else if(Lx <= rm.getX() + rm.getWidth() && PC.getYvelocity() == 0){
 						PC.setX(PC.getX() + movementSpeed);
+						continue;
 					}
-					if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
-							PC.setY(PC.getY() - (movementSpeed));
-						}
+					else if((Dy >= rm.getY() && Dy <= rm.getY()+rm.getHeight() && PC.getXvelocity() == 0)){
+						PC.setY(PC.getY() - (movementSpeed));
+						continue;
+					}
 					else if(Uy <= rm.getY() + rm.getHeight() && PC.getXvelocity() == 0){
-							PC.setY(PC.getY() + (movementSpeed));
+						PC.setY(PC.getY() + (movementSpeed));
+						continue;
 					}			
 				}
 			}
@@ -748,29 +761,26 @@ public class Update implements Runnable {
 				if(nb.intersects(rn)){
 					if((Rx >= rn.getX() && Rx <= rn.getX()+rn.getWidth() && PC.getYvelocity() == 0)){
 						PC.setX(PC.getX() - movementSpeed);
+						continue;
 					}
 					else if(Lx <= rn.getX() + rn.getWidth() && PC.getYvelocity() == 0){
 						PC.setX(PC.getX() + movementSpeed);
+						continue;
 					}
-					if((Dy >= rn.getY() && Dy <= rn.getY()+rn.getHeight() && PC.getXvelocity() == 0)){
-							PC.setY(PC.getY() - (movementSpeed));
-						}
+					else if((Dy >= rn.getY() && Dy <= rn.getY()+rn.getHeight() && PC.getXvelocity() == 0)){
+						PC.setY(PC.getY() - (movementSpeed));
+						continue;
+					}
 					else if(Uy <= rn.getY() + rn.getHeight() && PC.getXvelocity() == 0){
-							PC.setY(PC.getY() + (movementSpeed));
+						PC.setY(PC.getY() + (movementSpeed));
+						continue;
 					}			
 				}
 			}
-			if(!touch){
-				PC.setY(PC.getY() + PC.getYvelocity());
-				PC.setX(PC.getX() + PC.getXvelocity());
-				PC.setXvelocity(0);
-				PC.setYvelocity(0);
-			}
-			else{
-				PC.setXvelocity(0);
-				PC.setYvelocity(0);
-			}
-			
+			PC.setY(PC.getY() + PC.getYvelocity());
+			PC.setX(PC.getX() + PC.getXvelocity());
+			PC.setXvelocity(0);
+			PC.setYvelocity(0);			
 			//Done code regarding boundaries.
 			if(PC.getX() <= 2){
 				PC.setX(3);
