@@ -33,20 +33,24 @@ public class Player implements Drawable{
 	public volatile LinkedList<Item> qItems = new LinkedList<Item>();
 	public volatile LinkedList<Armor> invArmor = new LinkedList<Armor>();
 	private int motionSpeed = 60;
+	private int attackSpeed = 40;
 	private int reqLvl = 12;
 	private int level;
+	private int face;
 	BufferedImage Left[] = new BufferedImage[4];
 	BufferedImage Right[] = new BufferedImage[4];
 	BufferedImage Up[] = new BufferedImage[4];
 	BufferedImage Down[] = new BufferedImage[4];
-	private boolean revMov = false;
+	BufferedImage LAttack[] = new BufferedImage[4];
+	BufferedImage RAttack[] = new BufferedImage[4];
+ 	private boolean revMov = false;
 	private boolean hpBuff = false;
 	private int baseAttack, baseDefense;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
 	private BufferedImage image;
 	private Rectangle2D boundBox;
-	private BufferedImage def, up, down, right, left;
+	private BufferedImage def;
 	public boolean oozeQuest;
 	/**
 	 * Constructor. Creates a player character.
@@ -67,10 +71,6 @@ public class Player implements Drawable{
 		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
 		try {
 			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
-			up = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromUp.png"));
-			down = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDown.png"));
-			right = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromLeft.png"));
-			left = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromRight.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -103,6 +103,22 @@ public class Player implements Drawable{
 			Down[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD2.png"));
 			Down[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD3.png"));
 			Down[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CD4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			RAttack[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA1.png"));
+			RAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA2.png"));
+			RAttack[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA3.png"));
+			RAttack[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			LAttack[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA1.png"));
+			LAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA2.png"));
+			LAttack[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA3.png"));
+			LAttack[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA4.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -218,66 +234,67 @@ public class Player implements Drawable{
 	}
 	public void setImage(int face){
 		if(motionSpeed == 0){
-			motionSpeed = 60;
+			motionSpeed = 40;
 			revMov = !revMov;
 		}
+		this.face = face;
 		if(!revMov){
 			if(face == DEFAULT){
 				this.image = def;
 			}
 			else if(face == UP){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Up[0];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Up[1];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Up[2];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Up[3];
 				}
 			}
 			else if(face == DOWN){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Down[0];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Down[1];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Down[2];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Down[3];
 				}
 			}
 			else if(face == RIGHT){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Right[0];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Right[1];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Right[2];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Right[3];
 				}
 			}
 			else if(face == LEFT){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Left[0];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Left[1];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Left[2];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Left[3];
 				}
 			}
@@ -287,58 +304,58 @@ public class Player implements Drawable{
 				this.image = def;
 			}
 			else if(face == UP){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Up[3];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Up[2];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Up[1];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Up[0];
 				}
 			}
 			else if(face == DOWN){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Down[3];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Down[2];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Down[1];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Down[0];
 				}
 			}
 			else if(face == RIGHT){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Right[3];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Right[2];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Right[1];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Right[0];
 				}
 			}
 			else if(face == LEFT){
-				if(60 >= motionSpeed && 45 < motionSpeed){
+				if(40 >= motionSpeed && 30 < motionSpeed){
 					this.image = Left[3];
 				}
-				else if(45 >= motionSpeed && 30 < motionSpeed){
+				else if(30 >= motionSpeed && 20 < motionSpeed){
 					this.image = Left[2];
 				}
-				else if(30 >= motionSpeed && 15 < motionSpeed){
+				else if(20 >= motionSpeed && 10 < motionSpeed){
 					this.image = Left[1];
 				}
-				else if(15 >= motionSpeed && 0 < motionSpeed){
+				else if(10 >= motionSpeed && 0 < motionSpeed){
 					this.image = Left[0];
 				}
 			}
@@ -353,6 +370,13 @@ public class Player implements Drawable{
 	}
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
+		if(attackSpeed > 0){
+			this.attack();
+		}
+		else if(attackSpeed == 0){
+			this.image = def;
+			attackSpeed = -1;
+		}
 	}
 	public int getEXP(){
 		return this.EXP;
@@ -433,5 +457,74 @@ public class Player implements Drawable{
 
 	public int getMaxHealth() {
 		return mhp;
+	}
+	public void attacking(int i){
+		attackSpeed = i;
+	}
+	public boolean getAttacking(){
+		if(attackSpeed > 0){
+			return true;
+		}
+		else
+			return false;
+	}
+	public void attack() {
+		if(face == UP){
+			if(40 >= attackSpeed && 30 < attackSpeed){
+				this.image = Up[0];
+			}
+			else if(30 >= attackSpeed && 20 < attackSpeed){
+				this.image = Up[1];
+			}
+			else if(20 >= attackSpeed && 10 < attackSpeed){
+				this.image = Up[2];
+			}
+			else if(10 >= attackSpeed && 0 < attackSpeed){
+				this.image = Up[3];
+			}
+		}
+		else if(face == DOWN){
+			if(40 >= attackSpeed && 30 < attackSpeed){
+				this.image = Down[0];
+			}
+			else if(30 >= attackSpeed && 20 < attackSpeed){
+				this.image = Down[1];
+			}
+			else if(20 >= attackSpeed && 10 < attackSpeed){
+				this.image = Down[2];
+			}
+			else if(10 >= attackSpeed && 0 < attackSpeed){
+				this.image = Down[3];
+			}
+		}
+		else if(face == RIGHT){
+			if(40 >= attackSpeed && 30 < attackSpeed){
+				this.image = RAttack[0];
+			}
+			else if(30 >= attackSpeed && 20 < attackSpeed){
+				this.image = RAttack[1];
+			}
+			else if(20 >= attackSpeed && 10 < attackSpeed){
+				this.image = RAttack[2];
+			}
+			else if(10 >= attackSpeed && 0 < attackSpeed){
+				this.image = RAttack[3];
+			}
+		}
+		else if(face == LEFT){
+			if(40 >= attackSpeed && 30 < attackSpeed){
+				this.image = LAttack[0];
+			}
+			else if(30 >= attackSpeed && 20 < attackSpeed){
+				this.image = LAttack[1];
+			}
+			else if(20 >= attackSpeed && 10 < attackSpeed){
+				this.image = LAttack[2];
+			}
+			else if(10 >= attackSpeed && 0 < attackSpeed){
+				this.image = LAttack[3];
+			}
+		}
+		attackSpeed--;
 	}
 }
