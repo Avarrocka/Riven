@@ -79,6 +79,7 @@ public class Update implements Runnable {
 	public int moneyDrop = 0;
 	public int moneyDraw = 0;
 	public int lootDraw = 0;
+	public int levelUp = 0;
 	public Armor dropArmor = null;
 	public Sword dropSword = null;
 	public Item dropItem = null;
@@ -383,6 +384,7 @@ public class Update implements Runnable {
  	private void NPCHooked(int i){
 		if(qCD == 801){
 			enemies.get(i).setHP(enemies.get(i).getHP() - 51);
+			PC.setEXP(10);
  			playSFX("hooked");
  			hasBeenHooked = true;
  			qCD--;
@@ -464,6 +466,7 @@ public class Update implements Runnable {
 	private void handlePCCommands(){
 		lck.writeLock().lock();
 		movementSpeed = 2;
+		PC.setImage(0);
 		if(KeyboardListener.up && !(PC.getAttacking())) {
 			PC.setYvelocity(-movementSpeed);
 			PC.setImage(1);

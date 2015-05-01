@@ -38,7 +38,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
-	BufferedImage qAbility, wAbility, meditateAura;
+	BufferedImage qAbility, wAbility, meditateAura, levelUp, levelUpAura;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash;
 	BufferedImage TurandalForest1;
@@ -93,7 +93,9 @@ public class Render implements Runnable {
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
 			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
+			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
 			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
+			levelUpAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUpAura.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
@@ -127,9 +129,9 @@ public class Render implements Runnable {
 			drawHealth(g);
 			drawAbilities(g);
 			//drawPortal(g);
+			drawPrompts(g);
 			drawPlayer(g);
 			//drawBounds(g);
-			drawPrompts(g);
 			drawDialogue(g);
 			drawInventory(g);
 			drawCooldowns(g);
@@ -206,7 +208,7 @@ public class Render implements Runnable {
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
 		}
 		if(Main.update.healingTime > 0){
-			g.drawImage(meditateAura, Main.update.PC.getX(), Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
+			g.drawImage(meditateAura, Main.update.PC.getX()-2, Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
 			Main.update.healingTime--;
 		}
 	}
@@ -477,6 +479,12 @@ public class Render implements Runnable {
 			g.setColor(Color.yellow);
 			g.drawString("+" + Main.update.moneyDrop, Main.update.PC.getX()+27, Main.update.PC.getY()-((60-Main.update.moneyDraw)/4));
 			Main.update.moneyDraw--;
+		}
+		if(Main.update.levelUp > 0){
+			g.drawImage(levelUp, Main.update.PC.getX()-20, Main.update.PC.getY()-30 -((60-Main.update.levelUp)/4), null);
+			if(Main.update.levelUp > 30)
+				g.drawImage(levelUpAura, Main.update.PC.getX()-2, Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
+			Main.update.levelUp--;
 		}
 	}
 	

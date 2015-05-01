@@ -37,6 +37,7 @@ public class Player implements Drawable{
 	private int reqLvl = 12;
 	private int level;
 	private int face;
+	private boolean r = false;
 	BufferedImage Left[] = new BufferedImage[4];
 	BufferedImage Right[] = new BufferedImage[4];
 	BufferedImage Up[] = new BufferedImage[4];
@@ -50,7 +51,7 @@ public class Player implements Drawable{
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
 	private BufferedImage image;
 	private Rectangle2D boundBox;
-	private BufferedImage def;
+	private BufferedImage defL, defR;
 	public boolean oozeQuest;
 	/**
 	 * Constructor. Creates a player character.
@@ -70,7 +71,8 @@ public class Player implements Drawable{
 		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
 		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
 		try {
-			def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/chromDefault.png"));
+			defL = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDL.png"));
+			defR = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDR.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -234,128 +236,141 @@ public class Player implements Drawable{
 	}
 	public void setImage(int face){
 		if(motionSpeed == 0){
-			motionSpeed = 40;
+			motionSpeed = 60;
 			revMov = !revMov;
 		}
-		this.face = face;
+		if(face == RIGHT){
+			r = true;
+		}
+		if(face == LEFT){
+			r = false;
+		}
+		if(face != DEFAULT)
+			this.face = face;
 		if(!revMov){
 			if(face == DEFAULT){
-				this.image = def;
+				if(r)
+					this.image = defR;
+				else
+					this.image = defL;
 			}
 			else if(face == UP){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Up[0];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Up[1];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Up[2];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Up[3];
 				}
 			}
 			else if(face == DOWN){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Down[0];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Down[1];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Down[2];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Down[3];
 				}
 			}
 			else if(face == RIGHT){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Right[0];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Right[1];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Right[2];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Right[3];
 				}
 			}
 			else if(face == LEFT){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Left[0];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Left[1];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Left[2];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Left[3];
 				}
 			}
 		}
 		else if(revMov){
 			if(face == DEFAULT){
-				this.image = def;
+				if(r)
+					this.image = defR;
+				else
+					this.image = defL;
 			}
 			else if(face == UP){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Up[3];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Up[2];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Up[1];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Up[0];
 				}
 			}
 			else if(face == DOWN){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Down[3];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Down[2];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Down[1];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Down[0];
 				}
 			}
 			else if(face == RIGHT){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Right[3];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Right[2];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Right[1];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Right[0];
 				}
 			}
 			else if(face == LEFT){
-				if(40 >= motionSpeed && 30 < motionSpeed){
+				if(60 >= motionSpeed && 45 < motionSpeed){
 					this.image = Left[3];
 				}
-				else if(30 >= motionSpeed && 20 < motionSpeed){
+				else if(45 >= motionSpeed && 30 < motionSpeed){
 					this.image = Left[2];
 				}
-				else if(20 >= motionSpeed && 10 < motionSpeed){
+				else if(30 >= motionSpeed && 15 < motionSpeed){
 					this.image = Left[1];
 				}
-				else if(10 >= motionSpeed && 0 < motionSpeed){
+				else if(15 >= motionSpeed && 0 < motionSpeed){
 					this.image = Left[0];
 				}
 			}
@@ -374,7 +389,10 @@ public class Player implements Drawable{
 			this.attack();
 		}
 		else if(attackSpeed == 0){
-			this.image = def;
+			if(r)
+				this.image = defR;
+			else
+				this.image = defL;
 			attackSpeed = -1;
 		}
 	}
@@ -394,6 +412,7 @@ public class Player implements Drawable{
 	}
 	private void levelUp() {
 		level++;
+		Main.update.levelUp = 60;
 		this.baseAttack += 2;
 		this.baseDefense += 2;
 		this.mhp += 10;
