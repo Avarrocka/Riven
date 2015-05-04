@@ -52,6 +52,7 @@ public class Update implements Runnable {
 	public int splashScreenTime = 0;
 	public int enemySpawnTime = 200;
 	public Rectangle2D nb;
+	public Rectangle2D attackBox;
 	public boolean nextDialogue = false;
 	public boolean NPCsSpawned = false;
 	public boolean shopping = false;
@@ -136,11 +137,12 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Turandal1";
 		splashScreenTime = 250;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
+		attackBox = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
 	} 
@@ -185,9 +187,25 @@ public class Update implements Runnable {
 				moneyDrop = enemies.get(i).rollMoney(enemies.get(i).getID());
 				moneyDraw = 60;
 				PC.setGold(PC.getGold() + moneyDrop);
+				PC.setEXP(enemies.get(i).getEXP());
 				enemies.get(i).rollLoot();
 				enemies.remove(i);
 			}
+		}
+		if(PC.getHealth() <= 0){
+			PC.setHealth(PC.getMaxHealth());
+			PC.setX(GraphicsMain.WIDTH/2 - 96);
+			PC.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
+			mapID = "Taverly";
+			splashScreenTime = 50; //Splash Screen Draw Time
+			areasSpawned = false;
+			leaveArea.clear();
+			leaveAreaName.clear();
+			collisionRectangles.clear();
+			NPCs.clear();
+			moveDir.clear();
+			enemies.clear();
+			NPCsSpawned = false;
 		}
 	}
 
@@ -210,7 +228,7 @@ public class Update implements Runnable {
 				}
 			}
 			if(notInCorners){
-				enemySpawnTime = 200;
+				enemySpawnTime = 1000;
 				enemies.add(e);
 			}
 		}
@@ -331,40 +349,19 @@ public class Update implements Runnable {
 	private void handleMovement(){
 		handlePCCommands();
 		movePC();
-		moveNPCs();
+		moveThings();
 		updateTimes();
 		if(shooting){
 			moveGrapple();
 			pullNPC();
 		}
 	}
-	private void moveNPCs() {
+	private void moveThings() {
 		if(mapID != "Taverly"){
-			for(int i = 0; i < NPCs.size(); i++){
-				if(NPCs.get(i) != speakingWith){
-					int a = RNG.nextInt(50);
-					if(a == 1){
-						if(!(NPCs.get(i).getX() + 3 >= NPCs.get(i).getHighBoundX())){
-							NPCs.get(i).setX(NPCs.get(i).getX()+3);
-						}
-					}
-					else if(a == 2){
-						if(!(NPCs.get(i).getX() - 3 <= NPCs.get(i).getLowBoundX())){
-							NPCs.get(i).setX(NPCs.get(i).getX()-3);
-						}
-					}
-					else if(a == 3){
-						if(!(NPCs.get(i).getY() -3 <= NPCs.get(i).getLowBoundY())){
-							NPCs.get(i).setY(NPCs.get(i).getY()-3);
-						}
-					}
-					else if(a == 3){
-						if(!(NPCs.get(i).getY() + 3 >= NPCs.get(i).getHighBoundY())){
-							NPCs.get(i).setY(NPCs.get(i).getY()+3);
-						}
-					}
-					NPCs.get(i).updateBoundbox();
-					NPCs.get(i).updateSmall();
+			for(int i = 0; i < enemies.size(); i++){
+				if(!enemies.get(i).moving()){
+					int face = RNG.nextInt(4)+1;
+					enemies.get(i).move(face);
 				}
 			}
 		}
@@ -503,6 +500,7 @@ public class Update implements Runnable {
 			}
 			else if(!PC.getAttacking()){
 				PC.attacking(40);
+				attack();
 				KeyboardListener.space = false;
 			}
 		}
@@ -630,6 +628,29 @@ public class Update implements Runnable {
 		}
 		else
 			drawInfo = false;
+	}
+
+	private void attack() {
+		int face = PC.getFace(); //3left 4right 1up 2down?
+		if(face == 1){
+			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()-20, PC.getWidth()+20, 20);
+		}
+		else if(face == 2){
+			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()+PC.getHeight(), PC.getWidth()+20, 20);
+		}
+		else if(face == 3){
+			attackBox = new Rectangle2D.Double(PC.getX()-20, PC.getY()-10, 20, PC.getHeight()+20);
+		}
+		else if(face == 4){
+			attackBox = new Rectangle2D.Double(PC.getX() + PC.getWidth(), PC.getY()-10, 20, PC.getHeight()+20);
+		}
+		for(int i = 0; i < enemies.size(); i++){
+			if(enemies.get(i).getBoundbox().intersects(attackBox)){
+				enemies.get(i).damage(PC.getDamage());
+				enemies.get(i).retaliate();
+			}
+		}
+		attackBox = null;
 	}
 
 	private void spawnGrapplingHook() {

@@ -131,7 +131,7 @@ public class Render implements Runnable {
 			//drawPortal(g);
 			drawPrompts(g);
 			drawPlayer(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawDialogue(g);
 			drawInventory(g);
 			drawCooldowns(g);
@@ -464,6 +464,8 @@ public class Render implements Runnable {
 		for(int i = 0; i < Main.update.collisionRectangles.size(); i++){
 			g.draw(Main.update.collisionRectangles.get(i));
 		}
+		if(Main.update.attackBox != null)
+			g.draw(Main.update.attackBox);
 	}
 	
 	private void drawPrompts(Graphics2D g){
@@ -482,8 +484,6 @@ public class Render implements Runnable {
 		}
 		if(Main.update.levelUp > 0){
 			g.drawImage(levelUp, Main.update.PC.getX()-20, Main.update.PC.getY()-30 -((60-Main.update.levelUp)/4), null);
-			if(Main.update.levelUp > 30)
-				g.drawImage(levelUpAura, Main.update.PC.getX()-2, Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
 			Main.update.levelUp--;
 		}
 	}

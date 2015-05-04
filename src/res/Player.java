@@ -64,8 +64,8 @@ public class Player implements Drawable{
 		this.setYvelocity(0);
 		this.setGold(12000);
 		this.mhp = 100;
-		this.baseAttack = 5;
-		this.baseDefense = 5;
+		this.baseAttack = 2;
+		this.baseDefense = 2;
 		this.EXP = 0;
 		this.level = 1;
 		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
@@ -193,6 +193,10 @@ public class Player implements Drawable{
 	
 	public int getGold(){
 		return this.gold;
+	}
+	
+	public int getFace(){
+		return this.face;
 	}
 	public void setWeapon(Sword weapon, int index){
 		if(index >= 0){
@@ -413,8 +417,8 @@ public class Player implements Drawable{
 	private void levelUp() {
 		level++;
 		Main.update.levelUp = 60;
-		this.baseAttack += 2;
-		this.baseDefense += 2;
+		this.baseAttack = 2*level;
+		this.baseDefense = 2*level;
 		this.mhp += 10;
 	}
 	public int getReqLvl(){
@@ -545,5 +549,13 @@ public class Player implements Drawable{
 			}
 		}
 		attackSpeed--;
+	}
+
+	public void damage(int damage) {
+		int inflictedDamage = damage - (this.armor.getArmor()/2);
+		if(inflictedDamage <= 0){
+			inflictedDamage = 2;
+		}
+		this.hp -= inflictedDamage;
 	}
 }
