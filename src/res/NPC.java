@@ -153,6 +153,24 @@ public class NPC implements Drawable{
 				updateLines();
 			}
 		}
+		if(ID == "doomsayer"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/tsumiDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/tsumiHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 6;
+			dialogue = new String[dialogueLines];
+			name = "Arcanist Tsumi";	
+			dialogue[0] = "I was going to check it out, but right now I need to send a message to the council.";
+			dialogue[1] = "I've heard adventurers talk about a ruined portal near the center of Turandal Woods.";
+			dialogue[2] = "Rumors say that there's strange magic afoot. It's my job to investigate it.";
+			dialogue[3] = "Ugh. You haven't heard of all the people disappearing? All the screams late at night?";
+			dialogue[4] = "What do you mean you don't know what's happening? Have you been under a rock?";
+			dialogue[5] = "I'm an arcanist with the Arcane Council of Varrock. I've been sent here to help.";
+		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
