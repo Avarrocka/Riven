@@ -22,6 +22,7 @@ import res.Player;
 import res.NPC;
 import res.Sword;
 import res.Item;
+import res.Quest;
 //import res.NPCS AND STUFF;
 
 /**
@@ -41,6 +42,7 @@ public class Update implements Runnable {
 	public volatile LinkedList<Rectangle2D> collisionRectangles = new LinkedList<Rectangle2D>();
 	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
 	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
+	public volatile LinkedList<Quest> quests = new LinkedList<Quest>();
 	public CollisionRects creator = new CollisionRects();
 	public NPC speakingWith;
 	public Line2D grapple;
@@ -58,6 +60,7 @@ public class Update implements Runnable {
 	public boolean shopping = false;
 	public boolean drawInfo = false;
 	public boolean invScreen = false;
+	public boolean questScreen = false;
 	public boolean portalOnline = false;
 	//quest variables
 	public boolean gem = false;
@@ -145,6 +148,14 @@ public class Update implements Runnable {
 		attackBox = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
+		quests.add(new Quest("Priam's Task"));
+		quests.add(new Quest("Fixing the Portal"));
+		quests.add(new Quest("Priam's Task"));
+		quests.add(new Quest("Fixing the Portal"));
+		quests.add(new Quest("Priam's Task"));
+		quests.add(new Quest("Fixing the Portal"));
+		quests.add(new Quest("Priam's Task"));
+		quests.add(new Quest("Fixing the Portal"));
 	} 
 	
 	/**
@@ -528,6 +539,12 @@ public class Update implements Runnable {
 				qCD = 801;
 			}				
 		}
+		if(KeyboardListener.U){
+			questScreen = true;
+			manageQuests();
+		}
+		else
+			questScreen = false;
 		if(KeyboardListener.escape){
 			KeyboardListener.escape = false;
 			//Cancels all UIs
@@ -538,7 +555,9 @@ public class Update implements Runnable {
 			shopping = false;
 			purchased = 0;
 			invScreen = false;
+			questScreen = false;
 			KeyboardListener.I = false;
+			KeyboardListener.U = false;
 			drawInvIndx = 0;
 			drawWhich = 0;
 		}
@@ -645,6 +664,10 @@ public class Update implements Runnable {
 		}
 		else
 			drawInfo = false;
+	}
+
+	private void manageQuests() {
+		
 	}
 
 	private void attack() {

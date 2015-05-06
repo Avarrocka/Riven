@@ -8,7 +8,7 @@ import main.Main;
 
 /**
  * Key listening class for Trash Smash. Reads key input,sends info to Update thread.
- * @author Tristan Monger
+ * @author Brian Chen
  * @version 1.0
  */
 public class KeyboardListener implements KeyListener {
@@ -18,7 +18,7 @@ public class KeyboardListener implements KeyListener {
 	public static boolean E = false, Q = false, R = false, W = false;
 	public static boolean toggle = false;
 	public static boolean escape = false;
-	public static boolean I = false;
+	public static boolean I = false, U = false;
 
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -53,6 +53,9 @@ public class KeyboardListener implements KeyListener {
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_I){
 			I = !I;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_U){
+			U = !U;
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			if(Main.appState == Main.MENU_STATE) {

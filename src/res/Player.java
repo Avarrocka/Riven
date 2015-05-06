@@ -44,6 +44,8 @@ public class Player implements Drawable{
 	BufferedImage Down[] = new BufferedImage[4];
 	BufferedImage LAttack[] = new BufferedImage[4];
 	BufferedImage RAttack[] = new BufferedImage[4];
+	BufferedImage DAttack[] = new BufferedImage[4];
+	BufferedImage UAttack[] = new BufferedImage[4];
  	private boolean revMov = false;
 	private boolean hpBuff = false;
 	private int baseAttack, baseDefense;
@@ -121,6 +123,22 @@ public class Player implements Drawable{
 			LAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA2.png"));
 			LAttack[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA3.png"));
 			LAttack[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/LA4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			DAttack[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/DA1.png"));
+			DAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/DA2.png"));
+			DAttack[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/DA3.png"));
+			DAttack[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/DA4.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			UAttack[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/UA1.png"));
+			UAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/UA2.png"));
+			UAttack[2] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/UA3.png"));
+			UAttack[3] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/UA4.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -494,30 +512,30 @@ public class Player implements Drawable{
 	public void attack() {
 		if(face == UP){
 			if(40 >= attackSpeed && 30 < attackSpeed){
-				this.image = Up[0];
+				this.image = UAttack[0];
 			}
 			else if(30 >= attackSpeed && 20 < attackSpeed){
-				this.image = Up[1];
+				this.image = UAttack[1];
 			}
 			else if(20 >= attackSpeed && 10 < attackSpeed){
-				this.image = Up[2];
+				this.image = UAttack[2];
 			}
 			else if(10 >= attackSpeed && 0 < attackSpeed){
-				this.image = Up[3];
+				this.image = UAttack[3];
 			}
 		}
 		else if(face == DOWN){
 			if(40 >= attackSpeed && 30 < attackSpeed){
-				this.image = Down[0];
+				this.image = DAttack[0];
 			}
 			else if(30 >= attackSpeed && 20 < attackSpeed){
-				this.image = Down[1];
+				this.image = DAttack[1];
 			}
 			else if(20 >= attackSpeed && 10 < attackSpeed){
-				this.image = Down[2];
+				this.image = DAttack[2];
 			}
 			else if(10 >= attackSpeed && 0 < attackSpeed){
-				this.image = Down[3];
+				this.image = DAttack[3];
 			}
 		}
 		else if(face == RIGHT){

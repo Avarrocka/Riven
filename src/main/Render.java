@@ -23,6 +23,7 @@ import res.Player;
 import res.NPC;
 import res.Sword;
 import res.Item;
+import res.Quest;
 
 //import res.NPC AND STUFF
 
@@ -37,7 +38,7 @@ public class Render implements Runnable {
 	//vast array of Buffered Images used for graphics
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
-	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
+	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2;
 	BufferedImage qAbility, wAbility, meditateAura, levelUp, levelUpAura;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
@@ -84,6 +85,7 @@ public class Render implements Runnable {
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
+			questScreen = ImageIO.read(getClass().getClassLoader().getResource("Icons/quests.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -135,9 +137,9 @@ public class Render implements Runnable {
 			//drawPortal(g);
 			drawPrompts(g);
 			drawPlayer(g);
-			drawBounds(g);
+			//drawBounds(g);
 			drawDialogue(g);
-			drawInventory(g);
+			drawUIs(g);
 			drawCooldowns(g);
 		}
 		else{
@@ -231,7 +233,7 @@ public class Render implements Runnable {
 			g.drawImage(bPortal, 800, 300, 100, 100, null);		
 	}
 
-	private void drawInventory(Graphics2D g) {
+	private void drawUIs(Graphics2D g) {
 		if(Main.update.invScreen){
 			g.drawImage(inventory, 0, 30, 1024, 700, null);
 			g.setFont(new Font("Rockwell", Font.BOLD, 22));
@@ -340,6 +342,25 @@ public class Render implements Runnable {
 						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
 						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+					}
+				}
+			}
+		}
+		if(Main.update.questScreen){
+			g.setColor(Color.black);
+			g.drawImage(questScreen, 0, 30, 1024, 700, null);
+			if(Main.update.quests != null){
+				for(int i = 0; i < Main.update.quests.size(); i++){
+					if(i < 6){
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
+						g.drawString(Main.update.quests.get(i).getName(), 70, 80*i + 160);
+						g.setFont(new Font("Rockwell", Font.BOLD, 14));
+						g.drawString(Main.update.quests.get(i).getDesc(), 100, 80*i + 180);
+						g.drawString(Main.update.quests.get(i).getTask(), 125, 80*i + 200);
+					}
+					else{
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
+						g.drawString("More quests to display. Finish some first!", 70, 660);
 					}
 				}
 			}
