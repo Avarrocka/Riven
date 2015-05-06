@@ -137,7 +137,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Turandal2";
+		mapID = "Taverly";
 		splashScreenTime = 250;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
