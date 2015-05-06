@@ -193,6 +193,7 @@ public class Update implements Runnable {
 			}
 		}
 		if(PC.getHealth() <= 0){
+			System.out.print("ded");
 			PC.setHealth(PC.getMaxHealth());
 			PC.setX(GraphicsMain.WIDTH/2 - 96);
 			PC.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
@@ -244,9 +245,18 @@ public class Update implements Runnable {
 			moveDir.add(LEFT);
 			areasSpawned = true;
 		}
-		if(mapID == "Turandal1" && !areasSpawned){
+		else if(mapID == "Turandal1" && !areasSpawned){
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 125, 10, 40));
 			leaveAreaName.add("Taverly");
+			moveDir.add(RIGHT);
+			leaveArea.add(new Rectangle2D.Double(0, 350, 10, 70));
+			leaveAreaName.add("Turandal2");
+			moveDir.add(LEFT);
+			areasSpawned = true;
+		}
+		else if(mapID == "Turandal2" && !areasSpawned){
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
+			leaveAreaName.add("Turandal1");
 			moveDir.add(RIGHT);
 			areasSpawned = true;
 		}
@@ -290,6 +300,7 @@ public class Update implements Runnable {
 				NPCs.clear();
 				moveDir.clear();
 				enemies.clear();
+				speakingWith = null;
 				NPCsSpawned = false;
 			}
 		}
@@ -298,22 +309,19 @@ public class Update implements Runnable {
 	private void collisionWithNPCs(){
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D NPCharacter;
+		boolean stillTouching = false;
 		for(int i = 0; i < NPCs.size(); i++){
 			NPCharacter = NPCs.get(i).getBoundbox();
 			if(PlayerCharacter.intersects(NPCharacter) && NPCs.get(i).hasDialogue()){
 				if(dialogueOptions < 2){
 					dialogueOptions = 3;
 				}
-				if(NPCs.get(i) != speakingWith){
-					shopping = false;
-					commenceDialogue = 0;
-					dialogueOptions = 0;
-					speakingWith = NPCs.get(i);
-				}
+				stillTouching = true;
+				speakingWith = NPCs.get(i);
 			}
-			if(dialogueOptions == 0){
-				commenceDialogue = 0;
-			}
+		}
+		if(dialogueOptions == 0 && !stillTouching){
+			commenceDialogue = 0;
 		}
 	}
 	
@@ -325,6 +333,7 @@ public class Update implements Runnable {
 			NPCs.add(new NPC(244 , 180, "blacksmith"));
 			NPCs.add(new NPC(365, 180, "armorsmith"));
 			NPCs.add(new NPC(365, 650, "magister"));
+			NPCs.add(new NPC(500, 500, "stranger"));
 			shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
 			shopItems.add(new Item(30, 180, "Fish Steak"));
 			shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
@@ -494,7 +503,7 @@ public class Update implements Runnable {
 			}
 		}
 		if(KeyboardListener.space){
-			if(dialogueOptions > 0){
+			if(commenceDialogue > 0){
 				nextDialogue = true;
 				KeyboardListener.space = false;
 			}

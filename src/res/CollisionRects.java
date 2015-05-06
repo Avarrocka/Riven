@@ -39,10 +39,10 @@ public class CollisionRects{
 		else if(s == "Taverly"){
 			rectangles.add(new Rectangle2D.Double(0, 25, 100, 100));
 			rectangles.add(new Rectangle2D.Double(0, 195, 100, 70));
-			rectangles.add(new Rectangle2D.Double(210, 25, 250, 180));
-			rectangles.add(new Rectangle2D.Double(600, 105, 350, 95));
-			rectangles.add(new Rectangle2D.Double(700, 380, 140, 175));
-			rectangles.add(new Rectangle2D.Double(140, 355, 135, 155));
+			rectangles.add(new Rectangle2D.Double(210, 25, 250, 170));
+			rectangles.add(new Rectangle2D.Double(600, 105, 350, 85));
+			rectangles.add(new Rectangle2D.Double(700, 380, 140, 165));
+			rectangles.add(new Rectangle2D.Double(140, 355, 135, 145));
 		}
 		return rectangles;
 	}

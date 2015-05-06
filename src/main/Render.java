@@ -41,7 +41,7 @@ public class Render implements Runnable {
 	BufferedImage qAbility, wAbility, meditateAura, levelUp, levelUpAura;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash;
-	BufferedImage TurandalForest1;
+	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
 	//thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
 	
@@ -110,6 +110,9 @@ public class Render implements Runnable {
 		try {
 			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
 			TurandalForest1 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
+			TurandalForest2 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest2.png"));
+			TurandalForest3 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
+			RuinsofLargos = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -180,7 +183,7 @@ public class Render implements Runnable {
 			g.drawImage(TaverlySplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 			g.drawString("TAVERLY", 375, 720);
 		}
-		else if(Main.update.mapID == "Turandal1"){
+		else if(Main.update.mapID == "Turandal1" || Main.update.mapID == "Turandal2"){
 			g.setFont(new Font("Rockwell", Font.BOLD, 48));
 			g.setColor(Color.WHITE);
 			g.drawImage(TurandalSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
@@ -503,8 +506,11 @@ public class Render implements Runnable {
 		if(Main.update.mapID == "Taverly"){
 			g.drawImage(Taverly, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 		}
-		if(Main.update.mapID == "Turandal1"){
+		else if(Main.update.mapID == "Turandal1"){
 			g.drawImage(TurandalForest1, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+		}
+		else if(Main.update.mapID == "Turandal2"){
+			g.drawImage(TurandalForest2, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 		}
 	}
 	
