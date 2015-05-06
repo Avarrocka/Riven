@@ -40,7 +40,7 @@ public class Render implements Runnable {
 	BufferedImage shop, inventory, bPortal, rPortal, hook, hook2;
 	BufferedImage qAbility, wAbility, meditateAura, levelUp, levelUpAura;
 	BufferedImage sword[] = new BufferedImage[7];
-	BufferedImage TaverlySplash, TurandalSplash;
+	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
 	//thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
@@ -104,6 +104,7 @@ public class Render implements Runnable {
 		try {
 			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
 			TurandalSplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalSplash.png"));
+			RuinsSplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/ruinsSplash.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -112,7 +113,7 @@ public class Render implements Runnable {
 			TurandalForest1 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
 			TurandalForest2 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest2.png"));
 			TurandalForest3 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
-			RuinsofLargos = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
+			RuinsofLargos = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/RuinsofLargos.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,6 +189,12 @@ public class Render implements Runnable {
 			g.setColor(Color.WHITE);
 			g.drawImage(TurandalSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 			g.drawString("TURANDAL FOREST", 300, 720);
+		}
+		else if(Main.update.mapID == "RuinsofLargos"){
+			g.setFont(new Font("Rockwell", Font.BOLD, 48));
+			g.setColor(Color.WHITE);
+			g.drawImage(RuinsSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+			g.drawString("Ruins of Largos", 300, 720);
 		}
 		Main.update.splashScreenTime--;
 	}
@@ -511,6 +518,9 @@ public class Render implements Runnable {
 		}
 		else if(Main.update.mapID == "Turandal2"){
 			g.drawImage(TurandalForest2, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+		}
+		else if(Main.update.mapID == "RuinsofLargos"){
+			g.drawImage(RuinsofLargos, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 		}
 	}
 	

@@ -137,7 +137,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Turandal1";
+		mapID = "Turandal2";
 		splashScreenTime = 250;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -193,7 +193,6 @@ public class Update implements Runnable {
 			}
 		}
 		if(PC.getHealth() <= 0){
-			System.out.print("ded");
 			PC.setHealth(PC.getMaxHealth());
 			PC.setX(GraphicsMain.WIDTH/2 - 96);
 			PC.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
@@ -258,6 +257,15 @@ public class Update implements Runnable {
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
 			leaveAreaName.add("Turandal1");
 			moveDir.add(RIGHT);
+			leaveArea.add(new Rectangle2D.Double(570, 20, 50, 9));
+			leaveAreaName.add("RuinsofLargos");
+			moveDir.add(UP);
+			areasSpawned = true;
+		}
+		else if(mapID == "RuinsofLargos" && !areasSpawned){
+			leaveArea.add(new Rectangle2D.Double(570, GraphicsMain.HEIGHT-10, 50, 9));
+			leaveAreaName.add("Turandal2");
+			moveDir.add(DOWN);
 			areasSpawned = true;
 		}
 	}
@@ -284,12 +292,12 @@ public class Update implements Runnable {
 					PC.setY((int)LArea.getY());
 				}
 				if(moveDir.get(i) == UP){
-					PC.setX(GraphicsMain.WIDTH - 20 -(int)LArea.getX());
-					PC.setY((int)LArea.getY());
+					PC.setX((int)LArea.getX());
+					PC.setY(GraphicsMain.HEIGHT - 85);				
 				}
 				if(moveDir.get(i) == DOWN){
-					PC.setX(GraphicsMain.WIDTH - 20 -(int)LArea.getX());
-					PC.setY((int)LArea.getY());
+					PC.setX((int)LArea.getX());
+					PC.setY(40);
 				}
 				mapID = leaveAreaName.get(i);
 				splashScreenTime = 50; //Splash Screen Draw Time
