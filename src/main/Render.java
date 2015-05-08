@@ -39,7 +39,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2;
-	BufferedImage qAbility, wAbility, meditateAura, levelUp, levelUpAura;
+	BufferedImage qAbility, wAbility, meditateAura, levelUp, HPUI;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -95,9 +95,9 @@ public class Render implements Runnable {
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
 			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
-			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
+			HPUI = ImageIO.read(getClass().getClassLoader().getResource("UI/HPUI.png"));
 			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
-			levelUpAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUpAura.png"));
+			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
 		} catch (IOException e) {
@@ -133,14 +133,13 @@ public class Render implements Runnable {
 			drawNPC(g);
 			drawEnemies(g);
 			drawHealth(g);
-			drawAbilities(g);
+			drawHUD(g);
 			drawPortal(g);
 			drawPrompts(g);
 			drawPlayer(g);
 			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
-			drawCooldowns(g);
 		}
 		else{
 			drawSplashscreen(g);
@@ -201,16 +200,25 @@ public class Render implements Runnable {
 		Main.update.splashScreenTime--;
 	}
 
-	private void drawCooldowns(Graphics2D g) {
+	private void drawHUD(Graphics2D g) {
+		g.drawImage(HPUI, GraphicsMain.WIDTH - 186, 25, 186, 46, null);
+		double hp = ((((double)Main.update.PC.getHealth() / (double)Main.update.PC.getMaxHealth()) * 174));
+		double exp = ((((double)Main.update.PC.getEXP() / (double)Main.update.PC.getReqLvl()) * 98));
+		System.out.print(hp + " " + exp);
+		Rectangle2D HP = new Rectangle2D.Double(GraphicsMain.WIDTH-176, 35, hp, 10);
+		Rectangle2D EXP = new Rectangle2D.Double(GraphicsMain.WIDTH-100, 55, exp, 6);
+		g.setColor(Color.red);
+		g.fill(HP);
+		g.draw(HP);
+		g.setColor(Color.yellow);
+		g.fill(EXP);
+		g.draw(EXP);
 		g.setFont(new Font("Arial", Font.PLAIN, 12));
 		g.setColor(Color.white);
 		g.drawImage(qAbility, 3, 25, 32, 48, null);
 		g.drawString(""+Main.update.qCD, 8, 70);
 		g.drawImage(wAbility, 35, 25, 32, 48, null);
 		g.drawString(""+Main.update.wCD, 38, 70);
-	}
-
-	private void drawAbilities(Graphics2D g) {
 		Line2D grapple = Main.update.grapple;
 		if(grapple != null){
 			g.draw(grapple);
