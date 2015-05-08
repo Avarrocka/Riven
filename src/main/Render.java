@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -16,9 +17,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.imageio.ImageIO;
 
 import listeners.KeyboardListener;
+import listeners.MousekeyListener;
 import main.Update;
 import res.Armor;
 import res.Enemy;
+import res.Map;
 import res.Player;
 import res.NPC;
 import res.Sword;
@@ -36,10 +39,11 @@ public class Render implements Runnable {
 	private Graphics2D g;
 	private Queue<BufferedImage> dblBuffer = new LinkedList<BufferedImage>();
 	//vast array of Buffered Images used for graphics
+	Map map = new Map(200, 100);
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2;
-	BufferedImage qAbility, wAbility, meditateAura, levelUp, HPUI;
+	BufferedImage qAbility, wAbility, meditateAura, levelUp, HPUI, here;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -86,6 +90,7 @@ public class Render implements Runnable {
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
 			questScreen = ImageIO.read(getClass().getClassLoader().getResource("Icons/quests.png"));
+			here = ImageIO.read(getClass().getClassLoader().getResource("Icons/hereArrow.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -140,6 +145,7 @@ public class Render implements Runnable {
 			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
+			drawMap(g);
 		}
 		else{
 			drawSplashscreen(g);
@@ -177,7 +183,22 @@ public class Render implements Runnable {
 			e.draw(g);
 		}
 	}
-
+	
+	private void drawMap(Graphics2D g){
+		if(Main.update.map){
+			map.draw(g);
+			Point2D p = new Point2D.Double(MousekeyListener.getX(), MousekeyListener.getY());
+			String name = map.poiName(p);
+			String desc = map.poiDesc(p);
+			if(name != null && desc != null){
+				g.setFont(new Font("Rockwell", Font.BOLD, 16));
+				g.setColor(Color.BLACK);
+				g.drawString(name, map.getPOIX(), map.getPOIY());
+				g.setFont(new Font("Rockwell", Font.BOLD, 12));
+				g.drawString(desc, map.getPOIX(), map.getPOIY()+15);
+			}
+		}
+	}
 	private void drawSplashscreen(Graphics2D g) {
 		if(Main.update.mapID == "Taverly"){
 			g.setFont(new Font("Rockwell", Font.BOLD, 48));
@@ -204,9 +225,8 @@ public class Render implements Runnable {
 		g.drawImage(HPUI, GraphicsMain.WIDTH - 186, 25, 186, 46, null);
 		double hp = ((((double)Main.update.PC.getHealth() / (double)Main.update.PC.getMaxHealth()) * 174));
 		double exp = ((((double)Main.update.PC.getEXP() / (double)Main.update.PC.getReqLvl()) * 98));
-		System.out.print(hp + " " + exp);
-		Rectangle2D HP = new Rectangle2D.Double(GraphicsMain.WIDTH-176, 35, hp, 10);
-		Rectangle2D EXP = new Rectangle2D.Double(GraphicsMain.WIDTH-100, 55, exp, 6);
+		Rectangle2D HP = new Rectangle2D.Double(GraphicsMain.WIDTH-176+(174-hp), 35, hp, 10);
+		Rectangle2D EXP = new Rectangle2D.Double(GraphicsMain.WIDTH-100+(98-exp), 55, exp, 6);
 		g.setColor(Color.red);
 		g.fill(HP);
 		g.draw(HP);

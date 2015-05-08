@@ -62,6 +62,7 @@ public class Update implements Runnable {
 	public boolean invScreen = false;
 	public boolean questScreen = false;
 	public boolean portalOnline = false;
+	public boolean map = false;
 	//ability cooldowns/checks
 	public boolean shooting = false;
 	public boolean healing = false;
@@ -143,7 +144,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Turandal1";
 		splashScreenTime = 2;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -586,6 +587,10 @@ public class Update implements Runnable {
 		}
 		else
 			invScreen = false;
+		if(KeyboardListener.R == true){
+			KeyboardListener.R = false;
+			map = !map;
+		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
