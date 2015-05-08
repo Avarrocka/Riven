@@ -62,9 +62,6 @@ public class Update implements Runnable {
 	public boolean invScreen = false;
 	public boolean questScreen = false;
 	public boolean portalOnline = false;
-	//quest variables
-	public boolean gem = false;
-	public boolean oozeQuest = false;
 	//ability cooldowns/checks
 	public boolean shooting = false;
 	public boolean healing = false;
@@ -72,6 +69,12 @@ public class Update implements Runnable {
 	public int qCD = 0;
 	public int wCD = 0;
 	public boolean areasSpawned = false;
+	//quest variables
+	public boolean gem = false;
+	public boolean priamTask = false;
+	public boolean priamDone = false;
+	public int slimesSlain = 0;
+	public boolean fixingPortal = false;
 	//dialogue variables/inventory
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
@@ -141,21 +144,14 @@ public class Update implements Runnable {
 	
 	private void init() {
 		mapID = "Taverly";
-		splashScreenTime = 250;
+		splashScreenTime = 2;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
 		attackBox = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
-		quests.add(new Quest("Priam's Task"));
-		quests.add(new Quest("Fixing the Portal"));
-		quests.add(new Quest("Priam's Task"));
-		quests.add(new Quest("Fixing the Portal"));
-		quests.add(new Quest("Priam's Task"));
-		quests.add(new Quest("Fixing the Portal"));
-		quests.add(new Quest("Priam's Task"));
-		quests.add(new Quest("Fixing the Portal"));
+
 	} 
 	
 	/**
@@ -195,12 +191,26 @@ public class Update implements Runnable {
 		for(int i = 0; i < enemies.size(); i++){
 			enemies.get(i).update();
 			if(enemies.get(i).getHP() <= 0){
+				if(priamTask && slimesSlain < 10){
+					if(enemies.get(i).getID() == "slime"){
+						slimesSlain++;
+					}
+				}
 				moneyDrop = enemies.get(i).rollMoney(enemies.get(i).getID());
 				moneyDraw = 60;
 				PC.setGold(PC.getGold() + moneyDrop);
 				PC.setEXP(enemies.get(i).getEXP());
 				enemies.get(i).rollLoot();
 				enemies.remove(i);
+			}
+		}
+		for(int i = 0; i < quests.size(); i++){
+			quests.get(i).update();
+			if(quests.get(i).getDone()){
+				if(quests.get(i).getName() == "Priam's Task"){
+					priamDone = true;
+				}
+				quests.remove(i);
 			}
 		}
 		if(PC.getHealth() <= 0){
@@ -351,8 +361,7 @@ public class Update implements Runnable {
 			NPCs.add(new NPC(640, 180, "shop"));
 			NPCs.add(new NPC(244 , 180, "blacksmith"));
 			NPCs.add(new NPC(365, 180, "armorsmith"));
-			NPCs.add(new NPC(365, 650, "magister"));
-			NPCs.add(new NPC(500, 500, "stranger"));
+			NPCs.add(new NPC(5, 400, "doomsayer"));
 			shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
 			shopItems.add(new Item(30, 180, "Fish Steak"));
 			shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
@@ -370,7 +379,17 @@ public class Update implements Runnable {
 		else if(mapID == "Turandal1" && !NPCsSpawned){
 			NPCsSpawned = true;
 			collisionRectangles = creator.createRectangles(mapID);
-			NPCs.add(new NPC(560, 200, "stranger"));
+			NPCs.add(new NPC(900, 150, "guard"));
+		}
+		else if(mapID == "Turandal2" && !NPCsSpawned){
+			NPCsSpawned = true;
+			collisionRectangles = creator.createRectangles(mapID);
+			NPCs.add(new NPC(0, 450, "stranger"));
+		}
+		else if(mapID == "RuinsofLargos" && !NPCsSpawned){
+			NPCsSpawned = true;
+			collisionRectangles = creator.createRectangles(mapID);
+			NPCs.add(new NPC(400, 400, "yenfay"));
 		}
 	}
 
@@ -567,16 +586,6 @@ public class Update implements Runnable {
 		}
 		else
 			invScreen = false;
-		if(KeyboardListener.toggle){
-			if(gem){
-				portalOnline = true;
-				for(int i = 0; i < PC.qItems.size(); i++){
-					if(PC.qItems.get(i).getID() == "Soul Gem"){
-						PC.qItems.remove(i);
-					}
-				}
-			}
-		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
 			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());

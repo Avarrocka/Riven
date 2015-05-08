@@ -67,7 +67,7 @@ public class Enemy implements Drawable{
 				e.printStackTrace();
 			}
 			this.image = movement[0];
-			this.health = 60;
+			this.health = 2;
 			this.damage = 10;
 			this.EXP = 5;
 		}

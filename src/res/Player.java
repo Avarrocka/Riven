@@ -61,11 +61,11 @@ public class Player implements Drawable{
 	public Player(int x, int y) {
 		this.setX(x);
 		this.setY(y);
-		this.setHealth(1);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
 		this.setGold(12000);
 		this.mhp = 100;
+		this.setHealth(mhp);
 		this.baseAttack = 2;
 		this.baseDefense = 2;
 		this.EXP = 0;
@@ -525,17 +525,26 @@ public class Player implements Drawable{
 			}
 		}
 		else if(face == DOWN){
-			if(40 >= attackSpeed && 30 < attackSpeed){
+			if(40 >= attackSpeed && 35 < attackSpeed){
 				this.image = DAttack[0];
 			}
-			else if(30 >= attackSpeed && 20 < attackSpeed){
+			else if(35 >= attackSpeed && 30 < attackSpeed){
 				this.image = DAttack[1];
 			}
-			else if(20 >= attackSpeed && 10 < attackSpeed){
+			else if(30 >= attackSpeed && 25 < attackSpeed){
 				this.image = DAttack[2];
 			}
-			else if(10 >= attackSpeed && 0 < attackSpeed){
+			else if(25 >= attackSpeed && 20 < attackSpeed){
 				this.image = DAttack[3];
+			}
+			else if(20 >= attackSpeed && 15 < attackSpeed){
+				this.image = DAttack[2];
+			}
+			else if(15 >= attackSpeed && 10 < attackSpeed){
+				this.image = DAttack[1];
+			}
+			else if(10 >= attackSpeed && 0 < attackSpeed){
+				this.image = DAttack[0];
 			}
 		}
 		else if(face == RIGHT){

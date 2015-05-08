@@ -148,8 +148,7 @@ public class NPC implements Drawable{
 			dialogue[3] = "I mean what are they going to do - slobber all over the cobblestone?";
 			dialogue[4] = "Stuck here guarding this stupid gate all day. Against what? Oozes? Slimes?";
 			dialogue[5] = "Ugh being a guard is such a bore. I'm literally losing my mind here.";
-			if(Main.update.oozeQuest){
-				Main.update.PC.oozeQuest = true;
+			if(Main.update.priamDone){
 				updateLines();
 			}
 		}
@@ -170,6 +169,27 @@ public class NPC implements Drawable{
 			dialogue[3] = "Ugh. You haven't heard of all the people disappearing? All the screams late at night?";
 			dialogue[4] = "What do you mean you don't know what's happening? Have you been under a rock?";
 			dialogue[5] = "I'm an arcanist with the Arcane Council of Varrock. I've been sent here to help.";
+		}
+		if(ID == "yenfay"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/yenfayDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/yenfayHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 6;
+			dialogue = new String[dialogueLines];
+			name = "Guardian Yenfay";	
+			dialogue[0] = "I'm looking to fix the portal. Can you help? I need a Soul Stone, to power the portal.";
+			dialogue[1] = "He had this crazed look in his eyes. He kept muttering something about darkness and chaos.";
+			dialogue[2] = "This portal - a family heirloom - was destroyed by the fanatical Shaman. Such a shame.";
+			dialogue[3] = "A Shaman started detecting faint measures of dark energy radiating from it.";
+			dialogue[4] = "Our family has protected this mystical portal for generations. Recently, though...";
+			dialogue[5] = "Greetings adventurer. I am Yenfay Largos, descendant of the noble Largos house.";
+			if(Main.update.gem){
+				updateLines();
+			}
 		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
@@ -296,6 +316,26 @@ public class NPC implements Drawable{
 			dialogue[2] = "To practice magic, I've got to stay hidden, see - I'm on the run from the Council.";
 			dialogue[3] = "The darned Arcane Council revoked my permit for practicing magic a while back.";
 			dialogue[4] = "Wondering why I'm out here?";
+		}
+		if(ID == "guard"){
+			dialogueLines = 2;
+			dialogue = new String[dialogueLines];
+			dialogue[0] = "Oh, right. Yeah, I'll teach you a few moves. Learn from the best, y'know?";
+			dialogue[1] = "Hey. Thanks for clearing out some of the slimes. I can go out for lunch early!";
+		}
+		if(ID == "yenfay" && !Main.update.portalOnline){
+			dialogueLines = 5;
+			dialogue = new String[dialogueLines];
+			dialogue[0] = "For your labors, I grant you full access to our portal and our training grounds.";
+			dialogue[1] = "Where does the portal lead? To our ancient training grounds - the elemental caverns.";
+			dialogue[2] = "Ugh... Aha - there, it should be done. That soul gem was potent indeed.";
+			dialogue[3] = "Yes, of course it'll do. I'll get to fixing the portal immediately.";
+			dialogue[4] = "Could it be...? A soul gem? I've never actually seen one with my own eyes!";
+		}if(ID == "yenfay" && Main.update.portalOnline){
+			dialogueLines = 2;
+			dialogue = new String[dialogueLines];
+			dialogue[0] = "For your labors, I grant you full access to our portal and our training grounds.";
+			dialogue[1] = "Where does the portal lead? To our ancient training grounds - the elemental caverns.";
 		}
 	}
 }

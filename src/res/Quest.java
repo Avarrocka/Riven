@@ -20,7 +20,6 @@ public class Quest{
 	private String description;
 	private String task;
 	private boolean qDone = false;
-	private int ETK; //enemies to kill
 	public Quest(String ID) {
 		this.questName = ID;
 		if(this.questName == "Fixing the Portal"){
@@ -28,20 +27,18 @@ public class Quest{
 			task = "Locate a Soul Gem to supercharge the Gate with. Someone in town may have an idea";
 		}
 		if(this.questName == "Priam's Task"){
-			description = "Help Guard Priam slay 10 slimes to help him along his guard shift.";
-			task = "Kill 10 Slimes. You've currently killed 0/10";
-			ETK = 10;
+			description = "Help Guard Priam slay 5 slimes to help him along his guard shift.";
+			task = "Kill 5 Slimes. You've currently killed 0/5";
 		}
 	}
 	public void update(){
 		if(this.questName == "Priam's Task"){
-			ETK--;
-			task = "Kill 10 Slimes. You've currently killed" + (10-ETK) +"/10";
+			task = "Kill 5 Slimes. You've currently killed " + Main.update.slimesSlain +"/5";
 		}
 		checkComplete();
 	}
 	private void checkComplete(){
-		if(this.questName == "Priam's Task" && ETK == 0){
+		if(this.questName == "Priam's Task" && Main.update.slimesSlain >= 5){
 			qDone = true;
 		}
 		if(this.questName == "Fixing the Portal"){

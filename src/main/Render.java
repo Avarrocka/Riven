@@ -134,10 +134,10 @@ public class Render implements Runnable {
 			drawEnemies(g);
 			drawHealth(g);
 			drawAbilities(g);
-			//drawPortal(g);
+			drawPortal(g);
 			drawPrompts(g);
 			drawPlayer(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
 			drawCooldowns(g);
@@ -226,11 +226,13 @@ public class Render implements Runnable {
 	}
 
 	private void drawPortal(Graphics2D g) {
-		if(Main.update.portalOnline){
-			g.drawImage(rPortal, 800, 300, 100, 100, null);
+		if(Main.update.mapID == "RuinsofLargos"){
+			if(Main.update.portalOnline){
+				g.drawImage(rPortal, 750, 300, 100, 100, null);
+			}
+			else
+				g.drawImage(bPortal, 750, 300, 100, 100, null);		
 		}
-		else
-			g.drawImage(bPortal, 800, 300, 100, 100, null);		
 	}
 
 	private void drawUIs(Graphics2D g) {
@@ -391,6 +393,31 @@ public class Render implements Runnable {
 					Main.update.PC.addQuestItem(soulGem);
 					Main.update.gem = true;
 					Main.update.speakingWith.updateLines();
+				}
+			}
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "yenfay")){
+				if(!Main.update.fixingPortal){
+					Main.update.fixingPortal = true;
+					Main.update.quests.add(new Quest("Fixing the Portal"));
+				}
+				if(Main.update.gem){
+					for(int i = 0; i < Main.update.PC.qItems.size(); i++){
+						if(Main.update.PC.qItems.get(i).getID() == "Soul Gem"){
+							Main.update.PC.qItems.remove(i);
+						}
+					}
+					Main.update.portalOnline = true;
+					Main.update.speakingWith.updateLines();
+				}
+			}
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "guard")){
+				if(!Main.update.priamTask){
+					Main.update.priamTask = true;
+					Main.update.quests.add(new Quest("Priam's Task"));
+				}
+				if(Main.update.priamDone){
+					Main.update.PC.setEXP(100);
+					Main.update.priamDone = false;
 				}
 			}
 		}
