@@ -144,7 +144,7 @@ public class NPC implements Drawable{
 			name = "Guard Priam";	
 			dialogue[0] = "Whatever. Just rough up about ten oozes and I'll teach you a few tactics with the sword.";
 			dialogue[1] = "Rewards? Well I don't suppose you'd accept half my sandwhich as payment?";
-			dialogue[2] = "You think you could pop a couple for me? If you clean up about 10 I could go on lunch break.";
+			dialogue[2] = "You think you could pop a couple for me? If you clean up about 5 I could go on lunch break.";
 			dialogue[3] = "I mean what are they going to do - slobber all over the cobblestone?";
 			dialogue[4] = "Stuck here guarding this stupid gate all day. Against what? Oozes? Slimes?";
 			dialogue[5] = "Ugh being a guard is such a bore. I'm literally losing my mind here.";

@@ -31,7 +31,7 @@ import res.Quest;
 //import res.NPC AND STUFF
 
 /**
- * Render class for Trash Smash, runs on render thread, contains draw methods
+ * Render class for Riven, runs on render thread, contains draw methods
  * @author Brian Chen
  */
 public class Render implements Runnable {

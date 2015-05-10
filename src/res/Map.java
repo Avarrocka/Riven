@@ -40,18 +40,30 @@ public class Map implements Drawable{
 		}
 		this.x = x;
 		this.y = y;
-		POI.add(new Rectangle2D.Double(350, 175, 20, 20));
-		POINames.add("Frozen Heath");
+		POI.add(new Rectangle2D.Double(310, 175, 20, 20));
+		POINames.add("Jotunheim");
 		POIDesc.add("A frozen isle dominated by ice elementals.");
-		POI.add(new Rectangle2D.Double(625, 160, 20, 20));
+		POI.add(new Rectangle2D.Double(555, 135, 20, 20));
+		POINames.add("Muspelheim");
+		POIDesc.add("A lava isle that sputters with fiery wrath.");
+		POI.add(new Rectangle2D.Double(740, 154, 20, 20));
+		POINames.add("Kai Dhong");
+		POIDesc.add("A massive temple unvieled by a giant fissure.");
+		POI.add(new Rectangle2D.Double(630, 525, 20, 20));
 		POINames.add("Taverly");
-		POIDesc.add("Home sweet home.");
-		POI.add(new Rectangle2D.Double(626, 285, 20, 20));
-		POINames.add("Isle of Flame");
-		POIDesc.add("This isle is constantly on the verge of exploding.");
-		POI.add(new Rectangle2D.Double(660, 450, 20, 20));
-		POINames.add("Rugged Fissure");
-		POIDesc.add("A huge fissure which echoes with screams.");
+		POIDesc.add("A peaceful village - your hometown.");
+		POI.add(new Rectangle2D.Double(455, 374, 20, 20));
+		POINames.add("Ruins of Largos");
+		POIDesc.add("A ruined temple that once housed an ancient artifact.");
+		POI.add(new Rectangle2D.Double(470, 520, 20, 20));
+		POINames.add("Turandal Forests");
+		POIDesc.add("A lush forest that adorns the outskirts of Taverly.");
+		POI.add(new Rectangle2D.Double(250, 360, 20, 20));
+		POINames.add("Unknown");
+		POIDesc.add("???");
+		POI.add(new Rectangle2D.Double(705, 590, 20, 20));
+		POINames.add("Road to Varrock");
+		POIDesc.add("Road between Varrock and Taverly. Blocked.");
 	}
 	
 	public void draw(Graphics2D g) {
