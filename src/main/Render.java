@@ -84,7 +84,6 @@ public class Render implements Runnable {
 	//Loads all image objects into game from Assets folder
 	private void init() { 
 		try {
-			Taverly = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlyTown.png"));
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
@@ -106,22 +105,6 @@ public class Render implements Runnable {
 			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
 			bPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/brokenPortal.png"));
 			rPortal = ImageIO.read(getClass().getClassLoader().getResource("Icons/repairedPortal.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
-			TurandalSplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalSplash.png"));
-			RuinsSplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/ruinsSplash.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			TaverlySplash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TaverlySplash.png"));
-			TurandalForest1 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
-			TurandalForest2 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest2.png"));
-			TurandalForest3 = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest1.png"));
-			RuinsofLargos = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/RuinsofLargos.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -202,24 +185,9 @@ public class Render implements Runnable {
 		}
 	}
 	private void drawSplashscreen(Graphics2D g) {
-		if(Main.update.mapID == "Taverly"){
-			g.setFont(new Font("Rockwell", Font.BOLD, 48));
-			g.setColor(Color.WHITE);
-			g.drawImage(TaverlySplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-			g.drawString("TAVERLY", 375, 720);
-		}
-		else if(Main.update.mapID == "Turandal1" || Main.update.mapID == "Turandal2"){
-			g.setFont(new Font("Rockwell", Font.BOLD, 48));
-			g.setColor(Color.WHITE);
-			g.drawImage(TurandalSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-			g.drawString("TURANDAL FOREST", 300, 720);
-		}
-		else if(Main.update.mapID == "RuinsofLargos"){
-			g.setFont(new Font("Rockwell", Font.BOLD, 48));
-			g.setColor(Color.WHITE);
-			g.drawImage(RuinsSplash, 0,0,GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-			g.drawString("Ruins of Largos", 300, 720);
-		}
+		g.drawImage(Main.update.area.getSplash(), 0, 0, 1024, 768, null);
+		g.setFont(new Font("Rockwell", Font.BOLD, 52));
+		g.drawString(Main.update.area.getName(), 350, 720);
 		Main.update.splashScreenTime--;
 	}
 
@@ -256,7 +224,7 @@ public class Render implements Runnable {
 	}
 
 	private void drawPortal(Graphics2D g) {
-		if(Main.update.mapID == "RuinsofLargos"){
+		if(Main.update.area.getID() == "RuinsofLargos"){
 			if(Main.update.portalOnline){
 				g.drawImage(rPortal, 750, 300, 100, 100, null);
 			}
@@ -283,7 +251,7 @@ public class Render implements Runnable {
 			g.drawString("HP               " + Main.update.PC.getHealth() + "/" + Main.update.PC.getMaxHealth(), 70, 80);
 			g.setColor(Color.black);
 			g.drawString("EXP:            " + Main.update.PC.getEXP() + "/" + Main.update.PC.getReqLvl() + " to level", 70, 100);
-			g.drawString("Location     " + Main.update.mapID, 70, 120);
+			g.drawString("Location     " + Main.update.area.getName(), 70, 120);
 			g.setColor(Color.blue);
 			g.setFont(new Font("Rockwell", Font.BOLD, 25));
 			g.drawString("Level " + Main.update.PC.getLevel(), 235, 200);
@@ -444,9 +412,10 @@ public class Render implements Runnable {
 				if(!Main.update.priamTask){
 					Main.update.priamTask = true;
 					Main.update.quests.add(new Quest("Priam's Task"));
+					Main.update.priamIndex = Main.update.quests.size()-1;
 				}
 				if(Main.update.priamDone){
-					Main.update.PC.setEXP(100);
+					Main.update.quests.get(Main.update.priamIndex).claimReward();
 					Main.update.priamDone = false;
 				}
 			}
@@ -588,18 +557,7 @@ public class Render implements Runnable {
 	}
 
 	private void drawBackground(Graphics2D g){
-		if(Main.update.mapID == "Taverly"){
-			g.drawImage(Taverly, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-		}
-		else if(Main.update.mapID == "Turandal1"){
-			g.drawImage(TurandalForest1, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-		}
-		else if(Main.update.mapID == "Turandal2"){
-			g.drawImage(TurandalForest2, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-		}
-		else if(Main.update.mapID == "RuinsofLargos"){
-			g.drawImage(RuinsofLargos, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-		}
+		g.drawImage(Main.update.area.getImage(), 0, 0, 1024, 768, null);
 	}
 	
 	private void drawPlayer(Graphics2D g){

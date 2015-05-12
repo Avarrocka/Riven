@@ -317,7 +317,7 @@ public class NPC implements Drawable{
 			dialogue[3] = "The darned Arcane Council revoked my permit for practicing magic a while back.";
 			dialogue[4] = "Wondering why I'm out here?";
 		}
-		if(ID == "guard"){
+		if(ID == "guard" && Main.update.priamDone){
 			dialogueLines = 2;
 			dialogue = new String[dialogueLines];
 			dialogue[0] = "Oh, right. Yeah, I'll teach you a few moves. Learn from the best, y'know?";
@@ -336,6 +336,16 @@ public class NPC implements Drawable{
 			dialogue = new String[dialogueLines];
 			dialogue[0] = "For your labors, I grant you full access to our portal and our training grounds.";
 			dialogue[1] = "Where does the portal lead? To our ancient training grounds - the elemental caverns.";
+		}
+	}
+	public void onMapUpdate(){
+		if(ID == "guard"){
+			if(Main.update.priamDone){
+				dialogueLines = 2;
+				dialogue = new String[dialogueLines];
+				dialogue[0] = "Oh, right. Yeah, I'll teach you a few moves. Learn from the best, y'know?";
+				dialogue[1] = "Hey. Thanks for clearing out some of the slimes. I can go out for lunch early!";
+			}
 		}
 	}
 }

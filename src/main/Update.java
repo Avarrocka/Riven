@@ -15,6 +15,7 @@ import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Render;
+import res.Area;
 import res.Armor;
 import res.CollisionRects;
 import res.Enemy;
@@ -32,18 +33,24 @@ import res.Quest;
 public class Update implements Runnable {
 	//Update resources
 	public String mapID = "";
+	public Area area;
+	
 	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
+	
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
+	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
+	
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
-	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
+	
 	public volatile LinkedList<Rectangle2D> leaveArea = new LinkedList<Rectangle2D>();
 	public volatile LinkedList<Rectangle2D> collisionRectangles = new LinkedList<Rectangle2D>();
 	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
 	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
+	
 	public volatile LinkedList<Quest> quests = new LinkedList<Quest>();
-	public CollisionRects creator = new CollisionRects();
+	
 	public NPC speakingWith;
 	public Line2D grapple;
 	public long startTime = 0;
@@ -55,14 +62,18 @@ public class Update implements Runnable {
 	public int enemySpawnTime = 200;
 	public Rectangle2D nb;
 	public Rectangle2D attackBox;
+	
 	public boolean nextDialogue = false;
 	public boolean NPCsSpawned = false;
 	public boolean shopping = false;
 	public boolean drawInfo = false;
+	
 	public boolean invScreen = false;
 	public boolean questScreen = false;
+	
 	public boolean portalOnline = false;
 	public boolean map = false;
+	
 	//ability cooldowns/checks
 	public boolean shooting = false;
 	public boolean healing = false;
@@ -70,12 +81,16 @@ public class Update implements Runnable {
 	public int qCD = 0;
 	public int wCD = 0;
 	public boolean areasSpawned = false;
+	
 	//quest variables
 	public boolean gem = false;
 	public boolean priamTask = false;
 	public boolean priamDone = false;
+	public int priamIndex = 0;
+	
 	public int slimesSlain = 0;
 	public boolean fixingPortal = false;
+	
 	//dialogue variables/inventory
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
@@ -145,14 +160,14 @@ public class Update implements Runnable {
 	
 	private void init() {
 		mapID = "Turandal1";
-		splashScreenTime = 2;
+		splashScreenTime = 25;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
 		attackBox = PC.getBoundbox();
 		playMusic();
 		startTime = System.currentTimeMillis();
-
+		area = new Area(mapID);
 	} 
 	
 	/**
@@ -188,11 +203,12 @@ public class Update implements Runnable {
 		for(int i = 0; i < NPCs.size(); i++){
 			NPCs.get(i).updateBoundbox();
 			NPCs.get(i).updateSmall();
+			NPCs.get(i).onMapUpdate();
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			enemies.get(i).update();
 			if(enemies.get(i).getHP() <= 0){
-				if(priamTask && slimesSlain < 10){
+				if(priamTask && slimesSlain <= 5){
 					if(enemies.get(i).getID() == "slime"){
 						slimesSlain++;
 					}
@@ -208,26 +224,14 @@ public class Update implements Runnable {
 		for(int i = 0; i < quests.size(); i++){
 			quests.get(i).update();
 			if(quests.get(i).getDone()){
-				if(quests.get(i).getName() == "Priam's Task"){
-					priamDone = true;
-				}
 				quests.remove(i);
 			}
 		}
 		if(PC.getHealth() <= 0){
+			area = new Area("Taverly");
 			PC.setHealth(PC.getMaxHealth());
 			PC.setX(GraphicsMain.WIDTH/2 - 96);
 			PC.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
-			mapID = "Taverly";
-			splashScreenTime = 50; //Splash Screen Draw Time
-			areasSpawned = false;
-			leaveArea.clear();
-			leaveAreaName.clear();
-			collisionRectangles.clear();
-			NPCs.clear();
-			moveDir.clear();
-			enemies.clear();
-			NPCsSpawned = false;
 		}
 	}
 
@@ -305,6 +309,13 @@ public class Update implements Runnable {
 		for(int i = 0; i < leaveArea.size(); i++){
 			LArea = leaveArea.get(i);
 			if(PlayerCharacter.intersects(LArea)){
+				mapID = leaveAreaName.get(i);
+				area = new Area(mapID);
+				splashScreenTime = 50;
+				NPCs.clear();
+				enemies.clear();
+				speakingWith = null;
+				NPCsSpawned = false;
 				if(moveDir.get(i) == LEFT){
 					PC.setX(GraphicsMain.WIDTH - 80 -(int)LArea.getX());
 					PC.setY((int)LArea.getY());
@@ -321,17 +332,11 @@ public class Update implements Runnable {
 					PC.setX((int)LArea.getX());
 					PC.setY(40);
 				}
-				mapID = leaveAreaName.get(i);
-				splashScreenTime = 50; //Splash Screen Draw Time
 				areasSpawned = false;
 				leaveArea.clear();
 				leaveAreaName.clear();
 				collisionRectangles.clear();
-				NPCs.clear();
 				moveDir.clear();
-				enemies.clear();
-				speakingWith = null;
-				NPCsSpawned = false;
 			}
 		}
 	}
@@ -358,11 +363,6 @@ public class Update implements Runnable {
 	private void spawnMap() {
 		if(mapID == "Taverly" && !NPCsSpawned){
 			NPCsSpawned = true;
-			collisionRectangles = creator.createRectangles(mapID);
-			NPCs.add(new NPC(640, 180, "shop"));
-			NPCs.add(new NPC(244 , 180, "blacksmith"));
-			NPCs.add(new NPC(365, 180, "armorsmith"));
-			NPCs.add(new NPC(5, 400, "doomsayer"));
 			shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
 			shopItems.add(new Item(30, 180, "Fish Steak"));
 			shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
@@ -376,21 +376,13 @@ public class Update implements Runnable {
 			shopSwords.add(new Sword(30, 200, "Katana"));
 			shopSwords.add(new Sword(30, 310, "Steel Sword"));
 			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
+			NPCs = area.getNPCs();
+			collisionRectangles = area.getCollisionRects();
 		}
-		else if(mapID == "Turandal1" && !NPCsSpawned){
+		else{
 			NPCsSpawned = true;
-			collisionRectangles = creator.createRectangles(mapID);
-			NPCs.add(new NPC(900, 150, "guard"));
-		}
-		else if(mapID == "Turandal2" && !NPCsSpawned){
-			NPCsSpawned = true;
-			collisionRectangles = creator.createRectangles(mapID);
-			NPCs.add(new NPC(0, 450, "stranger"));
-		}
-		else if(mapID == "RuinsofLargos" && !NPCsSpawned){
-			NPCsSpawned = true;
-			collisionRectangles = creator.createRectangles(mapID);
-			NPCs.add(new NPC(400, 400, "yenfay"));
+			NPCs = area.getNPCs();
+			collisionRectangles = area.getCollisionRects();
 		}
 	}
 
@@ -405,7 +397,7 @@ public class Update implements Runnable {
 		}
 	}
 	private void moveThings() {
-		if(mapID != "Taverly"){
+		if(area.getID() != "Taverly"){
 			for(int i = 0; i < enemies.size(); i++){
 				if(!enemies.get(i).moving()){
 					int face = RNG.nextInt(4)+1;
@@ -561,7 +553,6 @@ public class Update implements Runnable {
 		}
 		if(KeyboardListener.U){
 			questScreen = true;
-			manageQuests();
 		}
 		else
 			questScreen = false;
@@ -576,6 +567,7 @@ public class Update implements Runnable {
 			purchased = 0;
 			invScreen = false;
 			questScreen = false;
+			map = false;
 			KeyboardListener.I = false;
 			KeyboardListener.U = false;
 			drawInvIndx = 0;
@@ -680,9 +672,6 @@ public class Update implements Runnable {
 			drawInfo = false;
 	}
 
-	private void manageQuests() {
-		
-	}
 
 	private void attack() {
 		int face = PC.getFace(); //3left 4right 1up 2down?

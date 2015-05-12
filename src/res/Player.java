@@ -422,22 +422,26 @@ public class Player implements Drawable{
 		return this.EXP;
 	}
 	public void setEXP(int EXP){
-		this.EXP += EXP;
+		int exp = EXP;
+		this.EXP += exp;
 		if(this.EXP >= reqLvl){
-			this.EXP = this.EXP - reqLvl;
 			this.levelUp();
-			this.updateLevelCurve();
 		}
 	}
 	public int getLevel(){
 		return this.level;
 	}
 	private void levelUp() {
+		this.EXP = this.EXP - reqLvl;
+		this.updateLevelCurve();
 		level++;
 		Main.update.levelUp = 60;
 		this.baseAttack = 2*level;
 		this.baseDefense = 2*level;
 		this.mhp += 10;
+		if(this.EXP >= reqLvl){
+			levelUp();
+		}
 	}
 	public int getReqLvl(){
 		return this.reqLvl;

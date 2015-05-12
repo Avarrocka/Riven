@@ -19,7 +19,7 @@ public class Quest{
 	private String questName;
 	private String description;
 	private String task;
-	private boolean qDone = false;
+	private boolean qDone = false, qFin = false;
 	public Quest(String ID) {
 		this.questName = ID;
 		if(this.questName == "Fixing the Portal"){
@@ -33,13 +33,16 @@ public class Quest{
 	}
 	public void update(){
 		if(this.questName == "Priam's Task"){
-			task = "Kill 5 Slimes. You've currently killed " + Main.update.slimesSlain +"/5";
+			if(!qFin)
+				task = "Kill 5 Slimes. You've currently killed " + Main.update.slimesSlain +"/5";
 		}
 		checkComplete();
 	}
 	private void checkComplete(){
-		if(this.questName == "Priam's Task" && Main.update.slimesSlain >= 5){
-			qDone = true;
+		if(this.questName == "Priam's Task" && Main.update.slimesSlain >= 5 && !qFin){
+			qFin = true;
+			updateDialogue();
+			Main.update.priamDone = true;
 		}
 		if(this.questName == "Fixing the Portal"){
 			if(Main.update.gem){
@@ -51,6 +54,10 @@ public class Quest{
 				}
 				if(!hasGemStill){
 					qDone = true;
+				}
+				if(hasGemStill && !qFin){
+					qFin = true;
+					updateDialogue();
 				}
 			}
 		}
@@ -64,7 +71,24 @@ public class Quest{
 	public String getTask(){
 		return this.task;
 	}
+	public boolean getFinished(){
+		return this.qFin;
+	}
 	public boolean getDone(){
 		return this.qDone;
+	}
+	private void updateDialogue(){
+		if(this.questName == "Priam's Task" && qFin){
+			task = "You've killed the five slimes. Return to Priam for a reward.";
+		}
+		if(this.questName == "Fixing the Portal" && qFin){
+			task = "You've found the Soul Gem. Return to Yenfay to fix the portal.";
+		}
+	}
+	public void claimReward(){
+		if(this.questName == "Priam's Task"){
+			Main.update.PC.setEXP(50);
+			qDone = true;
+		}
 	}
 }
