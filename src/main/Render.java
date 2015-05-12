@@ -169,6 +169,7 @@ public class Render implements Runnable {
 	}
 	
 	private void drawMap(Graphics2D g){
+		map.updateCurrentLocation();
 		if(Main.update.map){
 			map.draw(g);
 			g.drawImage(mapUI, 295, 657, 420, 100, null);

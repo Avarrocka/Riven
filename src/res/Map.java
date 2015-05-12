@@ -24,9 +24,10 @@ import main.Render;
 public class Map implements Drawable{
 	private String ID;
 	private int x, y;
+	private int curX, curY;
 	private String desc;
 	private static final int WIDTH = 100, HEIGHT = 100;
-	private BufferedImage image, poi;
+	private BufferedImage image, poi, curLoc;
 	private LinkedList<Rectangle2D> POI = new LinkedList<>();
 	private LinkedList<String> POINames = new LinkedList<>();
 	private LinkedList<String> POIDesc = new LinkedList<>();
@@ -34,6 +35,7 @@ public class Map implements Drawable{
 		try {
 			this.image = ImageIO.read(getClass().getClassLoader().getResource("Icons/map.png"));
 			this.poi = ImageIO.read(getClass().getClassLoader().getResource("Icons/POI.png"));
+			this.curLoc = ImageIO.read(getClass().getClassLoader().getResource("Icons/curLoc.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -55,7 +57,7 @@ public class Map implements Drawable{
 		POINames.add("Ruins of Largos");
 		POIDesc.add("A ruined temple that once housed an ancient artifact.");
 		POI.add(new Rectangle2D.Double(470, 520, 20, 20));
-		POINames.add("Turandal Forests");
+		POINames.add("Turandal Forest");
 		POIDesc.add("A lush forest that adorns the outskirts of Taverly.");
 		POI.add(new Rectangle2D.Double(250, 360, 20, 20));
 		POINames.add("Unknown");
@@ -69,6 +71,7 @@ public class Map implements Drawable{
 		g.drawImage(image, null, x, y);
 		for(int i = 0; i < POI.size(); i++){
 			g.drawImage(poi, (int)POI.get(i).getX(), (int)POI.get(i).getY(), 20, 20, null);
+			g.drawImage(curLoc, curX, curY, 20, 20, null);
 		}
 	}
 	
@@ -93,6 +96,14 @@ public class Map implements Drawable{
 	}
 	public int getY() {
 		return this.y;
+	}
+	public void updateCurrentLocation(){
+		for(int i = 0; i < POINames.size(); i++){
+			if(Main.update.area.getName() == POINames.get(i)){
+				curX = (int)POI.get(i).getX();
+				curY = (int)POI.get(i).getY();
+			}
+		}
 	}
 	public String poiName(Point2D p){
 		for(int i = 0; i < POI.size(); i++){
