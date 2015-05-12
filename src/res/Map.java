@@ -24,7 +24,6 @@ import main.Render;
 public class Map implements Drawable{
 	private String ID;
 	private int x, y;
-	private int poix, poiy;
 	private String desc;
 	private static final int WIDTH = 100, HEIGHT = 100;
 	private BufferedImage image, poi;
@@ -95,17 +94,9 @@ public class Map implements Drawable{
 	public int getY() {
 		return this.y;
 	}
-	public int getPOIX(){
-		return this.poix;
-	}
-	public int getPOIY(){
-		return this.poiy;
-	}
 	public String poiName(Point2D p){
 		for(int i = 0; i < POI.size(); i++){
 			if(POI.get(i).contains(p)){
-				this.poix = (int)POI.get(i).getX() + 25;
-				this.poiy = (int)POI.get(i).getY();
 				return POINames.get(i);
 			}
 		}

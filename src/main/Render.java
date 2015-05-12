@@ -42,7 +42,7 @@ public class Render implements Runnable {
 	Map map = new Map(200, 100);
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
-	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2;
+	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2, mapUI;
 	BufferedImage qAbility, wAbility, meditateAura, levelUp, HPUI, here;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
@@ -90,6 +90,7 @@ public class Render implements Runnable {
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
 			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
 			questScreen = ImageIO.read(getClass().getClassLoader().getResource("Icons/quests.png"));
+			mapUI = ImageIO.read(getClass().getClassLoader().getResource("Icons/mapBot.png"));
 			here = ImageIO.read(getClass().getClassLoader().getResource("Icons/hereArrow.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
 		} catch (IOException e) {
@@ -187,15 +188,16 @@ public class Render implements Runnable {
 	private void drawMap(Graphics2D g){
 		if(Main.update.map){
 			map.draw(g);
+			g.drawImage(mapUI, 295, 657, 420, 100, null);
 			Point2D p = new Point2D.Double(MousekeyListener.getX(), MousekeyListener.getY());
 			String name = map.poiName(p);
 			String desc = map.poiDesc(p);
 			if(name != null && desc != null){
 				g.setFont(new Font("Rockwell", Font.BOLD, 16));
 				g.setColor(Color.BLACK);
-				g.drawString(name, map.getPOIX(), map.getPOIY());
+				g.drawString("Location: " + name, 325, 680);
 				g.setFont(new Font("Rockwell", Font.BOLD, 12));
-				g.drawString(desc, map.getPOIX(), map.getPOIY()+15);
+				g.drawString(desc, 325, 710);
 			}
 		}
 	}
