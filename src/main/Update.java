@@ -36,7 +36,7 @@ public class Update implements Runnable {
 	public String mapID = "";
 	public Area area;
 	
-	public volatile Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
+	public volatile static Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 	
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
@@ -162,7 +162,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Turandal1";
+		mapID = "Taverly";
 		splashScreenTime = 25;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -200,7 +200,6 @@ public class Update implements Runnable {
 			updateObjects();
 		}
 	}
-	
 	
 	private void updateObjects() {
 		for(int i = 0; i < NPCs.size(); i++){
@@ -416,6 +415,7 @@ public class Update implements Runnable {
 			pullNPC();
 		}
 	}
+	
 	private void moveThings() {
 		if(area.getID() != "Taverly"){
 			for(int i = 0; i < enemies.size(); i++){
@@ -497,6 +497,8 @@ public class Update implements Runnable {
 			}
 		}
 	}
+	
+	
 	private void moveGrapple() {
 		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
 		if(grapple.getX2() >= p.getX()){
@@ -630,6 +632,7 @@ public class Update implements Runnable {
 								PC.setGold(PC.getGold() - shopItems.get(i).getValue());
 								PC.addItem(shopItems.get(i));
 								purchased = 12;
+								quickSort(0, PC.invItems.size()-1);
 							}
 							else{
 								insufficientGold = 15;
@@ -701,7 +704,6 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
-
 
 	private void attack() {
 		int face = PC.getFace(); //3left 4right 1up 2down?
@@ -793,6 +795,40 @@ public class Update implements Runnable {
 		}
 	}
 
+	public static void quickSort(int low, int high){
+		if (low < high){
+		    int p = partition(low, high);
+		    quickSort(low, p - 1);
+		    quickSort(p + 1, high);
+		}
+	}
+	
+	private static int partition(int low, int high) {
+		 int pivotIndex = low;
+	     int pivotValue = PC.invItems.get(pivotIndex).getValue();
+	     swap(high, pivotIndex);
+	     int storeIndex = low;
+	     for(int i = low; i <= high-1; i++){
+	    	 if(PC.invItems.get(i).getValue() <= pivotValue){
+	    		 swap(i, storeIndex);
+	    		 storeIndex += 1;
+	    	 }
+	     }
+	     swap(high, storeIndex);
+	     return storeIndex;
+	}
+	
+	private static void swap(int i, int j){
+		if(j == PC.invItems.size()-1){
+			return;
+		}
+		Item temp = PC.invItems.get(i);
+		PC.invItems.remove(i);
+		PC.invItems.add(i, PC.invItems.get(j));
+		PC.invItems.remove(j);
+		PC.invItems.add(j, temp);
+	}
+	
 	private void updateTimes(){
 		if(healingTime == 1){
 			PC.heal(20);
@@ -812,6 +848,7 @@ public class Update implements Runnable {
 		//PC.setEXP(1);
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
+	
 	private void movePC(){
 		if(!(healingTime > 0)){
 			nb = new Rectangle2D.Double(PC.getX() + 4, PC.getY() + 4, PC.getWidth() - 8, PC.getHeight() - 8);
@@ -901,6 +938,7 @@ public class Update implements Runnable {
 			PC.updateBoundbox();
 		}
 	}
+	
 	/**
 	 * Switching between Muting and Un-muting the music.
 	 */
@@ -937,4 +975,6 @@ public class Update implements Runnable {
 			}
 		}
 	}
+	
+	
 }
