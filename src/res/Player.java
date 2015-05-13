@@ -37,6 +37,7 @@ public class Player implements Drawable{
 	private int reqLvl = 12;
 	private int level;
 	private int face;
+	private int dir;
 	private boolean r = false;
 	BufferedImage Left[] = new BufferedImage[4];
 	BufferedImage Right[] = new BufferedImage[4];
@@ -216,6 +217,25 @@ public class Player implements Drawable{
 	public int getFace(){
 		return this.face;
 	}
+	
+	public void updateDir(){
+		if(this.Vx > 0){
+			dir = 1;
+		}
+		if(this.Vx < 0){
+			dir = 0;
+		}
+		else if(this.Vy > 0){
+			dir = 3;
+		}
+		else if(this.Vy < 0){
+			dir = 2;
+		}
+	}
+	public int getDir(){
+		return dir;
+	}
+	
 	public void setWeapon(Sword weapon, int index){
 		if(index >= 0){
 			this.invSwords.remove(index);

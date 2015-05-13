@@ -43,7 +43,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2, mapUI;
-	BufferedImage qAbility, wAbility, meditateAura, levelUp, HPUI, here;
+	BufferedImage qAbility, wAbility, eAbility, meditateAura, levelUp, HPUI, here;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -100,6 +100,7 @@ public class Render implements Runnable {
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
 			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
+			eAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Eability.png"));
 			HPUI = ImageIO.read(getClass().getClassLoader().getResource("UI/HPUI.png"));
 			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
 			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
@@ -210,6 +211,8 @@ public class Render implements Runnable {
 		g.drawString(""+Main.update.qCD, 8, 70);
 		g.drawImage(wAbility, 35, 25, 32, 48, null);
 		g.drawString(""+Main.update.wCD, 38, 70);
+		g.drawImage(eAbility, 67, 25, 32, 48, null);
+		g.drawString(""+Main.update.eCD, 68, 70);
 		Line2D grapple = Main.update.grapple;
 		if(grapple != null){
 			g.draw(grapple);
@@ -217,6 +220,9 @@ public class Render implements Runnable {
 				g.drawImage(hook, (int)grapple.getX2(), (int)grapple.getY2()-20, 30, 30, null);
 			else
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
+		}
+		for(int i = 0; i < Main.update.darts.size(); i++){
+			Main.update.darts.get(i).draw(g);
 		}
 		if(Main.update.healingTime > 0){
 			g.drawImage(meditateAura, Main.update.PC.getX()-2, Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
@@ -524,6 +530,9 @@ public class Render implements Runnable {
 		}
 		if(Main.update.attackBox != null)
 			g.draw(Main.update.attackBox);
+		for(int i = 0; i < Main.update.darts.size(); i++){
+			g.draw(Main.update.darts.get(i).getBoundbox());
+		}
 	}
 	
 	private void drawPrompts(Graphics2D g){

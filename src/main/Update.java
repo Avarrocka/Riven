@@ -18,6 +18,7 @@ import main.Render;
 import res.Area;
 import res.Armor;
 import res.CollisionRects;
+import res.Dart;
 import res.Enemy;
 import res.Player;
 import res.NPC;
@@ -39,6 +40,7 @@ public class Update implements Runnable {
 	
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
+	public volatile LinkedList<Dart> darts = new LinkedList<Dart>();
 	
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
@@ -80,6 +82,7 @@ public class Update implements Runnable {
 	public boolean hasBeenHooked = false;
 	public int qCD = 0;
 	public int wCD = 0;
+	public int eCD = 0;
 	public boolean areasSpawned = false;
 	
 	//quest variables
@@ -204,6 +207,23 @@ public class Update implements Runnable {
 			NPCs.get(i).updateBoundbox();
 			NPCs.get(i).updateSmall();
 			NPCs.get(i).onMapUpdate();
+		}
+		for(int i = 0; i < darts.size(); i++){
+			darts.get(i).update();
+			if(darts.get(i).returnHit() == true){
+				darts.remove(i);
+			}
+			else if(darts.get(i).getX() > 1024 || darts.get(i).getX() < 0 || darts.get(i).getY() > 768 || darts.get(i).getY() < 0){
+				darts.remove(i);
+			}
+			else{
+				for(int m = 0; m < enemies.size(); m++){
+					if(darts.get(i).getBoundbox().intersects(enemies.get(m).getSmall())){
+						darts.get(i).updateHit(true);
+						enemies.get(m).damage(darts.get(i).getDamage());
+					}
+				}
+			}
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			enemies.get(i).update();
@@ -419,12 +439,12 @@ public class Update implements Runnable {
  	}
  	
  	private void NPCHooked(int i){
-		if(qCD == 801){
+		if(eCD == 801){
 			enemies.get(i).setHP(enemies.get(i).getHP() - 51);
 			PC.setEXP(10);
  			playSFX("hooked");
  			hasBeenHooked = true;
- 			qCD--;
+ 			eCD--;
  		}
  		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
  		if(p.getX()-16 > enemies.get(i).getX())
@@ -507,23 +527,33 @@ public class Update implements Runnable {
 		if(KeyboardListener.up && !(PC.getAttacking())) {
 			PC.setYvelocity(-movementSpeed);
 			PC.setImage(1);
+			PC.updateDir();
 		}
 		else if(KeyboardListener.down && !(PC.getAttacking())) {
 			PC.setYvelocity(movementSpeed);
 			PC.setImage(2);
+			PC.updateDir();
 		}
 		else if(KeyboardListener.left && !(PC.getAttacking())) {
 			PC.setXvelocity(-movementSpeed);
 			PC.setImage(3);
+			PC.updateDir();
 		}
 		else if(KeyboardListener.right && !(PC.getAttacking())) {
 			PC.setXvelocity(movementSpeed);
 			PC.setImage(4);
+			PC.updateDir();
 		}
 		if(KeyboardListener.R){
 			if(dialogueOptions > 0){
 				commenceDialogue = speakingWith.getDialogueLines();
 			}
+		}
+		if(KeyboardListener.Q){
+			if(qCD == 0){
+				spawnDart();
+				qCD = 25;
+			}	
 		}
 		if(KeyboardListener.W){
 			if(wCD == 0){
@@ -532,6 +562,13 @@ public class Update implements Runnable {
 				healingTime = 100;
 				wCD = 3000;
 			}
+		}
+		if(KeyboardListener.E){
+			if(eCD == 0){
+				spawnGrapplingHook();
+				shooting = true;
+				eCD = 801;
+			}	
 		}
 		if(KeyboardListener.space){
 			if(commenceDialogue > 0){
@@ -543,13 +580,6 @@ public class Update implements Runnable {
 				attack();
 				KeyboardListener.space = false;
 			}
-		}
-		if(KeyboardListener.Q){
-			if(qCD == 0){
-				spawnGrapplingHook();
-				shooting = true;
-				qCD = 801;
-			}				
 		}
 		if(KeyboardListener.U){
 			questScreen = true;
@@ -579,8 +609,8 @@ public class Update implements Runnable {
 		}
 		else
 			invScreen = false;
-		if(KeyboardListener.R == true){
-			KeyboardListener.R = false;
+		if(KeyboardListener.M == true){
+			KeyboardListener.M = false;
 			map = !map;
 		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
@@ -704,6 +734,10 @@ public class Update implements Runnable {
 		grapple = new Line2D.Double(p, p2);
 	}
 
+	private void spawnDart(){
+		darts.add(new Dart(PC.getX(), PC.getY(), PC.getDir()));
+	}
+	
 	private void manageInventory() {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
@@ -771,6 +805,9 @@ public class Update implements Runnable {
 			qCD--;
 		if(wCD > 0 && !healing){
 			wCD--;
+		}
+		if(eCD > 0){
+			eCD--;
 		}
 		//PC.setEXP(1);
 		currentTime = (System.currentTimeMillis() - startTime);
