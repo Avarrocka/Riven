@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import main.GraphicsMain;
 import main.Main;
 import main.Render;
+import res.Portal;
 
 /**
  * Class defines an enemy object

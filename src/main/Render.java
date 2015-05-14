@@ -124,9 +124,9 @@ public class Render implements Runnable {
 			drawEnemies(g);
 			drawHealth(g);
 			drawHUD(g);
-			drawPortal(g);
 			drawPrompts(g);
 			drawPlayer(g);
+			drawPortal(g);
 			//drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
@@ -205,14 +205,23 @@ public class Render implements Runnable {
 		g.setColor(Color.yellow);
 		g.fill(EXP);
 		g.draw(EXP);
-		g.setFont(new Font("Arial", Font.PLAIN, 12));
+		g.setFont(new Font("Arial", Font.PLAIN, 10));
 		g.setColor(Color.white);
 		g.drawImage(qAbility, 3, 25, 32, 48, null);
-		g.drawString(""+Main.update.qCD, 8, 70);
+		if(!Main.update.qLocked)
+			g.drawString(""+Main.update.qCD, 8, 70);
+		else
+			g.drawString("LOCK", 6, 70);
 		g.drawImage(wAbility, 35, 25, 32, 48, null);
-		g.drawString(""+Main.update.wCD, 38, 70);
+		if(!Main.update.wLocked)
+			g.drawString(""+Main.update.wCD, 38, 70);
+		else
+			g.drawString("LOCK", 36, 70);
 		g.drawImage(eAbility, 67, 25, 32, 48, null);
-		g.drawString(""+Main.update.eCD, 68, 70);
+		if(!Main.update.eLocked)
+			g.drawString(""+Main.update.eCD, 68, 70);
+		else
+			g.drawString("LOCK", 66, 70);
 		Line2D grapple = Main.update.grapple;
 		if(grapple != null){
 			g.draw(grapple);
@@ -231,12 +240,11 @@ public class Render implements Runnable {
 	}
 
 	private void drawPortal(Graphics2D g) {
-		if(Main.update.area.getID() == "RuinsofLargos"){
-			if(Main.update.portalOnline){
-				g.drawImage(rPortal, 750, 300, 100, 100, null);
+		if(Main.update.area.hasPortal()){
+			Main.update.area.getPortal().draw(g);
+			if(Main.update.portalScreen && Main.update.portalOnline){
+				Main.update.area.getPortal().drawTeleport(g);
 			}
-			else
-				g.drawImage(bPortal, 750, 300, 100, 100, null);		
 		}
 	}
 
@@ -425,6 +433,10 @@ public class Render implements Runnable {
 					Main.update.quests.get(Main.update.priamIndex).claimReward();
 					Main.update.priamDone = false;
 				}
+			}
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "hunter")){
+				Main.update.speakingWith.updateLines();
+				Main.update.qLocked = false;
 			}
 		}
 	}

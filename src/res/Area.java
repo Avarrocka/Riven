@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import main.GraphicsMain;
 import main.Main;
 import main.Render;
+import res.Portal;
 
 /**
  * Class defines an enemy object
@@ -29,6 +30,8 @@ public class Area implements Drawable{
 	private LinkedList<NPC> NPCs = new LinkedList<>();
 	private LinkedList<Rectangle2D> colli = new LinkedList<>();
 	private CollisionRects creator = new CollisionRects();
+	private Portal portal;
+	private boolean hasPortal = false;
 	public Area(String ID) {
 		if(ID == "Taverly"){
 			this.name = "Taverly";
@@ -42,6 +45,7 @@ public class Area implements Drawable{
 			this.NPCs.add(new NPC(244 , 180, "blacksmith"));
 			this.NPCs.add(new NPC(365, 180, "armorsmith"));
 			this.NPCs.add(new NPC(5, 400, "doomsayer"));
+			this.NPCs.add(new NPC(6, 700, "hunter"));
 		}
 		else if(ID == "Turandal1"){
 			this.name = "Turandal Forest";
@@ -72,6 +76,8 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			this.NPCs.add(new NPC(400, 400, "yenfay"));
+			portal = new Portal(535, 220);
+			this.hasPortal = true;
 		}
 		spawnCollisionRects(ID);
 	}
@@ -114,5 +120,11 @@ public class Area implements Drawable{
 	}
 	public LinkedList<NPC> getNPCs(){
 		return this.NPCs;
+	}
+	public boolean hasPortal(){
+		return this.hasPortal;
+	}
+	public Portal getPortal(){
+		return portal;
 	}
 }

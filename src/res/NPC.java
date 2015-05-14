@@ -191,6 +191,27 @@ public class NPC implements Drawable{
 				updateLines();
 			}
 		}
+		if(ID == "hunter"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/hunterDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/hunterHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 6;
+			dialogue = new String[dialogueLines];
+			name = "Aria";	
+			dialogue[0] = "Sure, they don't do much damage, but they do keep the monsters away";
+			dialogue[1] = "When I see monsters, I just throw knives at it until they leave. I use [Q] to throw them.";
+			dialogue[2] = "Recently, I've discovered a new way to keep safe. I can teach you too... I guess.";
+			dialogue[3] = "I... I think it's better to keep your distance from them.";
+			dialogue[4] = "Really, you shouldn't be fighting monsters. They're really quite dangerous...";
+			dialogue[5] = "H-hey there. A-are you an adventurer?";
+			if(Main.update.gem){
+				updateLines();
+			}
+		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
@@ -336,6 +357,11 @@ public class NPC implements Drawable{
 			dialogue = new String[dialogueLines];
 			dialogue[0] = "For your labors, I grant you full access to our portal and our training grounds.";
 			dialogue[1] = "Where does the portal lead? To our ancient training grounds - the elemental caverns.";
+		}
+		if(ID == "hunter"){
+			dialogueLines = 1;
+			dialogue = new String[dialogueLines];
+			dialogue[0] = "Sure, they don't do much damage, but they do keep the monsters away.";
 		}
 	}
 	public void onMapUpdate(){

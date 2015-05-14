@@ -33,7 +33,7 @@ public class Dart implements Drawable{
 	public Dart(int x, int y, int direction) {
 		this.x = x;
 		this.y = y;
-		this.damage = (int)(Main.update.PC.getDamage()*1.5);
+		this.damage = (int)(Main.update.PC.getDamage()/2);
 		this.direction = direction;
 		if(this.direction == NULL){
 			this.hit = true;

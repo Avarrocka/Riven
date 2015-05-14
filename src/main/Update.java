@@ -72,6 +72,7 @@ public class Update implements Runnable {
 	
 	public boolean invScreen = false;
 	public boolean questScreen = false;
+	public boolean portalScreen = false;
 	
 	public boolean portalOnline = false;
 	public boolean map = false;
@@ -83,9 +84,13 @@ public class Update implements Runnable {
 	public int qCD = 0;
 	public int wCD = 0;
 	public int eCD = 0;
+	public boolean qLocked = true;
+	public boolean wLocked = true;
+	public boolean eLocked = true;
 	public boolean areasSpawned = false;
 	
 	//quest variables
+	public int ouroboros = 0;
 	public boolean gem = false;
 	public boolean priamTask = false;
 	public boolean priamDone = false;
@@ -162,7 +167,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Turandal2";
 		splashScreenTime = 25;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -202,6 +207,9 @@ public class Update implements Runnable {
 	}
 	
 	private void updateObjects() {
+		if(area.hasPortal()){
+			area.getPortal().updatePortal();
+		}
 		for(int i = 0; i < NPCs.size(); i++){
 			NPCs.get(i).updateBoundbox();
 			NPCs.get(i).updateSmall();
@@ -523,7 +531,6 @@ public class Update implements Runnable {
 	}
 
 	private void handlePCCommands(){
-		lck.writeLock().lock();
 		movementSpeed = 2;
 		PC.setImage(0);
 		if(KeyboardListener.up && !(PC.getAttacking())) {
@@ -552,20 +559,20 @@ public class Update implements Runnable {
 			}
 		}
 		if(KeyboardListener.Q){
-			if(qCD == 0){
+			if(qCD == 0 && !qLocked){
 				spawnDart();
 				qCD = 25;
 			}	
 		}
 		if(KeyboardListener.W){
-			if(wCD == 0){
+			if(wCD == 0 && !wLocked){
 				playSFX("meditate");
 				healing = true;
 				healingTime = 100;
 				wCD = 3000;
 			}
 		}
-		if(KeyboardListener.E){
+		if(KeyboardListener.E && !eLocked){
 			if(eCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
@@ -911,6 +918,13 @@ public class Update implements Runnable {
 					}			
 				}
 			}
+			if(area.hasPortal()){
+				if(nb.intersects(area.getPortal().getBoundbox())){
+					portalScreen = true;
+				}
+				else
+					portalScreen = false;
+			}
 			if(!touch){
 				PC.setY(PC.getY() + PC.getYvelocity());
 				PC.setX(PC.getX() + PC.getXvelocity());
@@ -945,7 +959,6 @@ public class Update implements Runnable {
 	private void toggleMusic(){ 
 		if(!KeyboardListener.toggle) return; 
 		else KeyboardListener.toggle = false;
-		lck.writeLock().lock();
 		if(player.getStatus() != BasicPlayer.PAUSED){
 			try {
 				player.pause();
@@ -960,7 +973,6 @@ public class Update implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		lck.writeLock().unlock();
 	}
 	
 	/**
