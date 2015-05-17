@@ -259,20 +259,31 @@ public class Update implements Runnable {
 			PC.setHealth(PC.getMaxHealth());
 			PC.setX(GraphicsMain.WIDTH/2 - 96);
 			PC.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
+			NPCs.clear();
+			enemies.clear();
+			darts.clear();
 		}
 	}
 
 	private void spawnThings() {
 		spawnMap();
 		spawnLeaveAreas();
-		if(!(mapID == "Taverly")){
+		if(!(area.getID() == "Taverly")){
 			spawnEnemies();
 		}
 	}
 
 	private void spawnEnemies() {
 		if(enemySpawnTime == 0){
-			Enemy e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime");
+			int b = RNG.nextInt(3);
+			Enemy e;
+			if(b == 0){
+				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime");
+			}
+			else if(b == 1)
+				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "snowman");
+			else
+				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "aquaGoo");
 			Rectangle2D eBox = e.getBoundbox();
 			boolean notInCorners = true;
 			for(int i = 0; i < collisionRectangles.size(); i++){

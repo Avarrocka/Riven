@@ -30,6 +30,7 @@ public class Portal implements Drawable{
 	private Rectangle2D boundBox;
 	private LinkedList<Rectangle2D> places = new LinkedList<Rectangle2D>();
 	private LinkedList<String> placeName = new LinkedList<String>();
+	private LinkedList<String> placeNames = new LinkedList<String>();
 	private Point2D p;
 	/**
 	 * Constructor. Creates a player character.
@@ -53,12 +54,16 @@ public class Portal implements Drawable{
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		places.add(new Rectangle2D.Double(232, 132, 100, 100));
 		placeName.add("Ruins of Largos");
+		placeNames.add("RuinsofLargos");
 		places.add(new Rectangle2D.Double(232, 232, 100, 100));
 		placeName.add("Kai Dhong");
+		placeNames.add("KaiDhong1");
 		places.add(new Rectangle2D.Double(232, 332, 100, 100));
-		placeName.add("Jotunheim");
+		placeName.add("Frostgorge");
+		placeNames.add("Frostgorge1");
 		places.add(new Rectangle2D.Double(232, 432, 100, 100));
-		placeName.add("Muspelheim");
+		placeName.add("Balthazar");
+		placeNames.add("Balthazar1");
 		places.add(new Rectangle2D.Double(232, 532, 100, 100));
 		placeName.add("???");
 	}
@@ -97,6 +102,14 @@ public class Portal implements Drawable{
 		}
 		for(int i = 0; i < places.size(); i++){
 			if(places.get(i).contains(p)){
+				if(MousekeyListener.mouseClicked){
+					if(Main.update.area.getID() != placeNames.get(i)){
+						Main.update.area = new Area(placeNames.get(i));
+						Main.update.PC.setX(Main.update.area.getPortal().getX());
+						Main.update.PC.setY(Main.update.area.getPortal().getY());
+						System.out.println("Teleported");
+					}
+				}
 				g.setFont(new Font("Arial", Font.BOLD, 32));
 				g.drawString(placeName.get(i), 350, 300);
 				g.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -122,26 +135,26 @@ public class Portal implements Drawable{
 					g.drawString("looking to extract their vengence on any unsuspecting adventurers.", 350, 490);
 					g.drawString("RECOMMENDED LEVEL: 05", 380, 530);
 				}
-				else if(placeName.get(i).equals("Muspelheim")){
-					g.drawString("An isle of lava created by the eruption of an underwater volcano, Muspelheim", 350, 350);
-					g.drawString("sputters with lava and flame constantly. Despite being challenged by the icy", 350, 370);
-					g.drawString("waters around it, this isle still flows with fresh magma.", 350, 390);
-					g.drawString("Encrusted by obsidian, Muspelheim is a sharp, jagged, and unforgiving", 350, 410);
-					g.drawString("landscape. Recently, scouts have reported that the obsidian and lava seem to", 350, 430);
-					g.drawString("have developed a will of their own. Shifting obsidian seems to have formed", 350, 450);
-					g.drawString("a cavern in the heart of the isle. The island shifts as if inviting", 350, 470);
-					g.drawString("adventurers in. ", 350, 490);
+				else if(placeName.get(i).equals("Frostgorge")){
+					g.drawString("Carved from the heart of an ancient glacier, and enchanted by a mystical", 350, 350);
+					g.drawString("warlock, Frostgorge is a labyrinth of ice and frost.", 350, 370);
+					g.drawString("The isle, floating on water, glides in and out of sight periodically,", 350, 390);
+					g.drawString("giving it the illuision of a mirage isle. It has been rumored that many", 350, 410);
+					g.drawString("pirates have used this isle to stash their treasure, being so obscure and", 350, 430);
+					g.drawString("out of the way. However, sources fail to mention that no pirate has ever", 350, 450);
+					g.drawString("been able to claim their treasure again. Whatever lurks in the depths of", 350, 470);
+					g.drawString("this glacier is ancient and powerful.", 350, 490);
 					g.drawString("RECOMMENDED LEVEL: 10", 380, 530);
 				}
-				else if(placeName.get(i).equals("Jotunheim")){
-					g.drawString("An isle of lava created by the eruption of an underwater volcano, Muspelheim", 350, 350);
-					g.drawString("sputters with lava and flame constantly. Despite being challenged by the icy", 350, 370);
+				else if(placeName.get(i).equals("Balthazar")){
+					g.drawString("An isle of molten fire created by the eruption of an underwater volcano, it", 350, 350);
+					g.drawString("sputters constantly with lava and flame. Despite being challenged by the icy", 350, 370);
 					g.drawString("waters around it, this isle still flows with fresh magma.", 350, 390);
-					g.drawString("Encrusted by obsidian, Muspelheim is a sharp, jagged, and unforgiving", 350, 410);
-					g.drawString("landscape. Recently, scouts have reported that the obsidian and lava seem to", 350, 430);
-					g.drawString("have developed a will of their own. Shifting obsidian seems to have formed", 350, 450);
-					g.drawString("a cavern in the heart of the isle. The island shifts as if inviting", 350, 470);
-					g.drawString("adventurers in. ", 350, 490);
+					g.drawString("Encrusted by obsidian, Balthazar isle is a sharp, jagged, and unforgiving", 350, 410);
+					g.drawString("landscape. Recently, scouts have reported that the obsidian and lava seem", 350, 430);
+					g.drawString("to have developed a will of their own. Shifting obsidian seems to have", 350, 450);
+					g.drawString("formed a cavern in the heart of the isle. The island itself moves as if ", 350, 470);
+					g.drawString("inviting adventurers in. ", 350, 490);
 					g.drawString("RECOMMENDED LEVEL: 15", 380, 530);
 				}
 				else if(placeName.get(i).equals("???")){
@@ -191,6 +204,5 @@ public class Portal implements Drawable{
 		else
 			image = broken;
 		p = new Point2D.Double((int)MousekeyListener.getX(), (int)MousekeyListener.getY());
-		System.out.println(p.getX() + ", " + p.getY());
 	}
 }

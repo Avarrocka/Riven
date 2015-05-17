@@ -43,10 +43,10 @@ public class Map implements Drawable{
 		this.x = x;
 		this.y = y;
 		POI.add(new Rectangle2D.Double(310, 175, 20, 20));
-		POINames.add("Jotunheim");
+		POINames.add("Frostgorge");
 		POIDesc.add("A frozen isle dominated by ice elementals.");
 		POI.add(new Rectangle2D.Double(555, 135, 20, 20));
-		POINames.add("Muspelheim");
+		POINames.add("Balthazar");
 		POIDesc.add("A lava isle that sputters with fiery wrath.");
 		POI.add(new Rectangle2D.Double(740, 154, 20, 20));
 		POINames.add("Kai Dhong");

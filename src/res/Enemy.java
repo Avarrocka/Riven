@@ -67,9 +67,37 @@ public class Enemy implements Drawable{
 				e.printStackTrace();
 			}
 			this.image = movement[0];
-			this.health = 2;
+			this.health = 30;
 			this.damage = 10;
 			this.EXP = 5;
+		}
+		else if(ID == "snowman"){
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/snowman1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/snowman2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/snowman3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.image = movement[0];
+			this.health = 80;
+			this.damage = 15;
+			this.EXP = 15;
+		}
+		else if(ID == "aquaGoo"){
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/aquaGoo1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/aquaGoo2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/aquaGoo3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.image = movement[0];
+			this.health = 100;
+			this.damage = 20;
+			this.EXP = 22;
 		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);

@@ -79,6 +79,17 @@ public class Area implements Drawable{
 			portal = new Portal(535, 220);
 			this.hasPortal = true;
 		}
+		else if(ID == "Frostgorge1"){
+			this.name = "Frostgorge Sound";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/iceRealmSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Frostgorge1.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			portal = new Portal(50, 660);
+			this.hasPortal = true;
+		}
 		spawnCollisionRects(ID);
 	}
 	public String getName(){
