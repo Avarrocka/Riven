@@ -127,7 +127,7 @@ public class Render implements Runnable {
 			drawPrompts(g);
 			drawPlayer(g);
 			drawPortal(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
 			drawMap(g);
@@ -531,14 +531,14 @@ public class Render implements Runnable {
 		for(int i = 0; i < Main.update.NPCs.size(); i++){
 			g.draw(Main.update.NPCs.get(i).getSmall());
 		}
-		for(int i = 0; i < Main.update.leaveArea.size(); i++){
-			g.draw(Main.update.leaveArea.get(i));
+		for(int i = 0; i < Main.update.area.getLeaveAreas().size(); i++){
+			g.draw(Main.update.area.getLeaveAreas().get(i));
 		}
 		for(int i = 0; i < Main.update.enemies.size(); i++){
 			g.draw(Main.update.enemies.get(i).getSmall());
 		}
-		for(int i = 0; i < Main.update.collisionRectangles.size(); i++){
-			g.draw(Main.update.collisionRectangles.get(i));
+		for(int i = 0; i < Main.update.area.getCollisionRects().size(); i++){
+			g.draw(Main.update.area.getCollisionRects().get(i));
 		}
 		if(Main.update.attackBox != null)
 			g.draw(Main.update.attackBox);

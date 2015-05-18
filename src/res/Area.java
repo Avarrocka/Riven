@@ -29,10 +29,18 @@ public class Area implements Drawable{
 	private final int WIDTH = GraphicsMain.WIDTH, HEIGHT = GraphicsMain.HEIGHT;
 	private LinkedList<NPC> NPCs = new LinkedList<>();
 	private LinkedList<Rectangle2D> colli = new LinkedList<>();
+	private LinkedList<Rectangle2D> leaveArea = new LinkedList<>();
+	private LinkedList<String> leaveAreaName = new LinkedList<>();
+	private LinkedList<Integer> moveDir = new LinkedList<>();
 	private CollisionRects creator = new CollisionRects();
 	private Portal portal;
 	private boolean hasPortal = false;
+	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	public Area(String ID) {
+		leaveArea.clear();
+		leaveAreaName.clear();
+		moveDir.clear();
+		colli.clear();
 		if(ID == "Taverly"){
 			this.name = "Taverly";
 			try {
@@ -46,6 +54,9 @@ public class Area implements Drawable{
 			this.NPCs.add(new NPC(365, 180, "armorsmith"));
 			this.NPCs.add(new NPC(5, 400, "doomsayer"));
 			this.NPCs.add(new NPC(6, 700, "hunter"));
+			leaveArea.add(new Rectangle2D.Double(0, 125, 10, 40));
+			leaveAreaName.add("Turandal1");
+			moveDir.add(LEFT);
 		}
 		else if(ID == "Turandal1"){
 			this.name = "Turandal Forest";
@@ -56,6 +67,12 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			this.NPCs.add(new NPC(770, 80, "guard"));
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 125, 10, 40));
+			leaveAreaName.add("Taverly");
+			moveDir.add(RIGHT);
+			leaveArea.add(new Rectangle2D.Double(0, 350, 10, 70));
+			leaveAreaName.add("Turandal2");
+			moveDir.add(LEFT);
 		}
 		else if(ID == "Turandal2"){
 			this.name = "Turandal Forest";
@@ -66,6 +83,12 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			this.NPCs.add(new NPC(0, 450, "stranger"));
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
+			leaveAreaName.add("Turandal1");
+			moveDir.add(RIGHT);
+			leaveArea.add(new Rectangle2D.Double(570, 20, 50, 9));
+			leaveAreaName.add("RuinsofLargos");
+			moveDir.add(UP);
 		}
 		else if(ID == "RuinsofLargos"){
 			this.name = "Ruins of Largos";
@@ -78,6 +101,9 @@ public class Area implements Drawable{
 			this.NPCs.add(new NPC(400, 400, "yenfay"));
 			portal = new Portal(535, 220);
 			this.hasPortal = true;
+			leaveArea.add(new Rectangle2D.Double(570, GraphicsMain.HEIGHT-10, 50, 9));
+			leaveAreaName.add("Turandal2");
+			moveDir.add(DOWN);
 		}
 		else if(ID == "Frostgorge1"){
 			this.name = "Frostgorge Sound";
@@ -89,6 +115,21 @@ public class Area implements Drawable{
 			}
 			portal = new Portal(50, 660);
 			this.hasPortal = true;
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge2");
+			moveDir.add(RIGHT);
+		}
+		else if(ID == "Frostgorge2"){
+			this.name = "Frostgorge Sound";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/iceRealmSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Frostgorge2.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge1");
+			moveDir.add(LEFT);
 		}
 		spawnCollisionRects(ID);
 	}
@@ -128,6 +169,15 @@ public class Area implements Drawable{
 	}
 	public LinkedList<Rectangle2D> getCollisionRects(){
 		return this.colli;
+	}
+	public LinkedList<Rectangle2D> getLeaveAreas(){
+		return this.leaveArea;
+	}
+	public LinkedList<String> getLeaveAreaNames(){
+		return this.leaveAreaName;
+	}
+	public LinkedList<Integer> getMoveDir(){
+		return this.moveDir;
 	}
 	public LinkedList<NPC> getNPCs(){
 		return this.NPCs;

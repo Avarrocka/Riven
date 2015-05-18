@@ -46,11 +46,6 @@ public class Update implements Runnable {
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
 	
-	public volatile LinkedList<Rectangle2D> leaveArea = new LinkedList<Rectangle2D>();
-	public volatile LinkedList<Rectangle2D> collisionRectangles = new LinkedList<Rectangle2D>();
-	public volatile LinkedList<String> leaveAreaName = new LinkedList<String>();
-	public volatile LinkedList<Integer> moveDir = new LinkedList<Integer>();
-	
 	public volatile LinkedList<Quest> quests = new LinkedList<Quest>();
 	
 	public NPC speakingWith;
@@ -267,7 +262,6 @@ public class Update implements Runnable {
 
 	private void spawnThings() {
 		spawnMap();
-		spawnLeaveAreas();
 		if(!(area.getID() == "Taverly")){
 			spawnEnemies();
 		}
@@ -286,8 +280,8 @@ public class Update implements Runnable {
 				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "aquaGoo");
 			Rectangle2D eBox = e.getBoundbox();
 			boolean notInCorners = true;
-			for(int i = 0; i < collisionRectangles.size(); i++){
-				if(collisionRectangles.get(i).intersects(eBox)){
+			for(int i = 0; i < area.getCollisionRects().size(); i++){
+				if(area.getCollisionRects().get(i).intersects(eBox)){
 					notInCorners = false;
 				}
 			}
@@ -301,53 +295,22 @@ public class Update implements Runnable {
 		}
 	}
 
-	private void spawnLeaveAreas() {
-		if(mapID == "Taverly" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(0, 125, 10, 40));
-			leaveAreaName.add("Turandal1");
-			moveDir.add(LEFT);
-			areasSpawned = true;
-		}
-		else if(mapID == "Turandal1" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 125, 10, 40));
-			leaveAreaName.add("Taverly");
-			moveDir.add(RIGHT);
-			leaveArea.add(new Rectangle2D.Double(0, 350, 10, 70));
-			leaveAreaName.add("Turandal2");
-			moveDir.add(LEFT);
-			areasSpawned = true;
-		}
-		else if(mapID == "Turandal2" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
-			leaveAreaName.add("Turandal1");
-			moveDir.add(RIGHT);
-			leaveArea.add(new Rectangle2D.Double(570, 20, 50, 9));
-			leaveAreaName.add("RuinsofLargos");
-			moveDir.add(UP);
-			areasSpawned = true;
-		}
-		else if(mapID == "RuinsofLargos" && !areasSpawned){
-			leaveArea.add(new Rectangle2D.Double(570, GraphicsMain.HEIGHT-10, 50, 9));
-			leaveAreaName.add("Turandal2");
-			moveDir.add(DOWN);
-			areasSpawned = true;
-		}
-	}
-
 	private void collisionDetection(){
 		collisionWithNPCs(); //For interaction
-		if(!leaveArea.isEmpty() && !leaveAreaName.isEmpty()){
+		if(!area.getLeaveAreas().isEmpty()){
 			collisionWithLAreas();
 		}
 	}
 	
 	private void collisionWithLAreas() {
+		LinkedList<Integer> moveDir = area.getMoveDir();
+		LinkedList<Rectangle2D> leaveArea = area.getLeaveAreas();
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D LArea;
 		for(int i = 0; i < leaveArea.size(); i++){
 			LArea = leaveArea.get(i);
 			if(PlayerCharacter.intersects(LArea)){
-				mapID = leaveAreaName.get(i);
+				mapID = area.getLeaveAreaNames().get(i);
 				area = new Area(mapID);
 				splashScreenTime = 50;
 				NPCs.clear();
@@ -371,10 +334,6 @@ public class Update implements Runnable {
 					PC.setY(40);
 				}
 				areasSpawned = false;
-				leaveArea.clear();
-				leaveAreaName.clear();
-				collisionRectangles.clear();
-				moveDir.clear();
 			}
 		}
 	}
@@ -415,12 +374,10 @@ public class Update implements Runnable {
 			shopSwords.add(new Sword(30, 310, "Steel Sword"));
 			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 			NPCs = area.getNPCs();
-			collisionRectangles = area.getCollisionRects();
 		}
 		else{
 			NPCsSpawned = true;
 			NPCs = area.getNPCs();
-			collisionRectangles = area.getCollisionRects();
 		}
 	}
 
@@ -912,8 +869,8 @@ public class Update implements Runnable {
 					}			
 				}
 			}
-			for(int i = 0; i < collisionRectangles.size(); i++){
-				Rectangle2D rn = collisionRectangles.get(i);
+			for(int i = 0; i < area.getCollisionRects().size(); i++){
+				Rectangle2D rn = area.getCollisionRects().get(i);
 				if(nb.intersects(rn)){
 					if((Rx >= rn.getX() && Rx <= rn.getX()+rn.getWidth() && PC.getYvelocity() == 0)){
 						PC.setX(PC.getX() - movementSpeed);
