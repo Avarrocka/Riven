@@ -163,7 +163,7 @@ public class Update implements Runnable {
 	
 	private void init() {
 		mapID = "Turandal2";
-		splashScreenTime = 25;
+		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
@@ -312,7 +312,7 @@ public class Update implements Runnable {
 			if(PlayerCharacter.intersects(LArea)){
 				mapID = area.getLeaveAreaNames().get(i);
 				area = new Area(mapID);
-				splashScreenTime = 50;
+				splashScreenTime = 100;
 				NPCs.clear();
 				enemies.clear();
 				speakingWith = null;

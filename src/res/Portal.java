@@ -66,6 +66,7 @@ public class Portal implements Drawable{
 		placeNames.add("Balthazar1");
 		places.add(new Rectangle2D.Double(232, 532, 100, 100));
 		placeName.add("???");
+		placeNames.add("Chaos1");
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class Portal implements Drawable{
 						Main.update.area = new Area(placeNames.get(i));
 						Main.update.PC.setX(Main.update.area.getPortal().getX());
 						Main.update.PC.setY(Main.update.area.getPortal().getY());
-						System.out.println("Teleported");
+						Main.update.splashScreenTime = 100;
 					}
 				}
 				g.setFont(new Font("Arial", Font.BOLD, 32));

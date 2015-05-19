@@ -32,6 +32,7 @@ public class Area implements Drawable{
 	private LinkedList<Rectangle2D> leaveArea = new LinkedList<>();
 	private LinkedList<String> leaveAreaName = new LinkedList<>();
 	private LinkedList<Integer> moveDir = new LinkedList<>();
+	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private CollisionRects creator = new CollisionRects();
 	private Portal portal;
 	private boolean hasPortal = false;
@@ -127,6 +128,48 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge1");
+			moveDir.add(LEFT);
+		}
+		else if(ID == "KaiDhong1"){
+			this.name = "Kai Dhong";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/earthRealmSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/KaiDhong.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			portal = new Portal(50, 660);
+			this.hasPortal = true;
+			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge1");
+			moveDir.add(LEFT);
+		}
+		else if(ID == "Balthazar1"){
+			this.name = "Balthazar Isle";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/fireRealmSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Balthazar1.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			portal = new Portal(50, 660);
+			this.hasPortal = true;
+			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge1");
+			moveDir.add(LEFT);
+		}
+		else if(ID == "Chaos1"){
+			this.name = "Chaos Realm";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/chaosRealmSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Chaos.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			portal = new Portal(50, 660);
+			this.hasPortal = true;
 			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
 			leaveAreaName.add("Frostgorge1");
 			moveDir.add(LEFT);
