@@ -579,7 +579,7 @@ public class Render implements Runnable {
 	}
 
 	private void drawBackground(Graphics2D g){
-		g.drawImage(Main.update.area.getImage(), 0, 0, 1024, 768, null);
+		Main.update.area.draw(g);
 	}
 	
 	private void drawPlayer(Graphics2D g){

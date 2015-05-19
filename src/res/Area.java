@@ -24,7 +24,7 @@ import res.Portal;
  */
 public class Area implements Drawable{
 	private String ID, name;
-	private BufferedImage image, splash;
+	private BufferedImage image, splash, entrance;
 	private final int x=0, y=0;
 	private final int WIDTH = GraphicsMain.WIDTH, HEIGHT = GraphicsMain.HEIGHT;
 	private LinkedList<NPC> NPCs = new LinkedList<>();
@@ -36,12 +36,15 @@ public class Area implements Drawable{
 	private CollisionRects creator = new CollisionRects();
 	private Portal portal;
 	private boolean hasPortal = false;
+	private boolean hasBoss = false;
+	private boolean bossSlain = false;
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	public Area(String ID) {
 		leaveArea.clear();
 		leaveAreaName.clear();
 		moveDir.clear();
 		colli.clear();
+		this.ID = ID;
 		if(ID == "Taverly"){
 			this.name = "Taverly";
 			try {
@@ -116,7 +119,7 @@ public class Area implements Drawable{
 			}
 			portal = new Portal(50, 660);
 			this.hasPortal = true;
-			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 200, 10, 70));
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 215, 10, 152));
 			leaveAreaName.add("Frostgorge2");
 			moveDir.add(RIGHT);
 		}
@@ -129,6 +132,50 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
+			leaveAreaName.add("Frostgorge1");
+			moveDir.add(LEFT);
+			leaveArea.add(new Rectangle2D.Double(865, 110, 60, 20));
+			leaveAreaName.add("Frostgorge3");
+			moveDir.add(UP);
+		}
+		else if(ID == "Frostgorge3"){
+			this.name = "Frost Caverns";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/frostSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Frostcave1.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			leaveArea.add(new Rectangle2D.Double(442,753,110,5));
+			leaveAreaName.add("Frostgorge2");
+			moveDir.add(DOWN);
+			leaveArea.add(new Rectangle2D.Double(425, 100, 80, 15));
+			leaveAreaName.add("Frostgorge4");
+			moveDir.add(UP);
+		}
+		else if(ID == "Frostgorge4"){
+			this.name = "Frost Caverns";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/frostSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Frostcave2.png"));
+				this.entrance = ImageIO.read(getClass().getClassLoader().getResource("Icons/iceENT.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.hasBoss = true;
+			leaveArea.add(new Rectangle2D.Double(380, 760, 100, 8));
+			leaveAreaName.add("Frostgorge3");
+			moveDir.add(DOWN);
+		}
+		else if(ID == "Frostgorge5"){
+			this.name = "Frost Caverns";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/frostSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/Frostcave3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			leaveArea.add(new Rectangle2D.Double(0, 200, 10, 70));
 			leaveAreaName.add("Frostgorge1");
 			moveDir.add(LEFT);
 		}
@@ -181,6 +228,18 @@ public class Area implements Drawable{
 	}
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
+		if(this.ID == "Frostgorge4" && Main.update.frostBoss == true){
+			g.drawImage(entrance, null, 450, 115);
+			leaveArea.add(new Rectangle2D.Double(450, 115, 100, 60));
+			leaveAreaName.add("Frostgorge5");
+			moveDir.add(DOWN);
+		}
+		else if(this.ID == "Balthazar4" && Main.update.flameBoss == true){
+			
+		}
+		else if(this.ID == "KaiDhong4" && Main.update.earthBoss == true){
+			
+		}
 	}
 	
 	public int getWidth() {
@@ -230,5 +289,18 @@ public class Area implements Drawable{
 	}
 	public Portal getPortal(){
 		return portal;
+	}
+	public void update(){
+		if(this.hasBoss && this.bossSlain){
+			if(this.ID == "Frostgorge4"){
+				Main.update.frostBoss = true;
+			}
+			else if(this.ID == "Balthazar4"){
+				Main.update.flameBoss = true;
+			}
+			else if(this.ID == "KaiDhong4"){
+				Main.update.earthBoss = true;
+			}
+		}
 	}
 }

@@ -64,6 +64,9 @@ public class Update implements Runnable {
 	public boolean NPCsSpawned = false;
 	public boolean shopping = false;
 	public boolean drawInfo = false;
+	public boolean frostBoss = false;
+	public boolean flameBoss = false;
+	public boolean earthBoss = false;
 	
 	public boolean invScreen = false;
 	public boolean questScreen = false;
@@ -162,7 +165,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Turandal2";
+		mapID = "Taverly";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -202,6 +205,7 @@ public class Update implements Runnable {
 	}
 	
 	private void updateObjects() {
+		area.update();
 		if(area.hasPortal()){
 			area.getPortal().updatePortal();
 		}
@@ -395,10 +399,7 @@ public class Update implements Runnable {
 	private void moveThings() {
 		if(area.getID() != "Taverly"){
 			for(int i = 0; i < enemies.size(); i++){
-				if(!enemies.get(i).moving()){
-					int face = RNG.nextInt(4)+1;
-					enemies.get(i).move(face);
-				}
+				enemies.get(i).trackPC();
 			}
 		}
 	}
@@ -563,6 +564,9 @@ public class Update implements Runnable {
 		}
 		else
 			questScreen = false;
+		if(KeyboardListener.space){
+			Main.update.frostBoss = true;
+		}
 		if(KeyboardListener.escape){
 			KeyboardListener.escape = false;
 			//Cancels all UIs
@@ -697,6 +701,9 @@ public class Update implements Runnable {
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).getBoundbox().intersects(attackBox)){
 				enemies.get(i).damage(PC.getDamage());
+			}
+			if(enemies.get(i).getBoundbox().intersects(Main.update.PC.getBoundbox())){
+				System.out.println("attacking");
 				enemies.get(i).retaliate();
 			}
 		}

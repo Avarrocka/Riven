@@ -37,6 +37,8 @@ public class Enemy implements Drawable{
 	private int moveCounter;
 	private int vX;
 	private int vY;
+	private int trackTimer = 0;
+	private int attackSpeed = 20;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
 	private BufferedImage movement[];
@@ -53,10 +55,6 @@ public class Enemy implements Drawable{
 		revMov = false;
 		dead = false;
 		this.moveCounter = 0;
-		this.xBoundaryLow = x - 40;
-		this.xBoundaryHigh = x + 40;
-		this.yBoundaryLow = y - 40;
-		this.yBoundaryHigh = y + 40;
 		if(ID == "slime"){
 			movement = new BufferedImage[3];
 			try {
@@ -180,6 +178,23 @@ public class Enemy implements Drawable{
 	public boolean getDead(){
 		return this.dead;
 	}
+	public void trackPC(){
+		if(trackTimer <= 0){
+			if(Main.update.PC.getX() > this.getX()){
+				this.x++;
+			}
+			else if(Main.update.PC.getX() < this.getX())
+				this.x--;
+			if(Main.update.PC.getY() > this.getY()){
+				this.y++;
+			}
+			else if(Main.update.PC.getY() < this.getY())
+				this.y--;
+			trackTimer = 10;
+		}
+		else
+			trackTimer--;
+	}
 	public void update(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
@@ -221,11 +236,7 @@ public class Enemy implements Drawable{
 		motionSpeed--;
 	}
 	public int rollMoney(String s){
-		if(s == "slime"){
-			return RNG.nextInt(10) + 1;
-		}
-		else
-			return 0;
+		return RNG.nextInt(this.EXP) + 10;
 	}
 	public int getEXP(){
 		return this.EXP;
@@ -233,28 +244,12 @@ public class Enemy implements Drawable{
 	public void rollLoot() {
 		
 	}
-	public void move(int face){
-		moveCounter = 60;
-		if(face == LEFT){
-			vX = -1;
-		}
-		else if(face == RIGHT){
-			vX = 1;
-		}
-		else if(face == UP){
-			vY = -1;
-		}
-		else if(face == DOWN){
-			vY = 1;
-		}
-	}
-	public boolean moving(){
-		if(moveCounter > 0){
-			return true;
-		}
-		return false;
-	}
 	public void retaliate() {
-		Main.update.PC.damage(this.damage);
+		if(this.attackSpeed <= 0){
+			Main.update.PC.damage(this.damage);
+			this.attackSpeed = 20;
+		}
+		else
+			this.attackSpeed--;
 	}
 }
