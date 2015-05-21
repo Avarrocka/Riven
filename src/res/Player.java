@@ -26,7 +26,7 @@ public class Player implements Drawable{
 	private int Vx, Vy;
 	private int EXP;
 	private int gold;
-	private int skillPoints = 4;
+	private int skillPoints = 5;
 	private Sword weapon;
 	private Armor armor;
 	private SkillTree skt = new SkillTree();
@@ -49,6 +49,7 @@ public class Player implements Drawable{
 	BufferedImage RAttack[] = new BufferedImage[4];
 	BufferedImage DAttack[] = new BufferedImage[4];
 	BufferedImage UAttack[] = new BufferedImage[4];
+	public boolean q1, q2, q3, w1, w2, w3, e1, e2, e3;
  	private boolean revMov = false;
 	private boolean hpBuff = false;
 	private int baseAttack, baseDefense;

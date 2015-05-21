@@ -220,11 +220,14 @@ public class NPC implements Drawable{
 				e.printStackTrace();
 			}
 			speak = true;
-			dialogueLines = 2;
+			dialogueLines = 5;
 			dialogue = new String[dialogueLines];
 			name = "Tiki the Trainer";	
-			dialogue[0] = "After every level, I can impart some knowledge on skills. Take a look.";
-			dialogue[1] = "Greetings, I am Tiki. I help you to train your skills and refine them into art.";
+			dialogue[0] = "The three branches govern your three abilities. Take a look!";
+			dialogue[1] = "Master level traits require one of the previous Adept traits and cost 2 points.";
+			dialogue[2] = "Adept level traits grant a permanent bonus to a skill. These cost only one point.";
+			dialogue[3] = "Levels reward you with skill points. These points can be used to improve skills.";
+			dialogue[4] = "Greetings adventurer. I'm here to hone your skills and refine them into art.";
 		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
