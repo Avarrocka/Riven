@@ -47,7 +47,7 @@ public class Dart implements Drawable{
 			this.y +=28;
 			this.x -= 5;
 			vx = -7;
-			boundBox = new Rectangle2D.Double(this.x, this.y, 25, 7);
+			boundBox = new Rectangle2D.Double(this.x, this.y, 22, 9);
 		}
 		else if(this.direction == RIGHT){
 			try {
@@ -58,7 +58,7 @@ public class Dart implements Drawable{
 			this.y +=28;
 			this.x += 5;
 			vx = 7;
-			boundBox = new Rectangle2D.Double(this.x, this.y, 25, 7);
+			boundBox = new Rectangle2D.Double(this.x, this.y, 22, 9);
 		}
 		else if(this.direction == UP){
 			try {
@@ -69,7 +69,7 @@ public class Dart implements Drawable{
 			this.x += 21;
 			this.y -= 5;
 			vy = -7;
-			boundBox = new Rectangle2D.Double(this.x, this.y, 7, 25);
+			boundBox = new Rectangle2D.Double(this.x, this.y, 9, 22);
 		}
 		else if(this.direction == DOWN){
 			try {
@@ -80,7 +80,7 @@ public class Dart implements Drawable{
 			this.x += 21;
 			this.y += 5;
 			vy = 7;
-			boundBox = new Rectangle2D.Double(this.x, this.y, 7, 25);
+			boundBox = new Rectangle2D.Double(this.x, this.y, 9, 22);
 		}
 	}
 	
