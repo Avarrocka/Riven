@@ -27,7 +27,7 @@ public class Enemy implements Drawable{
 	private int xBoundaryHigh;
 	private int yBoundaryLow;
 	private int yBoundaryHigh;
-	private static final int WIDTH = 56, HEIGHT = 64;
+	private int WIDTH = 56, HEIGHT = 64;
 	private int health;
 	private int maxHealth;
 	private int damage;
@@ -64,10 +64,28 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			this.WIDTH = 56;
+			this.HEIGHT = 64;
 			this.image = movement[0];
 			this.health = 30;
 			this.damage = 10;
 			this.EXP = 5;
+		}
+		else if(ID == "gremlin"){
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/gremlin1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/gremlin2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/gremlin3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.WIDTH = 35;
+			this.HEIGHT = 49;
+			this.image = movement[0];
+			this.health = 50;
+			this.damage = 14;
+			this.EXP = 10;
 		}
 		else if(ID == "snowman"){
 			movement = new BufferedImage[3];
@@ -78,6 +96,8 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			this.WIDTH = 40;
+			this.HEIGHT = 50;
 			this.image = movement[0];
 			this.health = 80;
 			this.damage = 15;
@@ -92,6 +112,24 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			this.WIDTH = 45;
+			this.HEIGHT = 55;
+			this.image = movement[0];
+			this.health = 100;
+			this.damage = 20;
+			this.EXP = 22;
+		}
+		else if(ID == "flameSpirit"){
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/fspirit1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/fspirit2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/fspirit3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.WIDTH = 35;
+			this.HEIGHT = 49;
 			this.image = movement[0];
 			this.health = 100;
 			this.damage = 20;
@@ -179,21 +217,25 @@ public class Enemy implements Drawable{
 		return this.dead;
 	}
 	public void trackPC(){
-		if(trackTimer <= 0){
-			if(Main.update.PC.getX() > this.getX()){
-				this.x++;
+		if(!(this.boundBox.intersects(Main.update.PC.getBoundbox()))){
+			if(trackTimer <= 0){
+				if(Main.update.PC.getX() > this.getX()){
+					this.x++;
+				}
+				else if(Main.update.PC.getX() < this.getX())
+					this.x--;
+				if(Main.update.PC.getY() > this.getY()){
+					this.y++;
+				}
+				else if(Main.update.PC.getY() < this.getY())
+					this.y--;
+				trackTimer = 2;
 			}
-			else if(Main.update.PC.getX() < this.getX())
-				this.x--;
-			if(Main.update.PC.getY() > this.getY()){
-				this.y++;
-			}
-			else if(Main.update.PC.getY() < this.getY())
-				this.y--;
-			trackTimer = 10;
+			else
+				trackTimer--;
 		}
 		else
-			trackTimer--;
+			retaliate();
 	}
 	public void update(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
@@ -245,11 +287,11 @@ public class Enemy implements Drawable{
 		
 	}
 	public void retaliate() {
-		if(this.attackSpeed <= 0){
+		if(attackSpeed <= 0){
 			Main.update.PC.damage(this.damage);
-			this.attackSpeed = 20;
+			attackSpeed = 60;
 		}
 		else
-			this.attackSpeed--;
+			attackSpeed--;
 	}
 }

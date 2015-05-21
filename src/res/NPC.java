@@ -212,6 +212,20 @@ public class NPC implements Drawable{
 				updateLines();
 			}
 		}
+		if(ID == "skiller"){
+			try {
+				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/tikiDef.png"));
+				head = ImageIO.read(getClass().getClassLoader().getResource("Sprites/tikiHead.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			speak = true;
+			dialogueLines = 2;
+			dialogue = new String[dialogueLines];
+			name = "Tiki the Trainer";	
+			dialogue[0] = "After every level, I can impart some knowledge on skills. Take a look.";
+			dialogue[1] = "Greetings, I am Tiki. I help you to train your skills and refine them into art.";
+		}
 		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);

@@ -273,26 +273,10 @@ public class Update implements Runnable {
 
 	private void spawnEnemies() {
 		if(enemySpawnTime == 0){
-			int b = RNG.nextInt(3);
-			Enemy e;
-			if(b == 0){
-				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "slime");
-			}
-			else if(b == 1)
-				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "snowman");
-			else
-				e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), "aquaGoo");
-			Rectangle2D eBox = e.getBoundbox();
-			boolean notInCorners = true;
-			for(int i = 0; i < area.getCollisionRects().size(); i++){
-				if(area.getCollisionRects().get(i).intersects(eBox)){
-					notInCorners = false;
-				}
-			}
-			if(notInCorners){
-				enemySpawnTime = 1000;
+			Enemy e = area.spawnEnemy();
+			if(e != null)
 				enemies.add(e);
-			}
+			enemySpawnTime = 1000;
 		}
 		else{
 			enemySpawnTime--;
@@ -685,6 +669,7 @@ public class Update implements Runnable {
 	}
 
 	private void attack() {
+		PC.updateBoundbox();
 		int face = PC.getFace(); //3left 4right 1up 2down?
 		if(face == 1){
 			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()-20, PC.getWidth()+20, 20);
@@ -701,10 +686,6 @@ public class Update implements Runnable {
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).getBoundbox().intersects(attackBox)){
 				enemies.get(i).damage(PC.getDamage());
-			}
-			if(enemies.get(i).getBoundbox().intersects(Main.update.PC.getBoundbox())){
-				System.out.println("attacking");
-				enemies.get(i).retaliate();
 			}
 		}
 		attackBox = null;

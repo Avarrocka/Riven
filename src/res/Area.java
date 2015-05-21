@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.imageio.ImageIO;
@@ -28,6 +29,7 @@ public class Area implements Drawable{
 	private final int x=0, y=0;
 	private final int WIDTH = GraphicsMain.WIDTH, HEIGHT = GraphicsMain.HEIGHT;
 	private LinkedList<NPC> NPCs = new LinkedList<>();
+	private LinkedList<String> availEnemy = new LinkedList<>();
 	private LinkedList<Rectangle2D> colli = new LinkedList<>();
 	private LinkedList<Rectangle2D> leaveArea = new LinkedList<>();
 	private LinkedList<String> leaveAreaName = new LinkedList<>();
@@ -35,6 +37,7 @@ public class Area implements Drawable{
 	private LinkedList<Enemy> enemies = new LinkedList<>();
 	private CollisionRects creator = new CollisionRects();
 	private Portal portal;
+	public Random RNG = new Random();
 	private boolean hasPortal = false;
 	private boolean hasBoss = false;
 	private boolean bossSlain = false;
@@ -56,8 +59,7 @@ public class Area implements Drawable{
 			this.NPCs.add(new NPC(640, 180, "shop"));
 			this.NPCs.add(new NPC(244 , 180, "blacksmith"));
 			this.NPCs.add(new NPC(365, 180, "armorsmith"));
-			this.NPCs.add(new NPC(5, 400, "doomsayer"));
-			this.NPCs.add(new NPC(6, 700, "hunter"));
+			this.NPCs.add(new NPC(6, 700, "skiller"));
 			leaveArea.add(new Rectangle2D.Double(0, 125, 10, 40));
 			leaveAreaName.add("Turandal1");
 			moveDir.add(LEFT);
@@ -71,6 +73,7 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			this.NPCs.add(new NPC(770, 80, "guard"));
+			this.availEnemy.add("slime");
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 125, 10, 40));
 			leaveAreaName.add("Taverly");
 			moveDir.add(RIGHT);
@@ -87,6 +90,8 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			this.NPCs.add(new NPC(0, 450, "stranger"));
+			this.availEnemy.add("slime");
+			this.availEnemy.add("gremlin");
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
 			leaveAreaName.add("Turandal1");
 			moveDir.add(RIGHT);
@@ -117,6 +122,9 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			this.availEnemy.add("snowman");
+			this.availEnemy.add("aquaGoo");
+			this.availEnemy.add("gremlin");
 			portal = new Portal(50, 660);
 			this.hasPortal = true;
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 215, 10, 152));
@@ -302,5 +310,26 @@ public class Area implements Drawable{
 				Main.update.earthBoss = true;
 			}
 		}
+	}
+	public Enemy spawnEnemy(){
+		if(!(this.availEnemy.isEmpty())){
+			int RNGINT = RNG.nextInt(this.availEnemy.size());
+			String enemy = availEnemy.get(RNGINT);
+			Enemy e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), enemy);
+			Rectangle2D eBox = e.getBoundbox();
+			boolean notInCorners = true;
+			for(int i = 0; i < this.getCollisionRects().size(); i++){
+				if(this.getCollisionRects().get(i).intersects(eBox)){
+					notInCorners = false;
+				}
+			}
+			if(notInCorners){
+				return e;
+			}
+			else
+				return this.spawnEnemy();
+		}
+		else
+			return null;
 	}
 }

@@ -400,6 +400,9 @@ public class Render implements Runnable {
 			if(Main.update.commenceDialogue == 1 && (speak.getID() == "shop" || speak.getID() == "blacksmith" || speak.getID() == "armorsmith")){
 				drawShop(g);
 			}
+			if(Main.update.commenceDialogue == 1 && (speak.getID() == "skiller")){
+				drawSKT(g);
+			}
 			if(Main.update.commenceDialogue == 1 && (speak.getID() == "stranger")){
 				Item soulGem = new Item(0, 0, "Soul Gem");
 				if(!Main.update.gem){
@@ -588,5 +591,9 @@ public class Render implements Runnable {
 
 	private void drawDeadScreen(Graphics2D g) {
 		//g.drawImage(deadScreen, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
+	}
+	
+	private void drawSKT(Graphics2D g){
+		Main.update.PC.getSkillTree().draw(g);
 	}
 }

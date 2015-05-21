@@ -26,8 +26,10 @@ public class Player implements Drawable{
 	private int Vx, Vy;
 	private int EXP;
 	private int gold;
+	private int skillPoints = 4;
 	private Sword weapon;
 	private Armor armor;
+	private SkillTree skt = new SkillTree();
 	public volatile LinkedList<Sword> invSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> invItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Item> qItems = new LinkedList<Item>();
@@ -455,6 +457,7 @@ public class Player implements Drawable{
 		this.EXP = this.EXP - reqLvl;
 		this.updateLevelCurve();
 		level++;
+		skillPoints++;
 		Main.update.levelUp = 60;
 		this.baseAttack = 2*level;
 		this.baseDefense = 2*level;
@@ -608,5 +611,16 @@ public class Player implements Drawable{
 			inflictedDamage = 2;
 		}
 		this.hp -= inflictedDamage;
+		System.out.println(inflictedDamage);
+	}
+	public int getPoints(){
+		return this.skillPoints;
+	}
+	public void setPoints(int points){
+		this.skillPoints = points;
+	}
+	public SkillTree getSkillTree(){
+		skt.updatePoints();
+		return skt;
 	}
 }
