@@ -481,7 +481,7 @@ public class Player implements Drawable{
 		Main.update.levelUp = 60;
 		this.baseAttack = 2*level;
 		this.baseDefense = 2*level;
-		this.mhp += 10;
+		this.mhp += 15;
 		if(this.EXP >= reqLvl){
 			levelUp();
 		}

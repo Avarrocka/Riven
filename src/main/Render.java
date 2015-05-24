@@ -43,7 +43,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2, mapUI;
-	BufferedImage meditateAura, levelUp, HPUI, skillsUI, here;
+	BufferedImage meditateAura, levelUp, HPUI, skillsUI, here, switchOn, switchOff;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -99,6 +99,8 @@ public class Render implements Runnable {
 			hook = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook.png"));
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			skillsUI = ImageIO.read(getClass().getClassLoader().getResource("UI/SkillsUI.png"));
+			switchOff = ImageIO.read(getClass().getClassLoader().getResource("Icons/switchOff.png"));
+			switchOn = ImageIO.read(getClass().getClassLoader().getResource("Icons/switchOn.png"));
 			HPUI = ImageIO.read(getClass().getClassLoader().getResource("UI/HPUI.png"));
 			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
 			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
@@ -542,6 +544,13 @@ public class Render implements Runnable {
 
 	private void drawBackground(Graphics2D g){
 		Main.update.area.draw(g);
+		if(Main.update.area.getID() == "Turandal3" && Main.update.fixingPortal){
+			if(Main.update.SWTCH == false){
+				g.drawImage(switchOff, (int)Main.update.magicSwitch.getX(), (int)Main.update.magicSwitch.getY(), 23, 18, null);
+			}
+			else
+				g.drawImage(switchOn, (int)Main.update.magicSwitch.getX(), (int)Main.update.magicSwitch.getY(), 23, 18, null);
+		}
 	}
 	
 	private void drawPlayer(Graphics2D g){

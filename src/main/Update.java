@@ -90,9 +90,10 @@ public class Update implements Runnable {
 	public boolean priamTask = false;
 	public boolean priamDone = false;
 	public int priamIndex = 0;
-	
 	public int slimesSlain = 0;
 	public boolean fixingPortal = false;
+	public boolean SWTCH = false;
+	public Rectangle2D magicSwitch = new Rectangle2D.Double(276, 360, 23, 18);
 	
 	//dialogue variables/inventory
 	public int drawWhich = 0;
@@ -162,7 +163,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Turandal2";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		voice = new BasicPlayer();
@@ -392,6 +393,9 @@ public class Update implements Runnable {
  				if(enemies.get(i).getSmall().contains(p)){
  					NPCHooked(i);
  				}
+ 			}
+ 			if(magicSwitch.contains(p) && area.getID() == "Turandal3"){
+ 				SWTCH = true;
  			}
  		}
  	}
@@ -664,7 +668,8 @@ public class Update implements Runnable {
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).getBoundbox().intersects(attackBox)){
-				enemies.get(i).damage(PC.getDamage());
+				int dmg = RNG.nextInt(PC.getDamage()/2) + PC.getDamage()/2;
+				enemies.get(i).damage(dmg);
 			}
 		}
 		attackBox = null;

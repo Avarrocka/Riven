@@ -24,7 +24,7 @@ public class Quest{
 		this.questName = ID;
 		if(this.questName == "Fixing the Portal"){
 			description = "Help the Gate Guardian fix the Dimensional Gate found at the Ruins of Largos.";
-			task = "Locate a Soul Gem to supercharge the Gate with. Someone in town may have an idea";
+			task = "Locate a Soul Gem to supercharge the Gate with. Venture deeper into the forest for clues.";
 		}
 		if(this.questName == "Priam's Task"){
 			description = "Help Guard Priam slay 5 slimes to help him along his guard shift.";

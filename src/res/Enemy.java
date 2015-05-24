@@ -330,7 +330,8 @@ public class Enemy implements Drawable{
 	public void retaliate() {
 		if(stun <= 0){
 			if(attackSpeed <= 0){
-				Main.update.PC.damage(this.damage);
+				int dmg = RNG.nextInt(this.damage/2)+(this.damage/2);
+				Main.update.PC.damage(dmg);
 				attackSpeed = 60;
 			}
 			else

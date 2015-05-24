@@ -183,9 +183,9 @@ public class NPC implements Drawable{
 			name = "Guardian Yenfay";	
 			dialogue[0] = "I'm looking to fix the portal. Can you help? I need a Soul Stone, to power the portal.";
 			dialogue[1] = "He had this crazed look in his eyes. He kept muttering something about darkness and chaos.";
-			dialogue[2] = "This portal - a family heirloom - was destroyed by the fanatical Shaman. Such a shame.";
-			dialogue[3] = "A Shaman started detecting faint measures of dark energy radiating from it.";
-			dialogue[4] = "Our family has protected this mystical portal for generations. Recently, though...";
+			dialogue[2] = "Several years ago, a travelling disheveled mage decided to sabotage the portal.";
+			dialogue[3] = "these ruins. I protect, with my life, the ruined portal you see before you.";
+			dialogue[4] = "You see before you the ruins of my once great House. I am tasked to stand guard over";
 			dialogue[5] = "Greetings adventurer. I am Yenfay Largos, descendant of the noble Largos house.";
 			if(Main.update.gem){
 				updateLines();

@@ -72,8 +72,8 @@ public class SkillTree implements Drawable{
 		name.add("[Adept] Pacifist");
 		name.add("[Adept] Renewed Focus");
 		desc.add("A sharpened mind allows the user to meditate up to 30% more often.");
-		desc.add("Transcending into the another plane, the user is invulnerable during meditation.");
-		desc.add("Deep focus during meditation allows the user to heal 50% of Max HP up from 20%.");
+		desc.add("Transcending into an ethereal plane, the user is invulnerable during meditation.");
+		desc.add("Deep focus during meditation allows the user to heal 50% of Max HP up from 30%.");
 	}
 	
 	public void draw(Graphics2D g) {

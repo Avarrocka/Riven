@@ -41,12 +41,14 @@ public class Area implements Drawable{
 	private boolean hasPortal = false;
 	private boolean hasBoss = false;
 	private boolean bossSlain = false;
+	private boolean spawnedMoreNPCs = false;
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	public Area(String ID) {
 		leaveArea.clear();
 		leaveAreaName.clear();
 		moveDir.clear();
 		colli.clear();
+		Main.update.grapple = null;
 		this.ID = ID;
 		if(ID == "Taverly"){
 			this.name = "Taverly";
@@ -89,7 +91,6 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.NPCs.add(new NPC(0, 450, "stranger"));
 			this.availEnemy.add("slime");
 			this.availEnemy.add("gremlin");
 			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 70));
@@ -98,6 +99,21 @@ public class Area implements Drawable{
 			leaveArea.add(new Rectangle2D.Double(570, 20, 50, 9));
 			leaveAreaName.add("RuinsofLargos");
 			moveDir.add(UP);
+			leaveArea.add(new Rectangle2D.Double(10, 350, 10, 300));
+			leaveAreaName.add("Turandal3");
+			moveDir.add(LEFT);
+		}
+		else if(ID == "Turandal3"){
+			this.name = "Turandal Forest";
+			try {
+				this.splash = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalSplash.png"));
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Backdrops/TurandalForest3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 300));
+			leaveAreaName.add("Turandal2");
+			moveDir.add(RIGHT);
 		}
 		else if(ID == "RuinsofLargos"){
 			this.name = "Ruins of Largos";
@@ -184,8 +200,8 @@ public class Area implements Drawable{
 				e.printStackTrace();
 			}
 			leaveArea.add(new Rectangle2D.Double(0, 200, 10, 70));
-			leaveAreaName.add("Frostgorge1");
-			moveDir.add(LEFT);
+			leaveAreaName.add("Frostgorge4");
+			moveDir.add(UP);
 		}
 		else if(ID == "KaiDhong1"){
 			this.name = "Kai Dhong";
@@ -309,6 +325,10 @@ public class Area implements Drawable{
 			else if(this.ID == "KaiDhong4"){
 				Main.update.earthBoss = true;
 			}
+		}
+		if(this.ID == "Turandal3" && Main.update.SWTCH && !spawnedMoreNPCs){
+			this.NPCs.add(new NPC(560, 355, "stranger"));
+			spawnedMoreNPCs = true;
 		}
 	}
 	public Enemy spawnEnemy(){
