@@ -82,9 +82,9 @@ public class Update implements Runnable {
 	public int qCD = 0;
 	public int wCD = 0;
 	public int eCD = 0;
-	public boolean qLocked = true;
-	public boolean wLocked = true;
-	public boolean eLocked = true;
+	public boolean qLocked = false;
+	public boolean wLocked = false;
+	public boolean eLocked = false;
 	public boolean areasSpawned = false;
 	
 	//quest variables
@@ -373,11 +373,11 @@ public class Update implements Runnable {
 		handlePCCommands();
 		movePC();
 		moveThings();
-		updateTimes();
 		if(shooting){
 			moveGrapple();
 			pullNPC();
 		}
+		updateTimes();
 	}
 	
 	private void moveThings() {
@@ -401,12 +401,29 @@ public class Update implements Runnable {
  	
  	private void NPCHooked(int i){
 		if(eCD == 801){
-			enemies.get(i).setHP(enemies.get(i).getHP() - 51);
-			PC.setEXP(10);
- 			playSFX("hooked");
+			if(!Main.update.PC.e2)
+				enemies.get(i).damage(Main.update.PC.getDamage());
+			else
+				enemies.get(i).damage(3*(Main.update.PC.getDamage()));
+			if(Main.update.PC.e1){
+				System.out.print("STUNT");
+				enemies.get(i).stun(300);
+			}
  			hasBeenHooked = true;
  			eCD--;
  		}
+		else if(eCD == 561 && Main.update.PC.e3){
+			if(!Main.update.PC.e2)
+				enemies.get(i).damage(Main.update.PC.getDamage());
+			else
+				enemies.get(i).damage(3*(Main.update.PC.getDamage()));
+			if(Main.update.PC.e1){
+				System.out.print("STUNT");
+				enemies.get(i).stun(300);
+			}
+ 			hasBeenHooked = true;
+ 			eCD--;
+		}
  		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
  		if(p.getX()-16 > enemies.get(i).getX())
  			enemies.get(i).setX((int)p.getX()-(enemies.get(i).getWidth()-20));
@@ -416,49 +433,6 @@ public class Update implements Runnable {
  		enemies.get(i).setY((int)p.getY() - (enemies.get(i).getHeight()-40));
  		enemies.get(i).update();
  	}
-	
-	private void playSFX(String s){
-		if(s == "hooked"){
-			int a = RNG.nextInt(2);
-			if(a == 0){
-				try {
-					voice.stop();
-					voice.open(getClass().getClassLoader().getResource("Music/hookHit.mp3"));
-				    voice.play();
-				} catch (BasicPlayerException e) {
-				    e.printStackTrace();
-				}
-			}
-			else if(a == 1){
-				try {
-					voice.stop();
-					voice.open(getClass().getClassLoader().getResource("Music/hookHit2.mp3"));
-				    voice.play();
-				} catch (BasicPlayerException e) {
-				    e.printStackTrace();
-				}
-			}		
-		}
-		if(s == "not hooked"){
-			try {
-				voice.stop();
-				voice.open(getClass().getClassLoader().getResource("Music/hookMissed.mp3"));
-			    voice.play();
-			} catch (BasicPlayerException e) {
-			    e.printStackTrace();
-			}
-		}
-		if(s == "meditate"){
-			try {
-				voice.stop();
-				voice.open(getClass().getClassLoader().getResource("Music/meditate.mp3"));
-			    voice.play();
-			} catch (BasicPlayerException e) {
-			    e.printStackTrace();
-			}
-		}
-	}
-	
 	
 	private void moveGrapple() {
 		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
@@ -477,8 +451,6 @@ public class Update implements Runnable {
 		if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
 			grapple = null;
 			shooting = false;
-			if(!hasBeenHooked)
-				playSFX("not hooked");
 			hasBeenHooked = false;
 		}
 	}
@@ -514,22 +486,33 @@ public class Update implements Runnable {
 		if(KeyboardListener.Q){
 			if(qCD == 0 && !qLocked){
 				spawnDart();
-				qCD = 25;
+				if(!Main.update.PC.q3)
+					qCD = 100;
+				else
+					qCD = 70;
 			}	
 		}
 		if(KeyboardListener.W){
 			if(wCD == 0 && !wLocked){
-				playSFX("meditate");
 				healing = true;
 				healingTime = 100;
-				wCD = 3000;
+				if(Main.update.PC.w1){
+					PC.setInvin(100);
+				}
+				if(!Main.update.PC.w3)
+					wCD = 3000;
+				else
+					wCD = 2100;
 			}
 		}
 		if(KeyboardListener.E && !eLocked){
 			if(eCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				eCD = 801;
+				if(!Main.update.PC.e3)
+					eCD = 801;
+				else
+					eCD = 561;
 			}	
 		}
 		if(KeyboardListener.space){
@@ -580,7 +563,6 @@ public class Update implements Runnable {
 		}
 		if(Main.update.commenceDialogue == 1 && (speakingWith.getID() == "shop" || speakingWith.getID() == "blacksmith"|| speakingWith.getID() == "armorsmith")){
 			Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
-			//System.out.println(MousekeyListener.getX() + " , " + MousekeyListener.getY());
 			boolean somethingsTrue = false;
 			if(speakingWith.getID() == "shop"){
 				for(int i = 0; i < shopItems.size(); i++){
@@ -793,19 +775,25 @@ public class Update implements Runnable {
 	}
 	
 	private void updateTimes(){
+		if(PC.getInvin()>0){
+			PC.setInvin(PC.getInvin() - 1);
+		}
 		if(healingTime == 1){
-			PC.heal(20);
+			if(!Main.update.PC.w2)
+				PC.heal((int)(PC.getMaxHealth()*(0.3)));
+			else
+				PC.heal((int)(PC.getMaxHealth()*(0.5)));
 			healingTime--;
 		}
 		if(healingTime == 0){
 			healing = false;
 		}
-		if(qCD > 0 && !shooting)
+		if(qCD > 0)
 			qCD--;
 		if(wCD > 0 && !healing){
 			wCD--;
 		}
-		if(eCD > 0){
+		if(eCD > 0 && !shooting){
 			eCD--;
 		}
 		//PC.setEXP(1);

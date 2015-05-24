@@ -122,7 +122,6 @@ public class Render implements Runnable {
 			drawBackground(g);
 			drawNPC(g);
 			drawEnemies(g);
-			drawHealth(g);
 			drawHUD(g);
 			drawPrompts(g);
 			drawPlayer(g);
@@ -141,23 +140,6 @@ public class Render implements Runnable {
 		dblBuffer.add(screen);
 		if(dblBuffer.size() == 2) {
 			this.g.drawImage(dblBuffer.poll(), 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-		}
-	}
-	
-	private void drawHealth(Graphics2D g) {
-		LinkedList<Enemy> enemies = Main.update.enemies;
-		for(int i = 0; i < enemies.size(); i++) {
-			Enemy e = enemies.get(i);
-			if(e.getMaxHealth() != e.getHP()){
-				Rectangle2D maxHP = new Rectangle2D.Double(e.getX()-5, e.getY() - 5, e.getMaxHealth(), 5);
-				Rectangle2D curHP = new Rectangle2D.Double(e.getX()-5, e.getY()-5, e.getHP(), 5);
-				g.setColor(Color.red);
-				g.fill(maxHP);
-				g.draw(maxHP);
-				g.setColor(Color.green);
-				g.fill(curHP);
-				g.draw(curHP);
-			}
 		}
 	}
 

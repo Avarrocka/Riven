@@ -1,5 +1,6 @@
 package res;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -40,10 +41,11 @@ public class Enemy implements Drawable{
 	private int trackTimer = 0;
 	private int attackSpeed = 20;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
-	private BufferedImage image;
+	private BufferedImage image, immob;
 	private BufferedImage movement[];
 	public boolean revMov;
 	private boolean dead;
+	private int stun = 0;
 	Random RNG = new Random();
 	/**
 	 * Constructor. Creates a player character.
@@ -54,6 +56,11 @@ public class Enemy implements Drawable{
 		this.setID(ID);
 		revMov = false;
 		dead = false;
+		try {
+			immob = ImageIO.read(getClass().getClassLoader().getResource("Icons/immob.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.moveCounter = 0;
 		if(ID == "slime"){
 			movement = new BufferedImage[3];
@@ -160,6 +167,18 @@ public class Enemy implements Drawable{
 	
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
+		double hp = (((double)this.getHP() / (double)this.getMaxHealth()) * 50);
+		Rectangle2D maxhp = new Rectangle2D.Double((int)(this.x) - 5, (int)(this.y) - 10, 50, 5);
+		Rectangle2D curhp = new Rectangle2D.Double((int)(this.x) - 5, (int)(this.y)-10, hp, 5);
+		g.setColor(Color.red);
+		g.fill(maxhp);
+		g.draw(maxhp);
+		g.setColor(Color.green);
+		g.fill(curhp);
+		g.draw(curhp);
+		if(stun>0){
+			g.drawImage(immob, x-25, y-10, 20, 20, null);
+		}
 	}
 	
 	public int getWidth() {
@@ -238,6 +257,8 @@ public class Enemy implements Drawable{
 			retaliate();
 	}
 	public void update(){
+		if(stun>0)
+			stun--;
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
 		if(motionSpeed == 0){
@@ -287,11 +308,16 @@ public class Enemy implements Drawable{
 		
 	}
 	public void retaliate() {
-		if(attackSpeed <= 0){
-			Main.update.PC.damage(this.damage);
-			attackSpeed = 60;
+		if(stun <= 0){
+			if(attackSpeed <= 0){
+				Main.update.PC.damage(this.damage);
+				attackSpeed = 60;
+			}
+			else
+				attackSpeed--;
 		}
-		else
-			attackSpeed--;
+	}
+	public void stun(int time){
+		stun = time;
 	}
 }

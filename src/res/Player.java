@@ -26,7 +26,7 @@ public class Player implements Drawable{
 	private int Vx, Vy;
 	private int EXP;
 	private int gold;
-	private int skillPoints = 5;
+	private int skillPoints = 15;
 	private Sword weapon;
 	private Armor armor;
 	private SkillTree skt = new SkillTree();
@@ -41,6 +41,7 @@ public class Player implements Drawable{
 	private int face;
 	private int dir;
 	private boolean r = false;
+	private int invin = 0;
 	BufferedImage Left[] = new BufferedImage[4];
 	BufferedImage Right[] = new BufferedImage[4];
 	BufferedImage Up[] = new BufferedImage[4];
@@ -605,14 +606,23 @@ public class Player implements Drawable{
 		}
 		attackSpeed--;
 	}
+	
+	public void setInvin(int duration){
+		invin = duration;
+	}
+	
+	public int getInvin(){
+		return this.invin;
+	}
 
 	public void damage(int damage) {
-		int inflictedDamage = damage - (this.armor.getArmor()/2);
-		if(inflictedDamage <= 0){
-			inflictedDamage = 2;
+		if(invin == 0){
+			int inflictedDamage = damage - (this.armor.getArmor()/2);
+			if(inflictedDamage <= 0){
+				inflictedDamage = 2;
+			}
+			this.hp -= inflictedDamage;
 		}
-		this.hp -= inflictedDamage;
-		System.out.println(inflictedDamage);
 	}
 	public int getPoints(){
 		return this.skillPoints;

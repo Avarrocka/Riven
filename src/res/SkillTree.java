@@ -83,7 +83,6 @@ public class SkillTree implements Drawable{
 		g.drawString(points+"", 545, 292);
 		int mx = MousekeyListener.getX();
 		int my = MousekeyListener.getY();
-		System.out.println(mx + " " + my);
 		for(int i = 0; i < collision.size(); i++){
 			if(got.get(i)){
 				g.drawImage(obtained, (int)collision.get(i).getX(), (int)collision.get(i).getY(), null);

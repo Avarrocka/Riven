@@ -30,10 +30,16 @@ public class Dart implements Drawable{
 	private int vx, vy;
 	private final int WIDTH = 0, HEIGHT = 0;
 	private final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3, NULL = 4;
+	public int v = 7;
 	public Dart(int x, int y, int direction) {
+		if(Main.update.PC.q1) 
+			v = 10;
 		this.x = x;
 		this.y = y;
-		this.damage = (int)(Main.update.PC.getDamage()/2);
+		if(!Main.update.PC.q2)
+			this.damage = (int)(Main.update.PC.getDamage()/2);
+		else
+			this.damage = (int)(Main.update.PC.getDamage());
 		this.direction = direction;
 		if(this.direction == NULL){
 			this.hit = true;
@@ -46,7 +52,7 @@ public class Dart implements Drawable{
 			}
 			this.y +=28;
 			this.x -= 5;
-			vx = -7;
+			vx = -v;
 			boundBox = new Rectangle2D.Double(this.x, this.y, 22, 9);
 		}
 		else if(this.direction == RIGHT){
@@ -57,7 +63,7 @@ public class Dart implements Drawable{
 			}
 			this.y +=28;
 			this.x += 5;
-			vx = 7;
+			vx = v;
 			boundBox = new Rectangle2D.Double(this.x, this.y, 22, 9);
 		}
 		else if(this.direction == UP){
@@ -68,7 +74,7 @@ public class Dart implements Drawable{
 			}
 			this.x += 21;
 			this.y -= 5;
-			vy = -7;
+			vy = -v;
 			boundBox = new Rectangle2D.Double(this.x, this.y, 9, 22);
 		}
 		else if(this.direction == DOWN){
@@ -79,7 +85,7 @@ public class Dart implements Drawable{
 			}
 			this.x += 21;
 			this.y += 5;
-			vy = 7;
+			vy = v;
 			boundBox = new Rectangle2D.Double(this.x, this.y, 9, 22);
 		}
 	}
