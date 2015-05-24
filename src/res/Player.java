@@ -1,5 +1,7 @@
 package res;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -53,10 +55,10 @@ public class Player implements Drawable{
 	public boolean q1, q2, q3, w1, w2, w3, e1, e2, e3;
  	private boolean revMov = false;
 	private boolean hpBuff = false;
-	private int baseAttack, baseDefense;
+	private int baseAttack, baseDefense, damaged, scroll=30;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
-	private BufferedImage image;
+	private BufferedImage image, hitSplat;
 	private Rectangle2D boundBox;
 	private BufferedImage defL, defR;
 	public boolean oozeQuest;
@@ -80,6 +82,7 @@ public class Player implements Drawable{
 		try {
 			defL = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDL.png"));
 			defR = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDR.png"));
+			hitSplat = ImageIO.read(getClass().getClassLoader().getResource("UI/hitSplat.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -200,6 +203,21 @@ public class Player implements Drawable{
 	
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
+		drawDamage(g);
+	}
+	
+	public void drawDamage(Graphics2D g){
+		if(this.damaged > 0){
+			if(this.scroll > 0){
+				g.setFont(new Font("Arial", Font.BOLD, 12));
+				g.setColor(Color.white);
+				g.drawImage(hitSplat, this.x+1, this.y+(20)-(40-this.scroll)/2, null);
+				g.drawString(""+this.damaged, this.x+13, this.y+(35)-((40-this.scroll)/2));
+				this.scroll--;
+			}
+			else
+				this.damaged = 0;
+		}
 	}
 	
 	public int getWidth() {
@@ -622,6 +640,8 @@ public class Player implements Drawable{
 				inflictedDamage = 2;
 			}
 			this.hp -= inflictedDamage;
+			this.damaged = inflictedDamage;
+			this.scroll = 30;
 		}
 	}
 	public int getPoints(){

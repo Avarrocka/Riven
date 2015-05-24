@@ -43,7 +43,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2, mapUI;
-	BufferedImage qAbility, wAbility, eAbility, meditateAura, levelUp, HPUI, here;
+	BufferedImage meditateAura, levelUp, HPUI, skillsUI, here;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -98,9 +98,7 @@ public class Render implements Runnable {
 		try {
 			hook = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook.png"));
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
-			qAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Qability.png"));
-			wAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Wability.png"));
-			eAbility = ImageIO.read(getClass().getClassLoader().getResource("Icons/Eability.png"));
+			skillsUI = ImageIO.read(getClass().getClassLoader().getResource("UI/SkillsUI.png"));
 			HPUI = ImageIO.read(getClass().getClassLoader().getResource("UI/HPUI.png"));
 			meditateAura = ImageIO.read(getClass().getClassLoader().getResource("Icons/meditateAura.png"));
 			levelUp = ImageIO.read(getClass().getClassLoader().getResource("Icons/levelUp.png"));
@@ -189,21 +187,10 @@ public class Render implements Runnable {
 		g.draw(EXP);
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 		g.setColor(Color.white);
-		g.drawImage(qAbility, 3, 25, 32, 48, null);
-		if(!Main.update.qLocked)
-			g.drawString(""+Main.update.qCD, 8, 70);
-		else
-			g.drawString("LOCK", 6, 70);
-		g.drawImage(wAbility, 35, 25, 32, 48, null);
-		if(!Main.update.wLocked)
-			g.drawString(""+Main.update.wCD, 38, 70);
-		else
-			g.drawString("LOCK", 36, 70);
-		g.drawImage(eAbility, 67, 25, 32, 48, null);
-		if(!Main.update.eLocked)
-			g.drawString(""+Main.update.eCD, 68, 70);
-		else
-			g.drawString("LOCK", 66, 70);
+		g.drawImage(skillsUI, 3, 25, 203, 50, null);
+		g.drawString(""+Main.update.qCD, 7, 70);
+		g.drawString(""+Main.update.wCD, 38, 70);
+		g.drawString(""+Main.update.eCD, 68, 70);
 		Line2D grapple = Main.update.grapple;
 		if(grapple != null){
 			g.draw(grapple);
@@ -419,10 +406,6 @@ public class Render implements Runnable {
 					Main.update.priamDone = false;
 				}
 			}
-			if(Main.update.commenceDialogue == 1 && (speak.getID() == "hunter")){
-				Main.update.speakingWith.updateLines();
-				Main.update.qLocked = false;
-			}
 		}
 	}
 	
@@ -539,12 +522,6 @@ public class Render implements Runnable {
 			g.drawImage(interactBox, 413, 90, 200, 75, null);
 			g.drawString("Press R to Interact", 440, 130);
 			Main.update.dialogueOptions--;
-		}
-		if(Main.update.moneyDraw > 0){
-			g.setFont(new Font("Arial", Font.BOLD, 20));
-			g.setColor(Color.yellow);
-			g.drawString("+" + Main.update.moneyDrop, Main.update.PC.getX()+27, Main.update.PC.getY()-((60-Main.update.moneyDraw)/4));
-			Main.update.moneyDraw--;
 		}
 		if(Main.update.levelUp > 0){
 			g.drawImage(levelUp, Main.update.PC.getX()-20, Main.update.PC.getY()-30 -((60-Main.update.levelUp)/4), null);

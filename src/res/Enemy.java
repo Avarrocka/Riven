@@ -1,6 +1,7 @@
 package res;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -40,8 +41,10 @@ public class Enemy implements Drawable{
 	private int vY;
 	private int trackTimer = 0;
 	private int attackSpeed = 20;
+	private int damaged = 0;
+	private int scroll = 30;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
-	private BufferedImage image, immob;
+	private BufferedImage image, immob, hitSplat;
 	private BufferedImage movement[];
 	public boolean revMov;
 	private boolean dead;
@@ -57,7 +60,8 @@ public class Enemy implements Drawable{
 		revMov = false;
 		dead = false;
 		try {
-			immob = ImageIO.read(getClass().getClassLoader().getResource("Icons/immob.png"));
+			immob = ImageIO.read(getClass().getClassLoader().getResource("UI/immob.png"));
+			hitSplat = ImageIO.read(getClass().getClassLoader().getResource("UI/hitSplat.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -179,6 +183,7 @@ public class Enemy implements Drawable{
 		if(stun>0){
 			g.drawImage(immob, x-25, y-10, 20, 20, null);
 		}
+		drawDamage(g);
 	}
 	
 	public int getWidth() {
@@ -227,9 +232,24 @@ public class Enemy implements Drawable{
 	}
 	public void damage(int damage){
 		this.health -= damage;
+		this.damaged = damage;
+		this.scroll = 30;
 		if(this.health <= 0){
 			this.health = 0;
 			this.dead = true;
+		}
+	}
+	public void drawDamage(Graphics2D g){
+		if(this.damaged > 0){
+			if(this.scroll > 0){
+				g.setFont(new Font("Arial", Font.BOLD, 12));
+				g.setColor(Color.white);
+				g.drawImage(hitSplat, this.x+1, this.y+(20)-(40-this.scroll)/2, null);
+				g.drawString(""+this.damaged, this.x+13, this.y+(35)-((40-this.scroll)/2));
+				this.scroll--;
+			}
+			else
+				this.damaged = 0;
 		}
 	}
 	public boolean getDead(){

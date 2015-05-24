@@ -82,9 +82,6 @@ public class Update implements Runnable {
 	public int qCD = 0;
 	public int wCD = 0;
 	public int eCD = 0;
-	public boolean qLocked = false;
-	public boolean wLocked = false;
-	public boolean eLocked = false;
 	public boolean areasSpawned = false;
 	
 	//quest variables
@@ -484,7 +481,7 @@ public class Update implements Runnable {
 			}
 		}
 		if(KeyboardListener.Q){
-			if(qCD == 0 && !qLocked){
+			if(qCD == 0){
 				spawnDart();
 				if(!Main.update.PC.q3)
 					qCD = 100;
@@ -493,7 +490,7 @@ public class Update implements Runnable {
 			}	
 		}
 		if(KeyboardListener.W){
-			if(wCD == 0 && !wLocked){
+			if(wCD == 0){
 				healing = true;
 				healingTime = 100;
 				if(Main.update.PC.w1){
@@ -505,7 +502,7 @@ public class Update implements Runnable {
 					wCD = 2100;
 			}
 		}
-		if(KeyboardListener.E && !eLocked){
+		if(KeyboardListener.E){
 			if(eCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
