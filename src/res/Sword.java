@@ -89,7 +89,7 @@ public class Sword implements Drawable{
 			this.desc = "Hundreds of thorns and edges adorn this darksteel blade to maximize gore.";
 			this.info = "This is an advanced weapon that does 25 damage per hit, plus an effect.";
 		}
-		if(this.ID == "Blessed Blade"){
+		if(this.ID == "The Wanderer"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordBlessed.png"));
 			} catch (IOException e) {
@@ -100,7 +100,7 @@ public class Sword implements Drawable{
 			this.desc = "Caladbolg, blessed by the wind, causes each agile strike to deal devastating damage.";
 			this.info = "This is a legendary weapon that does 35 damage per hit.";
 		}
-		if(this.ID == "Blighted Blade"){
+		if(this.ID == "The Soul Reaver"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordBlighted.png"));
 			} catch (IOException e) {
@@ -119,10 +119,53 @@ public class Sword implements Drawable{
 			}
 			this.damage = 45;
 			this.value = 0;
-			this.desc = "An ancient hierloom that once belonged to the Fallen God, Lunus.";
+			this.desc = "An blade of legend that once belonged to the Fallen God, Lunus.";
 			this.info = "This is a mythical weapon that does 45 damage per hit, plus an effect.";
 		}
-		
+		if(this.ID == "Inscribed Blade"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordImbued.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 16;
+			this.value = 0;
+			this.desc = "A weapon inscribed with the prayers of family members. Still well-balanced and usable.";
+			this.info = "This is an advanced weapon that does 16 damage per hit.";
+		}
+		if(this.ID == "Frozen Breath"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordForgefire.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 21;
+			this.value = 0;
+			this.desc = "Cold to the touch, this blade delivers freezing arcing slices to opponents.";
+			this.info = "This is an advanced weapon that does 21 damage per hit.";
+		}
+		if(this.ID == "Cobalt"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordCobalt.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 26;
+			this.value = 0;
+			this.desc = "Absurdly light, this off-colored blade still packs a large punch.";
+			this.info = "This is an advanced weapon that does 26 damage per hit.";
+		}
+		if(this.ID == "Radiance"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordDawn.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 31;
+			this.value = 0;
+			this.desc = "A shining blade that purges impurities from enemies and the wielder alike.";
+			this.info = "This is an advanced weapon that does 31 damage per hit.";
+		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	

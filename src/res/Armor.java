@@ -122,6 +122,50 @@ public class Armor implements Drawable{
 			this.desc = "A divine plate created by the Gods. A swirling inferno protects the user and incinerates foes.";
 			this.info = "This is mythical armor that grants 45 Armor, plus an effect.";
 		}
+		if(this.ID == "Field Commander's Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorField.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 16;
+			this.value = 0;
+			this.desc = "The lost hauberk of a fallen field commander. It fits snugly and allows agile movements.";
+			this.info = "This is basic armor that grants 16 Armor.";
+		}
+		if(this.ID == "Gemmed Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorGemmed.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 21;
+			this.value = 0;
+			this.desc = "Ceremonial armor that has been reinforced yet adorned with countless treasures.";
+			this.info = "This is advanced armor that grants 21 Armor.";
+		}
+		if(this.ID == "Cinderhulk Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorCinderhulk.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 26;
+			this.value = 0;
+			this.desc = "A mysteriously warm plate that was rumored to be forged in the heat of the Balthazar Isles.";
+			this.info = "This is advanced armor that grants 26 Armor.";
+		}
+		if(this.ID == "Draconic Armor"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorDraconic.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 31;
+			this.value = 0;
+			this.desc = "A lightweight and agile armor that has been studded with dragonscale.";
+			this.info = "This is advanced armor that grants 31 Armor.";
+		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	

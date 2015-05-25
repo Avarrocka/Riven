@@ -55,12 +55,15 @@ public class Player implements Drawable{
 	public boolean q1, q2, q3, w1, w2, w3, e1, e2, e3;
  	private boolean revMov = false;
 	private boolean hpBuff = false;
-	private int baseAttack, baseDefense, damaged, scroll=30;
+	private int baseAttack, baseDefense, damaged, scroll=30, scroll2=30;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
 	private BufferedImage image, hitSplat;
 	private Rectangle2D boundBox;
 	private BufferedImage defL, defR;
+	private Object o;
+	private BufferedImage drop;
+	private String dropName;
 	public boolean oozeQuest;
 	/**
 	 * Constructor. Creates a player character.
@@ -204,6 +207,7 @@ public class Player implements Drawable{
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		drawDamage(g);
+		drawDrop(g);
 	}
 	
 	public void drawDamage(Graphics2D g){
@@ -217,6 +221,20 @@ public class Player implements Drawable{
 			}
 			else
 				this.damaged = 0;
+		}
+	}
+	
+	public void drawDrop(Graphics2D g){
+		if(o != null){
+			if(this.scroll2 > 0){
+				g.setFont(new Font("Arial", Font.BOLD, 12));
+				g.setColor(Color.white);
+				g.drawImage(drop, 960, this.y+(20)-(40-this.scroll)/2, 64, 64, null);
+				g.drawString(dropName, 960, this.y+(35)-((40-this.scroll)/2));
+				this.scroll2--;
+			}
+			else
+				o = null;
 		}
 	}
 	
@@ -288,15 +306,31 @@ public class Player implements Drawable{
 	}
 	public void addItem(Item item){
 		invItems.add(item);
+		scroll2 = 30;
+		o = item;
+		drop = item.getImage();
+		dropName = item.getID();
 	}
 	public void addItem(Armor armor){
 		invArmor.add(armor);
+		scroll2 = 30;
+		o = armor;
+		drop = armor.getImage();
+		dropName = armor.getID();
 	}
 	public void addItem(Sword sword){
 		invSwords.add(sword);
+		scroll2 = 30;
+		o = sword;
+		drop = sword.getImage();
+		dropName = sword.getID();
 	}
 	public void addQuestItem(Item item){
 		qItems.add(item);
+		scroll2 = 30;
+		o = item;
+		drop = item.getImage();
+		dropName = item.getID();
 	}
 	public void setImage(int face){
 		if(motionSpeed == 0){

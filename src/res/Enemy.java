@@ -7,6 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.LinkedList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -49,6 +50,8 @@ public class Enemy implements Drawable{
 	public boolean revMov;
 	private boolean dead;
 	private int stun = 0;
+	private LinkedList<Armor> aDrops = new LinkedList<>();
+	private LinkedList<Sword> sDrops = new LinkedList<>();
 	Random RNG = new Random();
 	/**
 	 * Constructor. Creates a player character.
@@ -81,6 +84,8 @@ public class Enemy implements Drawable{
 			this.health = 30;
 			this.damage = 10;
 			this.EXP = 5;
+			aDrops.add(new Armor(0, 0, "Field Commander's Armor"));
+			sDrops.add(new Sword(0, 0, "Inscribed Blade"));
 		}
 		else if(ID == "gremlin"){
 			movement = new BufferedImage[3];
@@ -145,6 +150,22 @@ public class Enemy implements Drawable{
 			this.health = 100;
 			this.damage = 20;
 			this.EXP = 22;
+		}
+		else if(ID == "zombie"){
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/zombie1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/zombie2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/zombie3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.WIDTH = 30;
+			this.HEIGHT = 40;
+			this.image = movement[0];
+			this.health = 120;
+			this.damage = 25;
+			this.EXP = 30;
 		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
@@ -325,7 +346,18 @@ public class Enemy implements Drawable{
 		return this.EXP;
 	}
 	public void rollLoot() {
-		
+		int chanceForLoot = RNG.nextInt(7);
+		if(chanceForLoot > 0 && chanceForLoot < 7){
+			int armorOrSword = RNG.nextInt(2);
+			if(armorOrSword == 0){
+				int armorDrop = RNG.nextInt(aDrops.size());
+				Main.update.PC.addItem(aDrops.get(armorDrop));
+			}
+			if(armorOrSword == 1){
+				int swordDrop = RNG.nextInt(aDrops.size());
+				Main.update.PC.addItem(sDrops.get(swordDrop));
+			}
+		}
 	}
 	public void retaliate() {
 		if(stun <= 0){
