@@ -48,7 +48,7 @@ public class Enemy implements Drawable{
 	private BufferedImage image, immob, hitSplat;
 	private BufferedImage movement[];
 	public boolean revMov;
-	private boolean dead;
+	private boolean dead, isBoss = false;
 	private int stun = 0;
 	private LinkedList<Armor> aDrops = new LinkedList<>();
 	private LinkedList<Sword> sDrops = new LinkedList<>();
@@ -166,6 +166,25 @@ public class Enemy implements Drawable{
 			this.health = 120;
 			this.damage = 25;
 			this.EXP = 30;
+		}
+		else if(ID == "squid"){
+			this.isBoss = true;
+			movement = new BufferedImage[3];
+			try {
+				movement[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/squid1.png"));
+				movement[1]  = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/squid2.png"));
+				movement[2] =  ImageIO.read(getClass().getClassLoader().getResource("Sprites/Enemies/squid3.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.aDrops.add(new Armor(0, 0, "Gemmed Armor"));
+			this.sDrops.add(new Sword(0, 0, "Frozen Breath"));
+			this.WIDTH = 65;
+			this.HEIGHT = 90;
+			this.image = movement[0];
+			this.health = 300;
+			this.damage = 40;
+			this.EXP = 100;
 		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
@@ -289,7 +308,10 @@ public class Enemy implements Drawable{
 				}
 				else if(Main.update.PC.getY() < this.getY())
 					this.y--;
-				trackTimer = 2;
+				if(!isBoss)
+					trackTimer = 2;
+				else
+					trackTimer = 1;
 			}
 			else
 				trackTimer--;

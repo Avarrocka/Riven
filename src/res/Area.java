@@ -41,7 +41,7 @@ public class Area implements Drawable{
 	private boolean hasPortal = false;
 	private boolean hasBoss = false;
 	private boolean bossSlain = false;
-	private boolean spawnedMoreNPCs = false;
+	private boolean spawnedMoreNPCs = false, spawnedAreas = false;
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	public Area(String ID) {
 		leaveArea.clear();
@@ -246,6 +246,8 @@ public class Area implements Drawable{
 			moveDir.add(LEFT);
 		}
 		spawnCollisionRects(ID);
+		if(this.hasBoss)
+			spawnBoss();
 	}
 	public String getName(){
 		return this.name;
@@ -254,9 +256,12 @@ public class Area implements Drawable{
 		g.drawImage(image, null, x, y);
 		if(this.ID == "Frostgorge4" && Main.update.frostBoss == true){
 			g.drawImage(entrance, null, 450, 115);
-			leaveArea.add(new Rectangle2D.Double(450, 115, 100, 60));
-			leaveAreaName.add("Frostgorge5");
-			moveDir.add(DOWN);
+			if(!spawnedAreas){
+				leaveArea.add(new Rectangle2D.Double(450, 115, 100, 60));
+				leaveAreaName.add("Frostgorge5");
+				moveDir.add(DOWN);
+				spawnedAreas = true;
+			}
 		}
 		else if(this.ID == "Balthazar4" && Main.update.flameBoss == true){
 			
@@ -313,6 +318,13 @@ public class Area implements Drawable{
 	}
 	public Portal getPortal(){
 		return portal;
+	}
+	public void spawnBoss(){	
+		if(this.getID() == "Frostgorge4" && !Main.update.frostBoss){
+			Main.update.enemies.add(new Enemy(500, 300, "squid"));
+			System.out.print("SquidSpawnt");
+			this.hasBoss = false;
+		}
 	}
 	public void update(){
 		if(this.hasBoss && this.bossSlain){

@@ -43,7 +43,7 @@ public class Render implements Runnable {
 	BufferedImage Taverly;
 	BufferedImage talkBubble, dialogueBox, interactBox;
 	BufferedImage shop, inventory, questScreen, bPortal, rPortal, hook, hook2, mapUI;
-	BufferedImage meditateAura, levelUp, HPUI, skillsUI, here, switchOn, switchOff;
+	BufferedImage meditateAura, levelUp, HPUI, skillsUI, here, switchOn, switchOff, chest;
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
@@ -90,6 +90,7 @@ public class Render implements Runnable {
 			interactBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/interactBubble.png"));
 			questScreen = ImageIO.read(getClass().getClassLoader().getResource("Icons/quests.png"));
 			mapUI = ImageIO.read(getClass().getClassLoader().getResource("Icons/mapBot.png"));
+			chest = ImageIO.read(getClass().getClassLoader().getResource("Icons/treasureChest.png"));
 			here = ImageIO.read(getClass().getClassLoader().getResource("Icons/hereArrow.png"));
 			inventory = ImageIO.read(getClass().getClassLoader().getResource("Icons/inventory.png"));
 		} catch (IOException e) {
@@ -126,7 +127,7 @@ public class Render implements Runnable {
 			drawPrompts(g);
 			drawPlayer(g);
 			drawPortal(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
 			drawMap(g);
@@ -550,6 +551,9 @@ public class Render implements Runnable {
 			}
 			else
 				g.drawImage(switchOn, (int)Main.update.magicSwitch.getX(), (int)Main.update.magicSwitch.getY(), 23, 18, null);
+		}
+		if(Main.update.area.getID() == "Frostgorge5" && !Main.update.fbChest){
+			g.drawImage(chest, (int)Main.update.treasureChest.getX(), (int)Main.update.treasureChest.getY(), 38, 32, null);
 		}
 	}
 	

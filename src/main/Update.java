@@ -93,8 +93,9 @@ public class Update implements Runnable {
 	public int slimesSlain = 0;
 	public boolean fixingPortal = false;
 	public boolean SWTCH = false;
+	public boolean fbChest = false;
 	public Rectangle2D magicSwitch = new Rectangle2D.Double(276, 360, 23, 18);
-	
+	public Rectangle2D treasureChest = new Rectangle2D.Double(500, 400, 38, 32);
 	//dialogue variables/inventory
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
@@ -113,9 +114,7 @@ public class Update implements Runnable {
 	Random RNG = new Random();
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	//Music resources
-	private static BasicPlayer player;
-	private static BasicPlayer voice;
-	
+	private static BasicPlayer player;	
 	//Thread resources
 	public volatile ReentrantReadWriteLock lck = Main.lck;
 	private Thread updateThread;
@@ -163,10 +162,9 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Frostgorge4";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
-		voice = new BasicPlayer();
 		nb = PC.getBoundbox();
 		attackBox = PC.getBoundbox();
 		playMusic();
@@ -242,6 +240,9 @@ public class Update implements Runnable {
 				PC.setGold(PC.getGold() + moneyDrop);
 				PC.setEXP(enemies.get(i).getEXP());
 				enemies.get(i).rollLoot();
+				if(enemies.get(i).getID() == "squid"){
+					this.frostBoss = true;
+				}
 				enemies.remove(i);
 			}
 		}
@@ -290,13 +291,14 @@ public class Update implements Runnable {
 	
 	private void collisionWithLAreas() {
 		LinkedList<Integer> moveDir = area.getMoveDir();
-		LinkedList<Rectangle2D> leaveArea = area.getLeaveAreas();
+		LinkedList<Rectangle2D> leaveArea = area.getLeaveAreas(); 
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D LArea;
+		System.out.println(leaveArea.size() + " " + area.getLeaveAreaNames().size());
 		for(int i = 0; i < leaveArea.size(); i++){
 			LArea = leaveArea.get(i);
+			mapID = area.getLeaveAreaNames().get(i);
 			if(PlayerCharacter.intersects(LArea)){
-				mapID = area.getLeaveAreaNames().get(i);
 				area = new Area(mapID);
 				splashScreenTime = 100;
 				NPCs.clear();
@@ -328,6 +330,12 @@ public class Update implements Runnable {
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D NPCharacter;
 		boolean stillTouching = false;
+		if(area.getID() == "Frostgorge5" && !fbChest){
+			if(PlayerCharacter.intersects(treasureChest)){
+				PC.addQuestItem(new Item(0, 0, "Water Rune"));
+				this.fbChest = true;
+			}
+		}
 		for(int i = 0; i < NPCs.size(); i++){
 			NPCharacter = NPCs.get(i).getBoundbox();
 			if(PlayerCharacter.intersects(NPCharacter) && NPCs.get(i).hasDialogue()){
@@ -533,7 +541,7 @@ public class Update implements Runnable {
 		else
 			questScreen = false;
 		if(KeyboardListener.space){
-			Main.update.frostBoss = true;
+			
 		}
 		if(KeyboardListener.escape){
 			KeyboardListener.escape = false;

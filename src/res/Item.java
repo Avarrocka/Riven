@@ -98,6 +98,16 @@ public class Item implements Drawable{
 			this.desc = "A magical gem.";
 			this.info = "This is a quest item that can be brought to the Portal Guardian to repair the portal.";
 		}
+		if(this.ID == "Water Rune"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Items/waterRune.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.value = 0;
+			this.desc = "The tablet appears to be made out of the same material as the Portal. Perhaps..?";
+			this.info = "A battered and old-looking tablet with runic sketchings of Water on it.";
+		}
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
