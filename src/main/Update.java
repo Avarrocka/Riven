@@ -294,7 +294,6 @@ public class Update implements Runnable {
 		LinkedList<Rectangle2D> leaveArea = area.getLeaveAreas(); 
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D LArea;
-		System.out.println(leaveArea.size() + " " + area.getLeaveAreaNames().size());
 		for(int i = 0; i < leaveArea.size(); i++){
 			LArea = leaveArea.get(i);
 			mapID = area.getLeaveAreaNames().get(i);
@@ -410,23 +409,23 @@ public class Update implements Runnable {
  	
  	private void NPCHooked(int i){
 		if(eCD == 801){
-			if(!Main.update.PC.e2)
-				enemies.get(i).damage(Main.update.PC.getDamage());
+			if(!Update.PC.e2)
+				enemies.get(i).damage(Update.PC.getDamage());
 			else
-				enemies.get(i).damage(3*(Main.update.PC.getDamage()));
-			if(Main.update.PC.e1){
+				enemies.get(i).damage(3*(Update.PC.getDamage()));
+			if(Update.PC.e1){
 				System.out.print("STUNT");
 				enemies.get(i).stun(300);
 			}
  			hasBeenHooked = true;
  			eCD--;
  		}
-		else if(eCD == 561 && Main.update.PC.e3){
-			if(!Main.update.PC.e2)
-				enemies.get(i).damage(Main.update.PC.getDamage());
+		else if(eCD == 561 && Update.PC.e3){
+			if(!Update.PC.e2)
+				enemies.get(i).damage(Update.PC.getDamage());
 			else
-				enemies.get(i).damage(3*(Main.update.PC.getDamage()));
-			if(Main.update.PC.e1){
+				enemies.get(i).damage(3*(Update.PC.getDamage()));
+			if(Update.PC.e1){
 				System.out.print("STUNT");
 				enemies.get(i).stun(300);
 			}
@@ -495,7 +494,7 @@ public class Update implements Runnable {
 		if(KeyboardListener.Q){
 			if(qCD == 0){
 				spawnDart();
-				if(!Main.update.PC.q3)
+				if(!Update.PC.q3)
 					qCD = 100;
 				else
 					qCD = 70;
@@ -506,10 +505,10 @@ public class Update implements Runnable {
 			if(wCD == 0){
 				healing = true;
 				healingTime = 100;
-				if(Main.update.PC.w1){
+				if(Update.PC.w1){
 					PC.setInvin(100);
 				}
-				if(!Main.update.PC.w3)
+				if(!Update.PC.w3)
 					wCD = 3000;
 				else
 					wCD = 2100;
@@ -519,7 +518,7 @@ public class Update implements Runnable {
 			if(eCD == 0){
 				spawnGrapplingHook();
 				shooting = true;
-				if(!Main.update.PC.e3)
+				if(!Update.PC.e3)
 					eCD = 801;
 				else
 					eCD = 561;
@@ -699,36 +698,36 @@ public class Update implements Runnable {
 	private void manageInventory() {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
-		for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+		for(int i = 0; i < Update.PC.invSwords.size(); i++){
 			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 220, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
-					PC.setWeapon(Main.update.PC.invSwords.get(i), i);
+					PC.setWeapon(Update.PC.invSwords.get(i), i);
 				}
 				drawInvIndx = i;
 				drawWhich = 2;
 				somethingsTrue = true;
 			}
 		}
-		for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+		for(int i = 0; i < Update.PC.invArmor.size(); i++){
 			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 350, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
-					PC.setArmor(Main.update.PC.invArmor.get(i), i);
+					PC.setArmor(Update.PC.invArmor.get(i), i);
 				}
 				drawInvIndx = i;
 				drawWhich = 3;
 				somethingsTrue = true;
 			}
 		}
-		for(int i = 0; i < Main.update.PC.invItems.size(); i++){
+		for(int i = 0; i < Update.PC.invItems.size(); i++){
 			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 90, 50, 50);
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
-					PC.activateItem(Main.update.PC.invItems.get(i), i);
+					PC.activateItem(Update.PC.invItems.get(i), i);
 					drawInvIndx = i-1;
 				}
 				else
@@ -737,7 +736,7 @@ public class Update implements Runnable {
 				somethingsTrue = true;
 			}
 		}
-		for(int i = 0; i < Main.update.PC.qItems.size(); i++){
+		for(int i = 0; i < Update.PC.qItems.size(); i++){
 			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 480, 50, 50);
 			if(boundBox.contains(p)){
 				drawInvIndx = i;
@@ -790,7 +789,7 @@ public class Update implements Runnable {
 			PC.setInvin(PC.getInvin() - 1);
 		}
 		if(healingTime == 1){
-			if(!Main.update.PC.w2)
+			if(!Update.PC.w2)
 				PC.heal((int)(PC.getMaxHealth()*(0.3)));
 			else
 				PC.heal((int)(PC.getMaxHealth()*(0.5)));

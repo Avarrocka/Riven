@@ -55,10 +55,10 @@ public class Player implements Drawable{
 	public boolean q1, q2, q3, w1, w2, w3, e1, e2, e3;
  	private boolean revMov = false;
 	private boolean hpBuff = false;
-	private int baseAttack, baseDefense, damaged, scroll=30, scroll2=30;
+	private int baseAttack, baseDefense, damaged, scroll=30, scroll2=60;
 	private static final int WIDTH = 56, HEIGHT = 64;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 4, LEFT = 3;
-	private BufferedImage image, hitSplat;
+	private BufferedImage image, hitSplat, lootScreen;
 	private Rectangle2D boundBox;
 	private BufferedImage defL, defR;
 	private Object o;
@@ -80,11 +80,12 @@ public class Player implements Drawable{
 		this.baseDefense = 2;
 		this.EXP = 0;
 		this.level = 1;
-		this.setWeapon(new Sword(0, 0, "Radiance"), -1);
-		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
+		this.setWeapon(new Sword(0, 0, "Lunus Blade"), -1);
+		this.setArmor(new Armor(0, 0, "Solus Armor"), -1);
 		try {
 			defL = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDL.png"));
 			defR = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDR.png"));
+			lootScreen = ImageIO.read(getClass().getClassLoader().getResource("UI/lootScreen.png"));
 			hitSplat = ImageIO.read(getClass().getClassLoader().getResource("UI/hitSplat.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -227,10 +228,13 @@ public class Player implements Drawable{
 	public void drawDrop(Graphics2D g){
 		if(o != null){
 			if(this.scroll2 > 0){
-				g.setFont(new Font("Arial", Font.BOLD, 12));
+				g.setFont(new Font("Arial", Font.BOLD, 14));
 				g.setColor(Color.white);
-				g.drawImage(drop, 960, 180+(20)-(40-this.scroll2)/2, 64, 64, null);
-				g.drawString(dropName, 960, 200-((40-this.scroll2)/2));
+				g.drawImage(lootScreen, 3, 100+(20)-(40-this.scroll2/2), 150, 110, null);
+				g.drawImage(drop, 44, 130+(25)-(40-this.scroll2/2), 64, 64, null);
+				g.drawString("ITEM OBTAINED:", 25, 134-((40-this.scroll2/2)));
+				g.setFont(new Font("Arial", Font.BOLD, 10));
+				g.drawString(dropName, 12, 150-((40-this.scroll2/2)));
 				this.scroll2--;
 			}
 			else
@@ -306,28 +310,28 @@ public class Player implements Drawable{
 	}
 	public void addItem(Item item){
 		invItems.add(item);
-		scroll2 = 30;
+		scroll2 = 60;
 		o = item;
 		drop = item.getImage();
 		dropName = item.getID();
 	}
 	public void addItem(Armor armor){
 		invArmor.add(armor);
-		scroll2 = 30;
+		scroll2 = 60;
 		o = armor;
 		drop = armor.getImage();
 		dropName = armor.getID();
 	}
 	public void addItem(Sword sword){
 		invSwords.add(sword);
-		scroll2 = 30;
+		scroll2 = 60;
 		o = sword;
 		drop = sword.getImage();
 		dropName = sword.getID();
 	}
 	public void addQuestItem(Item item){
 		qItems.add(item);
-		scroll2 = 30;
+		scroll2 = 60;
 		o = item;
 		drop = item.getImage();
 		dropName = item.getID();

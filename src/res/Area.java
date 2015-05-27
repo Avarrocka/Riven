@@ -199,7 +199,7 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			leaveArea.add(new Rectangle2D.Double(0, 200, 10, 70));
+			leaveArea.add(new Rectangle2D.Double(480, 260, 70, 50));
 			leaveAreaName.add("Frostgorge4");
 			moveDir.add(UP);
 		}
