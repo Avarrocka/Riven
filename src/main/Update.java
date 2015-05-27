@@ -500,6 +500,7 @@ public class Update implements Runnable {
 				else
 					qCD = 70;
 			}	
+			PC.addItem(new Armor(0, 0, "Field Commander's Armor"));
 		}
 		if(KeyboardListener.W){
 			if(wCD == 0){

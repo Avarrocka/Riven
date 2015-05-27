@@ -311,7 +311,7 @@ public class Enemy implements Drawable{
 				if(!isBoss)
 					trackTimer = 2;
 				else
-					trackTimer = 1;
+					trackTimer = 0;
 			}
 			else
 				trackTimer--;

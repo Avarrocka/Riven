@@ -322,7 +322,6 @@ public class Area implements Drawable{
 	public void spawnBoss(){	
 		if(this.getID() == "Frostgorge4" && !Main.update.frostBoss){
 			Main.update.enemies.add(new Enemy(500, 300, "squid"));
-			System.out.print("SquidSpawnt");
 			this.hasBoss = false;
 		}
 	}

@@ -229,8 +229,8 @@ public class Player implements Drawable{
 			if(this.scroll2 > 0){
 				g.setFont(new Font("Arial", Font.BOLD, 12));
 				g.setColor(Color.white);
-				g.drawImage(drop, 960, this.y+(20)-(40-this.scroll)/2, 64, 64, null);
-				g.drawString(dropName, 960, this.y+(35)-((40-this.scroll)/2));
+				g.drawImage(drop, 960, 180+(20)-(40-this.scroll2)/2, 64, 64, null);
+				g.drawString(dropName, 960, 200-((40-this.scroll2)/2));
 				this.scroll2--;
 			}
 			else
