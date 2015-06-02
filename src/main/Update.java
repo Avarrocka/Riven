@@ -167,7 +167,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Frostgorge2";
+		mapID = "Taverly";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		nb = PC.getBoundbox();
@@ -175,6 +175,19 @@ public class Update implements Runnable {
 		playMusic();
 		startTime = System.currentTimeMillis();
 		area = new Area(mapID);
+		shopItems.add(new Item(140, 90, "Cinnamon Pumpkin Pie"));
+		shopItems.add(new Item(140, 180, "Fish Steak"));
+		shopItems.add(new Item(140, 270, "Chocolate Raspberry Cake"));
+		shopItems.add(new Item(140, 360, "Healing Salve"));
+		shopItems.add(new Item(140, 450, "Teleport to Town"));
+		shopArmor.add(new Armor(140, 90, "Plated Armor"));
+		shopArmor.add(new Armor(140, 200, "Tempered Armor"));
+		shopArmor.add(new Armor(140, 310, "Steel Armor"));
+		shopArmor.add(new Armor(140, 420, "Darksteel Armor"));
+		shopSwords.add(new Sword(140, 90, "Iron Sword"));
+		shopSwords.add(new Sword(140, 200, "Katana"));
+		shopSwords.add(new Sword(140, 310, "Steel Sword"));
+		shopSwords.add(new Sword(140, 420, "Serrated Blade"));
 	} 
 	
 	/**
@@ -358,19 +371,6 @@ public class Update implements Runnable {
 	private void spawnMap() {
 		if(mapID == "Taverly" && !NPCsSpawned){
 			NPCsSpawned = true;
-			shopItems.add(new Item(30, 90, "Cinnamon Pumpkin Pie"));
-			shopItems.add(new Item(30, 180, "Fish Steak"));
-			shopItems.add(new Item(30, 270, "Chocolate Raspberry Cake"));
-			shopItems.add(new Item(30, 360, "Healing Salve"));
-			shopItems.add(new Item(30, 450, "Teleport to Town"));
-			shopArmor.add(new Armor(30, 90, "Plated Armor"));
-			shopArmor.add(new Armor(30, 200, "Tempered Armor"));
-			shopArmor.add(new Armor(30, 310, "Steel Armor"));
-			shopArmor.add(new Armor(30, 420, "Darksteel Armor"));
-			shopSwords.add(new Sword(30, 90, "Iron Sword"));
-			shopSwords.add(new Sword(30, 200, "Katana"));
-			shopSwords.add(new Sword(30, 310, "Steel Sword"));
-			shopSwords.add(new Sword(30, 420, "Serrated Blade"));
 			NPCs = area.getNPCs();
 		}
 		else{

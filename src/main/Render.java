@@ -272,28 +272,32 @@ public class Render implements Runnable {
 			//Draws all the items in inventory
 			g.drawString("Items -", 400, 80);
 			for(int i = 0; i < Main.update.PC.invItems.size(); i++){
-				g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 90, 50, 50, null);
+				if(i < 9)
+					g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 90, 50, 50, null);
 			}
 			//Draws all the swords in inventory
 			g.drawString("Weapons -", 400, 210);
 			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
-				g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 220, 50, 50, null);
+				if(i < 9)
+					g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 220, 50, 50, null);
 			}
 			//Draws all the armor in inventory
 			g.drawString("Armor -", 400, 340);
 			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
-				g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 350, 50, 50, null);
+				if(i < 9)
+					g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 350, 50, 50, null);
 			}
 			//Draws all the Quest Items in inventory
 			g.drawString("Quest -", 400, 470);
 			for(int i = 0; i < Main.update.PC.qItems.size(); i++){
-				g.drawImage(Main.update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
+				if(i < 9)
+					g.drawImage(Main.update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
 			}
 			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
 				if(Main.update.drawWhich == 1){
-					g.setFont(new Font("Rockwell", Font.BOLD, 20));
 					if(!Main.update.PC.invItems.isEmpty()){
 						//System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
@@ -302,8 +306,8 @@ public class Render implements Runnable {
 					}
 				}
 				else if (Main.update.drawWhich == 2){
-					g.setFont(new Font("Rockwell", Font.BOLD, 20));
 					if(!Main.update.PC.invSwords.isEmpty()){
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
 						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
@@ -312,8 +316,8 @@ public class Render implements Runnable {
 					}
 				}
 				else if(Main.update.drawWhich == 3){
-					g.setFont(new Font("Rockwell", Font.BOLD, 20));
 					if(!Main.update.PC.invArmor.isEmpty()){
+						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
 						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
@@ -360,9 +364,11 @@ public class Render implements Runnable {
 			g.drawImage(dialogueBox, 0, GraphicsMain.HEIGHT - 200, 1024, 200, null);
 			NPC speak = Main.update.speakingWith;
 			g.drawImage(speak.getHead(), 65, GraphicsMain.HEIGHT - 139, 114, 114, null);
+			g.setFont(new Font("Rockwell", Font.BOLD, 16));
 			g.drawString(speak.getName(), 135, GraphicsMain.HEIGHT - 158);
 			g.setColor(Color.black);
 			if(Main.update.commenceDialogue >= 1){
+				g.setFont(new Font("Arial", Font.PLAIN, 13));
 				g.drawString(speak.getPhrase(Main.update.commenceDialogue - 1), 200, GraphicsMain.HEIGHT - 100);
 				if(Main.update.nextDialogue){
 					Main.update.commenceDialogue--;
@@ -413,7 +419,7 @@ public class Render implements Runnable {
 	}
 	
 	private void drawShop(Graphics2D g){
-		g.drawImage(shop,  0, 28, 1024, 550, null);
+		g.drawImage(shop,  100, 28, 845, 550, null);
 		Main.update.shopping = true;
 		LinkedList<Sword> swordShop = Main.update.shopSwords;
 		LinkedList<Item> itemShop = Main.update.shopItems;
@@ -424,13 +430,14 @@ public class Render implements Runnable {
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price
-					g.drawString(swordShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + swordShop.get(Main.update.drawInfoIndx).getValue(),swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 20);
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + swordShop.get(Main.update.drawInfoIndx).getValue(),swordShop.get(Main.update.drawInfoIndx).getX() + 150, swordShop.get(Main.update.drawInfoIndx).getY() + 20);
 					//Info
-					g.drawString(swordShop.get(Main.update.drawInfoIndx).getInfo(), swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 45);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getInfo(), swordShop.get(Main.update.drawInfoIndx).getX() + 150, swordShop.get(Main.update.drawInfoIndx).getY() + 45);
 					//Flavor Text
 					g.setFont(new Font("Georgia", Font.PLAIN, 14));
-					g.drawString(swordShop.get(Main.update.drawInfoIndx).getDescription(), swordShop.get(Main.update.drawInfoIndx).getX() + 200, swordShop.get(Main.update.drawInfoIndx).getY() + 65);
-					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(swordShop.get(Main.update.drawInfoIndx).getDescription(), swordShop.get(Main.update.drawInfoIndx).getX() + 150, swordShop.get(Main.update.drawInfoIndx).getY() + 65);
 				}
 			}
 		}
@@ -440,13 +447,14 @@ public class Render implements Runnable {
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price
-					g.drawString(itemShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + itemShop.get(Main.update.drawInfoIndx).getValue(),itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 25);
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + itemShop.get(Main.update.drawInfoIndx).getValue(),itemShop.get(Main.update.drawInfoIndx).getX() + 150, itemShop.get(Main.update.drawInfoIndx).getY() + 25);
 					//Info
-					g.drawString(itemShop.get(Main.update.drawInfoIndx).getInfo(), itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 45);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getInfo(), itemShop.get(Main.update.drawInfoIndx).getX() + 150, itemShop.get(Main.update.drawInfoIndx).getY() + 45);
 					//Flavor Text
 					g.setFont(new Font("Georgia", Font.PLAIN, 14));
-					g.drawString(itemShop.get(Main.update.drawInfoIndx).getDescription(), itemShop.get(Main.update.drawInfoIndx).getX() + 200, itemShop.get(Main.update.drawInfoIndx).getY() + 65);
-					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(itemShop.get(Main.update.drawInfoIndx).getDescription(), itemShop.get(Main.update.drawInfoIndx).getX() + 150, itemShop.get(Main.update.drawInfoIndx).getY() + 65);
 				}
 			}
 		}
@@ -456,13 +464,14 @@ public class Render implements Runnable {
 				if(Main.update.drawInfo){
 					g.setColor(Color.white);
 					//Price
-					g.drawString(armorShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + armorShop.get(Main.update.drawInfoIndx).getValue(),armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 25);
+					g.setFont(new Font("Rockwell", Font.BOLD, 20));
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getID() + "     Price: " + armorShop.get(Main.update.drawInfoIndx).getValue(),armorShop.get(Main.update.drawInfoIndx).getX() + 150, armorShop.get(Main.update.drawInfoIndx).getY() + 25);
 					//Info
-					g.drawString(armorShop.get(Main.update.drawInfoIndx).getInfo(), armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 45);
+					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getInfo(), armorShop.get(Main.update.drawInfoIndx).getX() + 150, armorShop.get(Main.update.drawInfoIndx).getY() + 45);
 					//Flavor Text
 					g.setFont(new Font("Georgia", Font.PLAIN, 14));
-					g.drawString(armorShop.get(Main.update.drawInfoIndx).getDescription(), armorShop.get(Main.update.drawInfoIndx).getX() + 200, armorShop.get(Main.update.drawInfoIndx).getY() + 65);
-					g.setFont(new Font("Georgia", Font.PLAIN, 18));
+					g.drawString(armorShop.get(Main.update.drawInfoIndx).getDescription(), armorShop.get(Main.update.drawInfoIndx).getX() + 150, armorShop.get(Main.update.drawInfoIndx).getY() + 65);
 				}
 			}
 		}
@@ -487,8 +496,9 @@ public class Render implements Runnable {
 			g.drawString("Item Purchased!", 420, 60);
 			Main.update.purchased--;
 		}
+		g.setFont(new Font("Rockwell", Font.BOLD, 16));
 		g.setColor(Color.yellow);
-		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 140, 60);
+		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 260, 60);
 		//Item description
 	}
 	
