@@ -45,6 +45,17 @@ public class Armor implements Drawable{
 			this.desc = "A well-fitting leather cassock that sometimes causes hits to glance.";
 			this.info = "This is basic armor that grants 5 Armor.";
 		}
+		if(this.ID == "Heavy Overcoat"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorCoat.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.armor = 8;
+			this.value = 0;
+			this.desc = "A heavy leather coat that may slightly protect the user against trauma.";
+			this.info = "This is basic armor that grants 8 Armor.";
+		}
 		if(this.ID == "Plated Armor"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorPlated.png"));

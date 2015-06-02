@@ -45,6 +45,17 @@ public class Sword implements Drawable{
 			this.desc = "A rusted sword not capable of more than a blunt strike.";
 			this.info = "This is a starter weapon that does 5 damage per hit";
 		}
+		if(this.ID == "Ceremonial Sabre"){
+			try {
+				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordRitual.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.damage = 8;
+			this.value = 0;
+			this.desc = "A ceremonial sabre that is not meant for real combat.";
+			this.info = "This is a starter weapon that does 8 damage per hit";
+		}
 		if(this.ID == "Iron Sword"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordIron.png"));

@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Point;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,6 +42,10 @@ public class Update implements Runnable {
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
 	public volatile LinkedList<Dart> darts = new LinkedList<Dart>();
+	
+	//Collison rectangle creator
+	public volatile LinkedList<Rectangle2D> testRects = new LinkedList<Rectangle2D>();
+	public Point2D p1, p2;
 	
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
@@ -162,7 +167,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Frostgorge4";
+		mapID = "Frostgorge2";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		nb = PC.getBoundbox();
@@ -296,12 +301,12 @@ public class Update implements Runnable {
 		Rectangle2D LArea;
 		for(int i = 0; i < leaveArea.size(); i++){
 			LArea = leaveArea.get(i);
-			mapID = area.getLeaveAreaNames().get(i);
+			if(!(i >= area.getLeaveAreaNames().size()))
+				mapID = area.getLeaveAreaNames().get(i);
 			if(PlayerCharacter.intersects(LArea)){
 				area = new Area(mapID);
 				splashScreenTime = 100;
 				NPCs.clear();
-				enemies.clear();
 				speakingWith = null;
 				NPCsSpawned = false;
 				if(moveDir.get(i) == LEFT){
@@ -499,7 +504,6 @@ public class Update implements Runnable {
 				else
 					qCD = 70;
 			}	
-			PC.addItem(new Armor(0, 0, "Field Commander's Armor"));
 		}
 		if(KeyboardListener.W){
 			if(wCD == 0){

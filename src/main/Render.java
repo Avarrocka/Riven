@@ -143,7 +143,7 @@ public class Render implements Runnable {
 			this.g.drawImage(dblBuffer.poll(), 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 		}
 	}
-
+	
 	private void drawEnemies(Graphics2D g) {
 		LinkedList<Enemy> enemies = Main.update.enemies;
 		for(int i = 0; i < enemies.size(); i++) {

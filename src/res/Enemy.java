@@ -45,7 +45,7 @@ public class Enemy implements Drawable{
 	private int damaged = 0;
 	private int scroll = 30;
 	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
-	private BufferedImage image, immob, hitSplat;
+	private BufferedImage image, immob, hitSplat, hpbar;
 	private BufferedImage movement[];
 	public boolean revMov;
 	private boolean dead, isBoss = false;
@@ -65,6 +65,7 @@ public class Enemy implements Drawable{
 		try {
 			immob = ImageIO.read(getClass().getClassLoader().getResource("UI/immob.png"));
 			hitSplat = ImageIO.read(getClass().getClassLoader().getResource("UI/hitSplat.png"));
+			hpbar = ImageIO.read(getClass().getClassLoader().getResource("UI/hpb.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -84,8 +85,8 @@ public class Enemy implements Drawable{
 			this.health = 30;
 			this.damage = 10;
 			this.EXP = 5;
-			aDrops.add(new Armor(0, 0, "Field Commander's Armor"));
-			sDrops.add(new Sword(0, 0, "Inscribed Blade"));
+			aDrops.add(new Armor(0, 0, "Heavy Overcoat"));
+			sDrops.add(new Sword(0, 0, "Ceremonial Sabre"));
 		}
 		else if(ID == "gremlin"){
 			movement = new BufferedImage[3];
@@ -96,12 +97,14 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.WIDTH = 35;
+			this.WIDTH = 45;
 			this.HEIGHT = 49;
 			this.image = movement[0];
 			this.health = 50;
 			this.damage = 14;
 			this.EXP = 10;
+			aDrops.add(new Armor(0, 0, "Heavy Overcoat"));
+			sDrops.add(new Sword(0, 0, "Ceremonial Sabre"));
 		}
 		else if(ID == "snowman"){
 			movement = new BufferedImage[3];
@@ -112,12 +115,14 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.WIDTH = 40;
+			this.WIDTH = 43;
 			this.HEIGHT = 50;
 			this.image = movement[0];
 			this.health = 80;
 			this.damage = 15;
 			this.EXP = 15;
+			aDrops.add(new Armor(0, 0, "Heavy Overcoat"));
+			sDrops.add(new Sword(0, 0, "Ceremonial Sabre"));
 		}
 		else if(ID == "aquaGoo"){
 			movement = new BufferedImage[3];
@@ -134,6 +139,8 @@ public class Enemy implements Drawable{
 			this.health = 100;
 			this.damage = 20;
 			this.EXP = 22;
+			aDrops.add(new Armor(0, 0, "Field Commander's Armor"));
+			sDrops.add(new Sword(0, 0, "Inscribed Blade"));
 		}
 		else if(ID == "flameSpirit"){
 			movement = new BufferedImage[3];
@@ -150,6 +157,8 @@ public class Enemy implements Drawable{
 			this.health = 100;
 			this.damage = 20;
 			this.EXP = 22;
+			aDrops.add(new Armor(0, 0, "Field Commander's Armor"));
+			sDrops.add(new Sword(0, 0, "Inscribed Blade"));
 		}
 		else if(ID == "zombie"){
 			movement = new BufferedImage[3];
@@ -160,12 +169,14 @@ public class Enemy implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			this.WIDTH = 30;
-			this.HEIGHT = 40;
+			this.WIDTH = 50;
+			this.HEIGHT = 60;
 			this.image = movement[0];
 			this.health = 120;
 			this.damage = 25;
 			this.EXP = 30;
+			aDrops.add(new Armor(0, 0, "Field Commander's Armor"));
+			sDrops.add(new Sword(0, 0, "Inscribed Blade"));
 		}
 		else if(ID == "squid"){
 			this.isBoss = true;
@@ -214,6 +225,7 @@ public class Enemy implements Drawable{
 		double hp = (((double)this.getHP() / (double)this.getMaxHealth()) * 50);
 		Rectangle2D maxhp = new Rectangle2D.Double((int)(this.x) - 5, (int)(this.y) - 10, 50, 5);
 		Rectangle2D curhp = new Rectangle2D.Double((int)(this.x) - 5, (int)(this.y)-10, hp, 5);
+		g.drawImage(hpbar, (int)(this.x-9), (int)(this.y-11), 60, 9, null);
 		g.setColor(Color.red);
 		g.fill(maxhp);
 		g.draw(maxhp);
@@ -368,16 +380,67 @@ public class Enemy implements Drawable{
 		return this.EXP;
 	}
 	public void rollLoot() {
-		int chanceForLoot = RNG.nextInt(7);
-		if(chanceForLoot > 0 && chanceForLoot < 7){
-			int armorOrSword = RNG.nextInt(2);
-			if(armorOrSword == 0){
-				int armorDrop = RNG.nextInt(aDrops.size());
-				Main.update.PC.addItem(aDrops.get(armorDrop));
+		if(!aDrops.isEmpty() && !sDrops.isEmpty()){
+			if(this.isBoss){
+				int armorOrSword = RNG.nextInt(2);
+				if(armorOrSword == 0){
+					int armorDrop = RNG.nextInt(aDrops.size());
+					Armor dropped = aDrops.get(armorDrop);
+					boolean have = false;
+					for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+						if(Main.update.PC.invArmor.get(i).getID() == dropped.getID()){
+							have = true;
+							break;
+						}
+					}
+					if(!have)
+						Main.update.PC.addItem(dropped);
+				}
+				if(armorOrSword == 1){
+					int swordDrop = RNG.nextInt(sDrops.size());
+					Sword dropped = sDrops.get(swordDrop);
+					boolean have = false;
+					for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+						if(Main.update.PC.invSwords.get(i).getID() == dropped.getID()){
+							have = true;
+							break;
+						}
+					}
+					if(!have)
+						Main.update.PC.addItem(dropped);
+				}
 			}
-			if(armorOrSword == 1){
-				int swordDrop = RNG.nextInt(aDrops.size());
-				Main.update.PC.addItem(sDrops.get(swordDrop));
+			else{
+				int chanceForLoot = RNG.nextInt(100);
+				if(chanceForLoot > 0 && chanceForLoot < 15){
+					int armorOrSword = RNG.nextInt(2);
+					if(armorOrSword == 0){
+						int armorDrop = RNG.nextInt(aDrops.size());
+						Armor dropped = aDrops.get(armorDrop);
+						boolean have = false;
+						for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+							if(Main.update.PC.invArmor.get(i).getID() == dropped.getID()){
+								have = true;
+								break;
+							}
+						}
+						if(!have)
+							Main.update.PC.addItem(dropped);
+					}
+					if(armorOrSword == 1){
+						int swordDrop = RNG.nextInt(sDrops.size());
+						Sword dropped = sDrops.get(swordDrop);
+						boolean have = false;
+						for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+							if(Main.update.PC.invSwords.get(i).getID() == dropped.getID()){
+								have = true;
+								break;
+							}
+						}
+						if(!have)
+							Main.update.PC.addItem(dropped);
+					}
+				}
 			}
 		}
 	}

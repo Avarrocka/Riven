@@ -49,6 +49,7 @@ public class Area implements Drawable{
 		moveDir.clear();
 		colli.clear();
 		Main.update.grapple = null;
+		Main.update.enemies.clear();
 		this.ID = ID;
 		if(ID == "Taverly"){
 			this.name = "Taverly";
@@ -99,7 +100,7 @@ public class Area implements Drawable{
 			leaveArea.add(new Rectangle2D.Double(570, 20, 50, 9));
 			leaveAreaName.add("RuinsofLargos");
 			moveDir.add(UP);
-			leaveArea.add(new Rectangle2D.Double(10, 350, 10, 300));
+			leaveArea.add(new Rectangle2D.Double(10, 320, 10, 100));
 			leaveAreaName.add("Turandal3");
 			moveDir.add(LEFT);
 		}
@@ -111,7 +112,7 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 300));
+			leaveArea.add(new Rectangle2D.Double(GraphicsMain.WIDTH-10, 350, 10, 50));
 			leaveAreaName.add("Turandal2");
 			moveDir.add(RIGHT);
 		}
@@ -155,10 +156,13 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			this.availEnemy.add("snowman");
+			this.availEnemy.add("aquaGoo");
+			this.availEnemy.add("gremlin");
 			leaveArea.add(new Rectangle2D.Double(10, 200, 10, 70));
 			leaveAreaName.add("Frostgorge1");
 			moveDir.add(LEFT);
-			leaveArea.add(new Rectangle2D.Double(865, 110, 60, 20));
+			leaveArea.add(new Rectangle2D.Double(865, 30, 60, 10));
 			leaveAreaName.add("Frostgorge3");
 			moveDir.add(UP);
 		}
@@ -170,10 +174,13 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			leaveArea.add(new Rectangle2D.Double(442,753,110,5));
+			this.availEnemy.add("snowman");
+			this.availEnemy.add("aquaGoo");
+			this.availEnemy.add("zombie");
+			leaveArea.add(new Rectangle2D.Double(872,753,80,5));
 			leaveAreaName.add("Frostgorge2");
 			moveDir.add(DOWN);
-			leaveArea.add(new Rectangle2D.Double(425, 100, 80, 15));
+			leaveArea.add(new Rectangle2D.Double(425, 20, 80, 15));
 			leaveAreaName.add("Frostgorge4");
 			moveDir.add(UP);
 		}
@@ -199,7 +206,7 @@ public class Area implements Drawable{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			leaveArea.add(new Rectangle2D.Double(480, 260, 70, 50));
+			leaveArea.add(new Rectangle2D.Double(475, 230, 70, 80));
 			leaveAreaName.add("Frostgorge4");
 			moveDir.add(UP);
 		}
@@ -320,9 +327,8 @@ public class Area implements Drawable{
 		return portal;
 	}
 	public void spawnBoss(){	
-		if(this.getID() == "Frostgorge4" && !Main.update.frostBoss){
+		if(this.ID == "Frostgorge4" && Main.update.frostBoss == false){
 			Main.update.enemies.add(new Enemy(500, 300, "squid"));
-			this.hasBoss = false;
 		}
 	}
 	public void update(){

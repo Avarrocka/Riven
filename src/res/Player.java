@@ -81,7 +81,7 @@ public class Player implements Drawable{
 		this.EXP = 0;
 		this.level = 1;
 		this.setWeapon(new Sword(0, 0, "Lunus Blade"), -1);
-		this.setArmor(new Armor(0, 0, "Solus Armor"), -1);
+		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
 		try {
 			defL = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDL.png"));
 			defR = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDR.png"));
