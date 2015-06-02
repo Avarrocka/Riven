@@ -8,7 +8,7 @@ import main.Main;
 
 /**
  * Button listener for main menu, performs actions when buttons are pressed, not part of update or render threads
- * @author Ben Pinhorn
+ * @author Brian Chen
  * @version 1.0
  */
 public class ButtonListener implements ActionListener {

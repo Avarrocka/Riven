@@ -17,7 +17,7 @@ import main.Main;
 import main.Render;
 
 /**
- * Class defines an enemy object
+ * Class defines a dart object, a projectile weapon created by the Player Character. Has variables such as damage, location etc.
  * @author Brian Chen
  *
  */

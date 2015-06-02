@@ -3,7 +3,11 @@ package listeners;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+/**
+ * Mouse listener for main menu, performs actions when buttons are pressed, not part of update or render threads
+ * @author Brian Chen
+ * @version 1.0
+ */
 public class MousekeyListener implements MouseListener, MouseMotionListener{
 
 	public static boolean mouseClicked = false;

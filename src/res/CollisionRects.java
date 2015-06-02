@@ -15,7 +15,7 @@ import main.Main;
 import main.Render;
 
 /**
- * Class defines an enemy object
+ * Class helps to create the necessary collision detection rectangles given an Area.
  * @author Brian Chen
  *
  */

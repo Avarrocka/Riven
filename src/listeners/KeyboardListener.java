@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import main.Main;
 
 /**
- * Key listening class for Trash Smash. Reads key input,sends info to Update thread.
+ * Key listening class that reads key input and sends info to Update thread.
  * @author Brian Chen
  * @version 1.0
  */

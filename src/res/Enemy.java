@@ -17,7 +17,7 @@ import main.Main;
 import main.Render;
 
 /**
- * Class defines an enemy object
+ * Class defines an enemy object with variables such as HP, location, etc.
  * @author Brian Chen
  *
  */

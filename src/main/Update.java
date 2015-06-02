@@ -29,7 +29,7 @@ import res.Quest;
 //import res.NPCS AND STUFF;
 
 /**
- * Update class for Trash Smash, updates at 60 ups, runs game logic
+ * Update class for Riven, updates at 60 ups, runs game logic and stores important global variables.
  * @author Brian Chen
  */
 public class Update implements Runnable {

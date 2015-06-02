@@ -13,7 +13,7 @@ import main.Main;
 import main.Render;
 
 /**
- * Class defines an enemy object
+ * Class defines armor for Player Character, including value, armor, etc.
  * @author Brian Chen
  *
  */

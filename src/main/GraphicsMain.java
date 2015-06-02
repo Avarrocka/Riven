@@ -23,7 +23,7 @@ import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 
 /**
- * Main graphics class for Trash Smash, generates window, starts render thread, creates main menu
+ * Main graphics class for Riven, generates window, starts render thread, creates main menu
  * @author Brian Chen
  */
 public class GraphicsMain {

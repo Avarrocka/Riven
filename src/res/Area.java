@@ -19,7 +19,7 @@ import main.Render;
 import res.Portal;
 
 /**
- * Class defines an enemy object
+ * Class defines an area, with graphics, location, and events. 
  * @author Brian Chen
  *
  */
