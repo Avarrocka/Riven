@@ -413,58 +413,62 @@ public class Update implements Runnable {
  	}
  	
  	private void NPCHooked(int i){
-		if(eCD == 801){
-			if(!Update.PC.e2)
-				enemies.get(i).damage(Update.PC.getDamage());
-			else
-				enemies.get(i).damage(3*(Update.PC.getDamage()));
-			if(Update.PC.e1){
-				System.out.print("STUNT");
-				enemies.get(i).stun(300);
+ 		if(grapple != null){
+			if(eCD == 801){
+				if(!Update.PC.e2)
+					enemies.get(i).damage(Update.PC.getDamage());
+				else
+					enemies.get(i).damage(3*(Update.PC.getDamage()));
+				if(Update.PC.e1){
+					System.out.print("STUNT");
+					enemies.get(i).stun(300);
+				}
+	 			hasBeenHooked = true;
+	 			eCD--;
+	 		}
+			else if(eCD == 561 && Update.PC.e3){
+				if(!Update.PC.e2)
+					enemies.get(i).damage(Update.PC.getDamage());
+				else
+					enemies.get(i).damage(3*(Update.PC.getDamage()));
+				if(Update.PC.e1){
+					System.out.print("STUNT");
+					enemies.get(i).stun(300);
+				}
+	 			hasBeenHooked = true;
+	 			eCD--;
 			}
- 			hasBeenHooked = true;
- 			eCD--;
+	 		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
+	 		if(p.getX()-16 > enemies.get(i).getX())
+	 			enemies.get(i).setX((int)p.getX()-(enemies.get(i).getWidth()-20));
+	 		else{
+	 			enemies.get(i).setX((int)p.getX());
+	 		}
+	 		enemies.get(i).setY((int)p.getY() - (enemies.get(i).getHeight()-40));
+	 		enemies.get(i).update();
  		}
-		else if(eCD == 561 && Update.PC.e3){
-			if(!Update.PC.e2)
-				enemies.get(i).damage(Update.PC.getDamage());
-			else
-				enemies.get(i).damage(3*(Update.PC.getDamage()));
-			if(Update.PC.e1){
-				System.out.print("STUNT");
-				enemies.get(i).stun(300);
-			}
- 			hasBeenHooked = true;
- 			eCD--;
-		}
- 		Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
- 		if(p.getX()-16 > enemies.get(i).getX())
- 			enemies.get(i).setX((int)p.getX()-(enemies.get(i).getWidth()-20));
- 		else{
- 			enemies.get(i).setX((int)p.getX());
- 		}
- 		enemies.get(i).setY((int)p.getY() - (enemies.get(i).getHeight()-40));
- 		enemies.get(i).update();
  	}
 	
 	private void moveGrapple() {
-		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
-		if(grapple.getX2() >= p.getX()){
-			grapple.setLine(p, new Point((int)grapple.getX2() - 4, (int)grapple.getY2()));
-		}
-		else if(grapple.getX2() <= p.getX()){
-			grapple.setLine(p, new Point((int)grapple.getX2() + 4, (int)grapple.getY2()));
-		}
-		if(grapple.getY2() >= p.getY()){
-			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() - 4));
-		}
-		else if(grapple.getY2() <= p.getY()){
-			grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() + 4));
-		}
-		if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
-			grapple = null;
-			shooting = false;
-			hasBeenHooked = false;
+		if(grapple != null){
+			Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
+			if(grapple.getX2() >= p.getX()){
+				grapple.setLine(p, new Point((int)grapple.getX2() - 4, (int)grapple.getY2()));
+			}
+			else if(grapple.getX2() <= p.getX()){
+				grapple.setLine(p, new Point((int)grapple.getX2() + 4, (int)grapple.getY2()));
+			}
+			if(grapple.getY2() >= p.getY()){
+				grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() - 4));
+			}
+			else if(grapple.getY2() <= p.getY()){
+				grapple.setLine(p, new Point((int)grapple.getX2(), (int)grapple.getY2() + 4));
+			}
+			if((Math.abs(grapple.getY2() - p.getY()) <= 70) && (Math.abs(grapple.getX2() - p.getX()) <= 70)){
+				grapple = null;
+				shooting = false;
+				hasBeenHooked = false;
+			}
 		}
 	}
 
@@ -751,6 +755,11 @@ public class Update implements Runnable {
 		if(!somethingsTrue){
 			drawInvIndx = -1;
 			drawWhich = 0;
+		}
+		if(drawWhich == 0){
+			if(drawInvIndx == PC.invItems.size()){
+				drawInvIndx--;
+			}
 		}
 	}
 

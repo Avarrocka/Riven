@@ -127,7 +127,7 @@ public class Render implements Runnable {
 			drawPrompts(g);
 			drawPlayer(g);
 			drawPortal(g);
-			drawBounds(g);
+			//drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
 			drawMap(g);
@@ -295,7 +295,7 @@ public class Render implements Runnable {
 			}
 			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
 				if(Main.update.drawWhich == 1){
-					if(!Main.update.PC.invItems.isEmpty()){
+					if(!Main.update.PC.invItems.isEmpty() && Main.update.drawInvIndx >= 0){
 						//System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
@@ -306,7 +306,7 @@ public class Render implements Runnable {
 					}
 				}
 				else if (Main.update.drawWhich == 2){
-					if(!Main.update.PC.invSwords.isEmpty()){
+					if(!Main.update.PC.invSwords.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
@@ -316,7 +316,7 @@ public class Render implements Runnable {
 					}
 				}
 				else if(Main.update.drawWhich == 3){
-					if(!Main.update.PC.invArmor.isEmpty()){
+					if(!Main.update.PC.invArmor.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
@@ -326,7 +326,7 @@ public class Render implements Runnable {
 					}
 				}
 				else if(Main.update.drawWhich == 4){
-					if(!Main.update.PC.qItems.isEmpty()){
+					if(!Main.update.PC.qItems.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));

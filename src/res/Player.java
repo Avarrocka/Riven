@@ -561,13 +561,14 @@ public class Player implements Drawable{
 			}
 		}
 		else if(using.getID() == "Healing Salve"){
-			Main.update.qCD = 801;
+			Main.update.qCD = 100;
 			Main.update.wCD = 3001;
+			Main.update.eCD = 801;
 			this.setHealth(mhp);
 		}
 		else if(using.getID() == "Teleport to Town"){
-			Main.update.mapID = "Taverly";
-			Main.update.splashScreenTime = 250;
+			Main.update.area = new Area("Taverly");
+			Main.update.splashScreenTime = 50;
 			KeyboardListener.escape = true;
 			this.setX(GraphicsMain.WIDTH/2 - 96);
 			this.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
