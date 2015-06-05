@@ -9,13 +9,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import basicplayer1.BasicPlayer;
 import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Render;
+
 import res.Area;
 import res.Armor;
 import res.CollisionRects;
@@ -33,26 +32,25 @@ import res.Quest;
  * @author Brian Chen
  */
 public class Update implements Runnable {
-	//Update resources
+	//Update Resources
+	
+	//Area/Map Resources
 	public String mapID = "";
 	public Area area;
-	
+	//Main Player Character
 	public volatile static Player PC = new Player(GraphicsMain.WIDTH/2 - 96, GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
-	
+	//Interactable objects/projectiles
 	public volatile LinkedList<NPC> NPCs = new LinkedList<NPC>(); 
 	public volatile LinkedList<Enemy> enemies = new LinkedList<Enemy>();
 	public volatile LinkedList<Dart> darts = new LinkedList<Dart>();
-	
+	public Point2D p1, p2; //Grappling hook points
 	//Collison rectangle creator
 	public volatile LinkedList<Rectangle2D> testRects = new LinkedList<Rectangle2D>();
-	public Point2D p1, p2;
-	
+	//Shopkeeper inventory LinkedLists
 	public volatile LinkedList<Sword> shopSwords = new LinkedList<Sword>(); 
 	public volatile LinkedList<Item> shopItems = new LinkedList<Item>(); 
 	public volatile LinkedList<Armor> shopArmor = new LinkedList<Armor>();
-	
-	public volatile LinkedList<Quest> quests = new LinkedList<Quest>();
-	
+	//Global variables of other importance	
 	public NPC speakingWith;
 	public Line2D grapple;
 	public long startTime = 0;
@@ -64,7 +62,6 @@ public class Update implements Runnable {
 	public int enemySpawnTime = 200;
 	public Rectangle2D nb;
 	public Rectangle2D attackBox;
-	
 	public boolean nextDialogue = false;
 	public boolean NPCsSpawned = false;
 	public boolean shopping = false;
@@ -72,15 +69,12 @@ public class Update implements Runnable {
 	public boolean frostBoss = false;
 	public boolean flameBoss = false;
 	public boolean earthBoss = false;
-	
 	public boolean invScreen = false;
 	public boolean questScreen = false;
 	public boolean portalScreen = false;
-	
 	public boolean portalOnline = false;
 	public boolean map = false;
-	
-	//ability cooldowns/checks
+	//Ability Cooldowns and Booleans
 	public boolean shooting = false;
 	public boolean healing = false;
 	public boolean hasBeenHooked = false;
@@ -88,8 +82,8 @@ public class Update implements Runnable {
 	public int wCD = 0;
 	public int eCD = 0;
 	public boolean areasSpawned = false;
-	
-	//quest variables
+	//Variables associated with Quests
+	public volatile LinkedList<Quest> quests = new LinkedList<Quest>();
 	public int ouroboros = 0;
 	public boolean gem = false;
 	public boolean priamTask = false;
@@ -101,7 +95,7 @@ public class Update implements Runnable {
 	public boolean fbChest = false;
 	public Rectangle2D magicSwitch = new Rectangle2D.Double(276, 360, 23, 18);
 	public Rectangle2D treasureChest = new Rectangle2D.Double(500, 400, 38, 32);
-	//dialogue variables/inventory
+	//Inventory and HUD variables
 	public int drawWhich = 0;
 	public int insufficientGold = 0;
 	public int alreadyHave = 0;
@@ -116,12 +110,13 @@ public class Update implements Runnable {
 	public Armor dropArmor = null;
 	public Sword dropSword = null;
 	public Item dropItem = null;
+	//Random Generator
 	Random RNG = new Random();
+	//Directional constants for direction PC is facing.
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
 	//Music resources
 	private static BasicPlayer player;	
 	//Thread resources
-	public volatile ReentrantReadWriteLock lck = Main.lck;
 	private Thread updateThread;
 	public volatile static boolean running;
 	
@@ -218,16 +213,20 @@ public class Update implements Runnable {
 		}
 	}
 	
+	/**
+	 * Most objects that need to be Updated and Updated here, including collision boxes, modes, HP, and location
+	 */
 	private void updateObjects() {
 		area.update();
+		//Updates Portal object to see if Fixing Portal has been completed
 		if(area.hasPortal()){
 			area.getPortal().updatePortal();
-		}
+		} //Updates and checks locations of NPCs
 		for(int i = 0; i < NPCs.size(); i++){
 			NPCs.get(i).updateBoundbox();
 			NPCs.get(i).updateSmall();
 			NPCs.get(i).onMapUpdate();
-		}
+		} //Updates the location of Darts
 		for(int i = 0; i < darts.size(); i++){
 			darts.get(i).update();
 			if(darts.get(i).returnHit() == true){
@@ -245,31 +244,33 @@ public class Update implements Runnable {
 				}
 			}
 		}
+		//Updates location and status of Enemy
 		for(int i = 0; i < enemies.size(); i++){
 			enemies.get(i).update();
 			if(enemies.get(i).getHP() <= 0){
-				if(priamTask && slimesSlain <= 5){
+				if(priamTask && slimesSlain <= 5){ //Quest completion
 					if(enemies.get(i).getID() == "slime"){
 						slimesSlain++;
 					}
 				}
+				//Enemy death loot spawns
 				moneyDrop = enemies.get(i).rollMoney(enemies.get(i).getID());
 				moneyDraw = 60;
 				PC.setGold(PC.getGold() + moneyDrop);
 				PC.setEXP(enemies.get(i).getEXP());
 				enemies.get(i).rollLoot();
-				if(enemies.get(i).getID() == "squid"){
+				if(enemies.get(i).getID() == "squid"){//Boolean if boss defeated
 					this.frostBoss = true;
 				}
 				enemies.remove(i);
 			}
-		}
+		}//Checks quest progress and removes it according to completion
 		for(int i = 0; i < quests.size(); i++){
 			quests.get(i).update();
 			if(quests.get(i).getDone()){
 				quests.remove(i);
 			}
-		}
+		}//Checks death of Player Character, respawns in Taverly.
 		if(PC.getHealth() <= 0){
 			area = new Area("Taverly");
 			PC.setHealth(PC.getMaxHealth());
@@ -281,13 +282,33 @@ public class Update implements Runnable {
 		}
 	}
 
+	/**
+	 * Spawns things into the game
+	 */
 	private void spawnThings() {
 		spawnMap();
 		if(!(area.getID() == "Taverly")){
 			spawnEnemies();
 		}
 	}
+	
+	/**
+	 * Spawns Map and NPCs according to NPCs contained in this.area
+	 */
+	private void spawnMap() {
+		if(mapID == "Taverly" && !NPCsSpawned){
+			NPCsSpawned = true;
+			NPCs = area.getNPCs();
+		}
+		else{
+			NPCsSpawned = true;
+			NPCs = area.getNPCs();
+		}
+	}
 
+	/**
+	 * Spawns enemies according to enemies available in this.area.
+	 */
 	private void spawnEnemies() {
 		if(enemySpawnTime == 0){
 			Enemy e = area.spawnEnemy();
@@ -300,13 +321,19 @@ public class Update implements Runnable {
 		}
 	}
 
+	/**
+	 * Detects collisions with leave areas and NPCs.
+	 */
 	private void collisionDetection(){
-		collisionWithNPCs(); //For interaction
+		collisionWithNPCs();
 		if(!area.getLeaveAreas().isEmpty()){
 			collisionWithLAreas();
 		}
 	}
 	
+	/**
+	 * Checks collision between PC and Leave Areas, then teleports player into a new Area object.
+	 */
 	private void collisionWithLAreas() {
 		LinkedList<Integer> moveDir = area.getMoveDir();
 		LinkedList<Rectangle2D> leaveArea = area.getLeaveAreas(); 
@@ -342,7 +369,10 @@ public class Update implements Runnable {
 			}
 		}
 	}
-
+	
+	/**
+	 * Detects collision with NPCs and other items to trigger events
+	 */
 	private void collisionWithNPCs(){
 		Rectangle2D PlayerCharacter = PC.getBoundbox();
 		Rectangle2D NPCharacter;
@@ -367,30 +397,25 @@ public class Update implements Runnable {
 			commenceDialogue = 0;
 		}
 	}
-	
-	private void spawnMap() {
-		if(mapID == "Taverly" && !NPCsSpawned){
-			NPCsSpawned = true;
-			NPCs = area.getNPCs();
-		}
-		else{
-			NPCsSpawned = true;
-			NPCs = area.getNPCs();
-		}
-	}
 
+	/**
+	 * Moves PC, objects, and grapples as well as updating time for important things.
+	 */
 	private void handleMovement(){
 		handlePCCommands();
 		movePC();
-		moveThings();
+		moveEnemies();
 		if(shooting){
 			moveGrapple();
-			pullNPC();
+			pullEnemy();
 		}
 		updateTimes();
 	}
 	
-	private void moveThings() {
+	/**
+	 * Moves enemies in area
+	 */
+	private void moveEnemies() {
 		if(area.getID() != "Taverly"){
 			for(int i = 0; i < enemies.size(); i++){
 				enemies.get(i).trackPC();
@@ -398,12 +423,15 @@ public class Update implements Runnable {
 		}
 	}
 
-	private void pullNPC() {
+	/**
+	 * Detects if an Enemy has been pulled, and continues to pull them.
+	 */
+	private void pullEnemy() {
  		if(grapple != null){
  			Point p = new Point((int)grapple.getX2(), (int)grapple.getY2());
  			for(int i = 0; i < enemies.size(); i++){
  				if(enemies.get(i).getSmall().contains(p)){
- 					NPCHooked(i);
+ 					enemyHooked(i);
  				}
  			}
  			if(magicSwitch.contains(p) && area.getID() == "Turandal3"){
@@ -412,8 +440,9 @@ public class Update implements Runnable {
  		}
  	}
  	
- 	private void NPCHooked(int i){
+ 	private void enemyHooked(int i){
  		if(grapple != null){
+ 			//Damages enemy on first iteration of pulling.
 			if(eCD == 801){
 				if(!Update.PC.e2)
 					enemies.get(i).damage(Update.PC.getDamage());
@@ -426,13 +455,13 @@ public class Update implements Runnable {
 	 			hasBeenHooked = true;
 	 			eCD--;
 	 		}
+			//Also damages, but on a lower cooldown
 			else if(eCD == 561 && Update.PC.e3){
 				if(!Update.PC.e2)
 					enemies.get(i).damage(Update.PC.getDamage());
 				else
 					enemies.get(i).damage(3*(Update.PC.getDamage()));
 				if(Update.PC.e1){
-					System.out.print("STUNT");
 					enemies.get(i).stun(300);
 				}
 	 			hasBeenHooked = true;
@@ -449,6 +478,9 @@ public class Update implements Runnable {
  		}
  	}
 	
+ 	/**
+	 * Moves the grapple towards the Player Character, but out of Melee distance
+	 */
 	private void moveGrapple() {
 		if(grapple != null){
 			Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
@@ -471,7 +503,28 @@ public class Update implements Runnable {
 			}
 		}
 	}
+	
+	/**
+	 * Creates a Grappling Hook to shoot out
+	 */ 
+	private void spawnGrapplingHook() {
+		int X = MousekeyListener.getX();
+		int Y = MousekeyListener.getY();
+		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
+		Point p2 = new Point(X, Y);
+		grapple = new Line2D.Double(p, p2);
+	}
 
+	/**
+	 * Creates a Dart to shoot out
+	 */ 
+	private void spawnDart(){
+		darts.add(new Dart(PC.getX(), PC.getY(), PC.getDir()));
+	}
+
+	/**
+	 * Uses KeyListener to process commands and prompts by the User to control Player Character.
+	 */
 	private void handlePCCommands(){
 		movementSpeed = 2;
 		PC.setImage(0);
@@ -551,9 +604,9 @@ public class Update implements Runnable {
 		if(KeyboardListener.space){
 			
 		}
+		//Cancels all UI
 		if(KeyboardListener.escape){
 			KeyboardListener.escape = false;
-			//Cancels all UIs
 			commenceDialogue = 0;
 			drawInfo = false;
 			drawInfoIndx = 0;
@@ -666,10 +719,13 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
-
+	
+	/**
+	 * Makes Player Character attack in the direction it faces
+	 */
 	private void attack() {
 		PC.updateBoundbox();
-		int face = PC.getFace(); //3left 4right 1up 2down?
+		int face = PC.getFace();
 		if(face == 1){
 			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()-20, PC.getWidth()+20, 20);
 		}
@@ -691,18 +747,9 @@ public class Update implements Runnable {
 		attackBox = null;
 	}
 
-	private void spawnGrapplingHook() {
-		int X = MousekeyListener.getX();
-		int Y = MousekeyListener.getY();
-		Point p = new Point(PC.getX()+(PC.getWidth()/2), PC.getY() + (PC.getHeight()/2));
-		Point p2 = new Point(X, Y);
-		grapple = new Line2D.Double(p, p2);
-	}
-
-	private void spawnDart(){
-		darts.add(new Dart(PC.getX(), PC.getY(), PC.getDir()));
-	}
-	
+	/**
+	 * Manages and uses/switches inventory items with equip items
+	 */ 
 	private void manageInventory() {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());

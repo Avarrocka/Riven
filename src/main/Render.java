@@ -83,7 +83,7 @@ public class Render implements Runnable {
 	}
 	//Loads all image objects into game from Assets folder
 	private void init() { 
-		try {
+		try { //HUDs and UIs
 			talkBubble = ImageIO.read(getClass().getClassLoader().getResource("Icons/talkBubble.png"));
 			dialogueBox = ImageIO.read(getClass().getClassLoader().getResource("Icons/dialogueBox.png"));
 			shop = ImageIO.read(getClass().getClassLoader().getResource("Equip/shop.png"));
@@ -96,7 +96,7 @@ public class Render implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		try {
+		try { //skills and onscreen assets
 			hook = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook.png"));
 			hook2 = ImageIO.read(getClass().getClassLoader().getResource("Icons/hook2.png"));
 			skillsUI = ImageIO.read(getClass().getClassLoader().getResource("UI/SkillsUI.png"));
@@ -135,15 +135,16 @@ public class Render implements Runnable {
 		else{
 			drawSplashscreen(g);
 		}
-		if(Main.appState == Main.DEAD_STATE) {
-			drawDeadScreen(g);
-		}
 		dblBuffer.add(screen);
 		if(dblBuffer.size() == 2) {
 			this.g.drawImage(dblBuffer.poll(), 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
 		}
 	}
 	
+	/**
+	 * Draw Method for all Enemies encountered on Main.update.area
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawEnemies(Graphics2D g) {
 		LinkedList<Enemy> enemies = Main.update.enemies;
 		for(int i = 0; i < enemies.size(); i++) {
@@ -152,6 +153,10 @@ public class Render implements Runnable {
 		}
 	}
 	
+	/**
+	 * Draws the map UI and image from Render.map
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawMap(Graphics2D g){
 		map.updateCurrentLocation();
 		if(Main.update.map){
@@ -169,15 +174,25 @@ public class Render implements Runnable {
 			}
 		}
 	}
+	
+	/**
+	 * Draws the loading image for Main.update.area
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawSplashscreen(Graphics2D g) {
 		g.drawImage(Main.update.area.getSplash(), 0, 0, 1024, 768, null);
 		g.setFont(new Font("Rockwell", Font.BOLD, 52));
 		g.drawString(Main.update.area.getName(), 350, 720);
 		Main.update.splashScreenTime--;
 	}
-
+	
+	/**
+	 * Draws the HUD (Heads up Display) which draws skills, menu accessors, and cooldowns
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawHUD(Graphics2D g) {
 		g.drawImage(HPUI, GraphicsMain.WIDTH - 186, 25, 186, 46, null);
+		//HP and EXP Bars. Set to represent a % of total HP or EXP until next level
 		double hp = ((((double)Main.update.PC.getHealth() / (double)Main.update.PC.getMaxHealth()) * 174));
 		double exp = ((((double)Main.update.PC.getEXP() / (double)Main.update.PC.getReqLvl()) * 98));
 		Rectangle2D HP = new Rectangle2D.Double(GraphicsMain.WIDTH-176+(174-hp), 35, hp, 10);
@@ -191,10 +206,12 @@ public class Render implements Runnable {
 		g.setFont(new Font("Arial", Font.PLAIN, 10));
 		g.setColor(Color.white);
 		g.drawImage(skillsUI, 3, 25, 203, 50, null);
+		//Cooldowns of abilities
 		g.drawString(""+Main.update.qCD, 7, 70);
 		g.drawString(""+Main.update.wCD, 38, 70);
 		g.drawString(""+Main.update.eCD, 68, 70);
 		Line2D grapple = Main.update.grapple;
+		//Draws the grapple onto the screen, if it exists
 		if(grapple != null){
 			g.draw(grapple);
 			if(grapple.getY2() <= Main.update.PC.getY())
@@ -202,6 +219,7 @@ public class Render implements Runnable {
 			else
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
 		}
+		//Draws the darts in motion onto the screen, if they exist
 		for(int i = 0; i < Main.update.darts.size(); i++){
 			Main.update.darts.get(i).draw(g);
 		}
@@ -211,6 +229,10 @@ public class Render implements Runnable {
 		}
 	}
 
+	/**
+	 * Draws the portal if Main.update.area contains a Portal object
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawPortal(Graphics2D g) {
 		if(Main.update.area.hasPortal()){
 			Main.update.area.getPortal().draw(g);
@@ -220,7 +242,12 @@ public class Render implements Runnable {
 		}
 	}
 
+	/**
+	 * Draws the User Interfaces, including inventory, quests, and associated items/quests
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawUIs(Graphics2D g) {
+		//Draws the inventory pane onto the menu, including all stats, items, and information
 		if(Main.update.invScreen){
 			g.drawImage(inventory, 0, 30, 1024, 700, null);
 			g.setFont(new Font("Rockwell", Font.BOLD, 22));
@@ -244,6 +271,7 @@ public class Render implements Runnable {
 			g.drawString("Level " + Main.update.PC.getLevel(), 235, 200);
 			g.setColor(Color.black);
 			g.setFont(new Font("Rockwell", Font.BOLD, 18));
+			//Time Elapsed counter
 			int timeElapsed = (int)(Main.update.currentTime / 1000);
 			String time = "";
 			if(timeElapsed < 10){
@@ -294,9 +322,9 @@ public class Render implements Runnable {
 					g.drawImage(Main.update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
 			}
 			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
+				//Drawing descriptions for Inventory Items objects
 				if(Main.update.drawWhich == 1){
 					if(!Main.update.PC.invItems.isEmpty() && Main.update.drawInvIndx >= 0){
-						//System.out.println(Main.update.PC.invItems.size() + " " + Main.update.drawInvIndx);
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
@@ -305,6 +333,7 @@ public class Render implements Runnable {
 						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
+				//Drawing descriptions for Inventory Swords objects
 				else if (Main.update.drawWhich == 2){
 					if(!Main.update.PC.invSwords.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -315,6 +344,7 @@ public class Render implements Runnable {
 						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
+				//Drawing descriptions for Inventory Armor objects
 				else if(Main.update.drawWhich == 3){
 					if(!Main.update.PC.invArmor.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -325,6 +355,7 @@ public class Render implements Runnable {
 						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
+				//Drawing descriptions for Inventory Quest Item objects
 				else if(Main.update.drawWhich == 4){
 					if(!Main.update.PC.qItems.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -337,6 +368,7 @@ public class Render implements Runnable {
 				}
 			}
 		}
+		//Draws the quest pane onto the Screen, including all Quest objects and descriptions
 		if(Main.update.questScreen){
 			g.setColor(Color.black);
 			g.drawImage(questScreen, 0, 30, 1024, 700, null);
@@ -358,7 +390,10 @@ public class Render implements Runnable {
 		}
 	}
 
-	//Loops through the dialogue options
+	/**
+	 * Draws the dialogue including dialogue box onto the screen
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawDialogue(Graphics2D g){
 		if(Main.update.commenceDialogue > 0){
 			g.drawImage(dialogueBox, 0, GraphicsMain.HEIGHT - 200, 1024, 200, null);
@@ -367,6 +402,7 @@ public class Render implements Runnable {
 			g.setFont(new Font("Rockwell", Font.BOLD, 16));
 			g.drawString(speak.getName(), 135, GraphicsMain.HEIGHT - 158);
 			g.setColor(Color.black);
+			//If on the last dialogue, open up whatever special thing the NPC does (Shop, Quest, etc.)
 			if(Main.update.commenceDialogue >= 1){
 				g.setFont(new Font("Arial", Font.PLAIN, 13));
 				g.drawString(speak.getPhrase(Main.update.commenceDialogue - 1), 200, GraphicsMain.HEIGHT - 100);
@@ -418,6 +454,10 @@ public class Render implements Runnable {
 		}
 	}
 	
+	/**
+	 * Draws the Shop onto the screen including things for purchase from Shopkeep, Armorsmith, and Weaponsmith
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawShop(Graphics2D g){
 		g.drawImage(shop,  100, 28, 845, 550, null);
 		Main.update.shopping = true;
@@ -425,6 +465,7 @@ public class Render implements Runnable {
 		LinkedList<Item> itemShop = Main.update.shopItems;
 		LinkedList<Armor> armorShop = Main.update.shopArmor;
 		if(Main.update.speakingWith.getID() == "blacksmith"){
+			//Draws all Swords from Blacksmith's inventory.
 			for(int i = 0; i < swordShop.size(); i++){
 				g.drawImage(swordShop.get(i).getImage(), swordShop.get(i).getX(), swordShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
@@ -442,6 +483,7 @@ public class Render implements Runnable {
 			}
 		}
 		else if(Main.update.speakingWith.getID() == "shop"){
+			//Draws all Items from Shopkeep's inventory.
 			for(int i = 0; i < itemShop.size(); i++){
 				g.drawImage(itemShop.get(i).getImage(), itemShop.get(i).getX(), itemShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
@@ -459,6 +501,7 @@ public class Render implements Runnable {
 			}
 		}
 		else if(Main.update.speakingWith.getID() == "armorsmith"){
+			//Draws all Armor from Armorsmith's inventory.
 			for(int i = 0; i < armorShop.size(); i++){
 				g.drawImage(armorShop.get(i).getImage(), armorShop.get(i).getX(), armorShop.get(i).getY(), 64, 64, null);
 				if(Main.update.drawInfo){
@@ -475,6 +518,7 @@ public class Render implements Runnable {
 				}
 			}
 		}
+		//Error message - Item too expensive
 		if(Main.update.insufficientGold > 0){
 			g.setColor(Color.red);
 			g.drawString("Insufficient funds for item.",  420, 60);
@@ -483,6 +527,7 @@ public class Render implements Runnable {
 				Main.update.purchased = 0;
 			}
 		}
+		//Error message - User already has item in inventory
 		if(Main.update.alreadyHave > 0){
 			g.setColor(Color.red);
 			g.drawString("You already have this item.",  420, 60);
@@ -491,6 +536,7 @@ public class Render implements Runnable {
 				Main.update.purchased = 0;
 			}
 		}
+		//Message - Item purchased
 		else if(Main.update.purchased > 0 && Main.update.insufficientGold == 0){
 			g.setColor(Color.green);
 			g.drawString("Item Purchased!", 420, 60);
@@ -502,6 +548,10 @@ public class Render implements Runnable {
 		//Item description
 	}
 	
+	/**
+	 * Draws the debugging boundaries for Collision for NPCs, Enemies, LeaveAreas, CollisionAreas, and Main.update.PC
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawBounds(Graphics2D g){
 		Rectangle2D PlayerCharacter = Main.update.PC.getBoundbox();
 		g.setColor(Color.blue);
@@ -528,6 +578,10 @@ public class Render implements Runnable {
 		}
 	}
 	
+	/**
+	 * Draws the prompts and notifications (e.g. Chat, LevelUP)
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawPrompts(Graphics2D g){
 		if(Main.update.dialogueOptions > 0){
 			g.setFont(new Font("Georgia", Font.PLAIN, 18));
@@ -542,6 +596,10 @@ public class Render implements Runnable {
 		}
 	}
 	
+	/**
+	 * Draws the NPCs in Main.update.area to the screen
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawNPC(Graphics2D g) {
 		LinkedList<NPC> NPCs = Main.update.NPCs;
 		for(int i = 0; i < NPCs.size(); i++) {
@@ -553,6 +611,10 @@ public class Render implements Runnable {
 		}
 	}
 
+	/**
+	 * Draws the background as well as bonus items onto the screen.
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawBackground(Graphics2D g){
 		Main.update.area.draw(g);
 		if(Main.update.area.getID() == "Turandal3" && Main.update.fixingPortal){
@@ -567,14 +629,18 @@ public class Render implements Runnable {
 		}
 	}
 	
+	/**
+	 * Draws the Player Character from Main.update.PC onto the screen
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawPlayer(Graphics2D g){
 		Main.update.PC.draw(g);
 	}
-
-	private void drawDeadScreen(Graphics2D g) {
-		//g.drawImage(deadScreen, 0, 0, GraphicsMain.WIDTH, GraphicsMain.HEIGHT, null);
-	}
 	
+	/**
+	 * Draws the Skill Tree onto the screen
+	 * @param g Graphics2D Object to draw with.
+	 */
 	private void drawSKT(Graphics2D g){
 		Main.update.PC.getSkillTree().draw(g);
 	}
