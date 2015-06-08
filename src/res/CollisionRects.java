@@ -58,19 +58,43 @@ public class CollisionRects{
 			rectangles.add(new Rectangle2D.Double(850, 0, 165, 768));
 		}
 		else if(s == "Frostgorge1"){
-			
+			rectangles.add(new Rectangle2D.Double(0, 0, 337, 212));
+			rectangles.add(new Rectangle2D.Double(0, 212, 200, 150));
+			rectangles.add(new Rectangle2D.Double(575, 0, 500, 75));
+			rectangles.add(new Rectangle2D.Double(920, 75, 100, 100));
+			rectangles.add(new Rectangle2D.Double(620, 400, 400, 300));
+			rectangles.add(new Rectangle2D.Double(640, 300, 100, 100));
 		}
 		else if(s == "Frostgorge2"){
-			
+			rectangles.add(new Rectangle2D.Double(0, 0, 860, 120));
+			rectangles.add(new Rectangle2D.Double(930, 0, 100, 120));
+			rectangles.add(new Rectangle2D.Double(215, 280, 808, 420));
+			rectangles.add(new Rectangle2D.Double(0, 350, 210, 343));
 		}
 		else if(s == "Frostgorge3"){
-			
+			rectangles.add(new Rectangle2D.Double(100, 180, 110, 180));
+			rectangles.add(new Rectangle2D.Double(725, 190, 160, 130));
+			rectangles.add(new Rectangle2D.Double(0, 0, 410, 65));
+			rectangles.add(new Rectangle2D.Double(530, 0, 500, 65));
+			rectangles.add(new Rectangle2D.Double(100, 630, 60, 50));
 		}
 		else if(s == "Frostgorge4"){
-			
+			rectangles.add(new Rectangle2D.Double(0, 710, 350, 50));
+			rectangles.add(new Rectangle2D.Double(530, 710, 490, 55));
+			rectangles.add(new Rectangle2D.Double(0, 0, 400, 170));
+			rectangles.add(new Rectangle2D.Double(400, 0, 624, 110));
+			rectangles.add(new Rectangle2D.Double(600, 110, 420, 90));
+			rectangles.add(new Rectangle2D.Double(980, 200, 43, 512));
+			rectangles.add(new Rectangle2D.Double(0, 170, 54, 539));
 		}
 		else if(s == "Frostgorge5"){
-			
+			rectangles.add(new Rectangle2D.Double(0, 0, 440, 160));
+			rectangles.add(new Rectangle2D.Double(550, 0, 470, 160));
+			rectangles.add(new Rectangle2D.Double(820, 160, 200, 600));
+			rectangles.add(new Rectangle2D.Double(0, 160, 160, 607));
+			rectangles.add(new Rectangle2D.Double(160, 680, 660, 95));
+			rectangles.add(new Rectangle2D.Double(700, 215, 70, 50));
+			rectangles.add(new Rectangle2D.Double(215, 535, 70, 50));
 		}
 		return rectangles;
 	}
