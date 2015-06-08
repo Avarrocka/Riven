@@ -4,20 +4,15 @@ import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.Random;
 import basicplayer1.BasicPlayer;
 import basicplayer1.BasicPlayerException;
 import listeners.KeyboardListener;
 import listeners.MousekeyListener;
-import main.Render;
 
 import res.Area;
 import res.Armor;
-import res.CollisionRects;
 import res.Dart;
 import res.Enemy;
 import res.Player;
@@ -162,7 +157,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Taverly";
+		mapID = "Turandal2";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		nb = PC.getBoundbox();
@@ -254,7 +249,7 @@ public class Update implements Runnable {
 					}
 				}
 				//Enemy death loot spawns
-				moneyDrop = enemies.get(i).rollMoney(enemies.get(i).getID());
+				moneyDrop = enemies.get(i).rollMoney();
 				moneyDraw = 60;
 				PC.setGold(PC.getGold() + moneyDrop);
 				PC.setEXP(enemies.get(i).getEXP());
@@ -310,7 +305,7 @@ public class Update implements Runnable {
 	 * Spawns enemies according to enemies available in this.area.
 	 */
 	private void spawnEnemies() {
-		if(enemySpawnTime == 0){
+		if(enemySpawnTime == 0 && this.enemies.size() <= 20){
 			Enemy e = area.spawnEnemy();
 			if(e != null)
 				enemies.add(e);
@@ -592,7 +587,7 @@ public class Update implements Runnable {
 			}
 			else if(!PC.getAttacking()){
 				PC.attacking(40);
-				attack();
+				PC.doAttack();
 				KeyboardListener.space = false;
 			}
 		}
@@ -719,33 +714,6 @@ public class Update implements Runnable {
 		else
 			drawInfo = false;
 	}
-	
-	/**
-	 * Makes Player Character attack in the direction it faces
-	 */
-	private void attack() {
-		PC.updateBoundbox();
-		int face = PC.getFace();
-		if(face == 1){
-			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()-20, PC.getWidth()+20, 20);
-		}
-		else if(face == 2){
-			attackBox = new Rectangle2D.Double(PC.getX()-10, PC.getY()+PC.getHeight(), PC.getWidth()+20, 20);
-		}
-		else if(face == 3){
-			attackBox = new Rectangle2D.Double(PC.getX()-20, PC.getY()-10, 20, PC.getHeight()+20);
-		}
-		else if(face == 4){
-			attackBox = new Rectangle2D.Double(PC.getX() + PC.getWidth(), PC.getY()-10, 20, PC.getHeight()+20);
-		}
-		for(int i = 0; i < enemies.size(); i++){
-			if(enemies.get(i).getBoundbox().intersects(attackBox)){
-				int dmg = RNG.nextInt(PC.getDamage()/2) + PC.getDamage()/2;
-				enemies.get(i).damage(dmg);
-			}
-		}
-		attackBox = null;
-	}
 
 	/**
 	 * Manages and uses/switches inventory items with equip items
@@ -753,6 +721,7 @@ public class Update implements Runnable {
 	private void manageInventory() {
 		boolean somethingsTrue = false;
 		Point p = new Point(MousekeyListener.getX(), MousekeyListener.getY());
+		//Gives information on where the mouse is - and displays info text based on that information
 		for(int i = 0; i < Update.PC.invSwords.size(); i++){
 			Rectangle2D boundBox = new Rectangle2D.Double(400+(65*i), 220, 50, 50);
 			if(boundBox.contains(p)){
@@ -782,6 +751,7 @@ public class Update implements Runnable {
 			if(boundBox.contains(p)){
 				if(MousekeyListener.mouseClicked){
 					MousekeyListener.mouseClicked = false;
+					//Activates the selected item, or rather uses it
 					PC.activateItem(Update.PC.invItems.get(i), i);
 					drawInvIndx = i-1;
 				}
@@ -799,10 +769,12 @@ public class Update implements Runnable {
 				somethingsTrue = true;
 			}
 		}
+		//If nothing is hovered/selected, nothing is drawn in Render
 		if(!somethingsTrue){
 			drawInvIndx = -1;
 			drawWhich = 0;
 		}
+		//If the last item is used, then the drawIndex decreases as to not cause a NPE.
 		if(drawWhich == 0){
 			if(drawInvIndx == PC.invItems.size()){
 				drawInvIndx--;
@@ -810,6 +782,11 @@ public class Update implements Runnable {
 		}
 	}
 
+	/**
+	 * Quicksort used to sort items based on value when purchased.
+	 * @param low The lower part of the array
+	 * @param high The higher part of the array
+	 */
 	public static void quickSort(int low, int high){
 		if (low < high){
 		    int p = partition(low, high);
@@ -818,6 +795,12 @@ public class Update implements Runnable {
 		}
 	}
 	
+	/**
+	 * The partition method used in quicksort
+	 * @param low
+	 * @param high
+	 * @return
+	 */
 	private static int partition(int low, int high) {
 		 int pivotIndex = low;
 	     int pivotValue = PC.invItems.get(pivotIndex).getValue();
@@ -833,6 +816,11 @@ public class Update implements Runnable {
 	     return storeIndex;
 	}
 	
+	/**
+	 * The swap method used in quicksort
+	 * @param i
+	 * @param j
+	 */
 	private static void swap(int i, int j){
 		if(j == PC.invItems.size()-1){
 			return;
@@ -843,7 +831,10 @@ public class Update implements Runnable {
 		PC.invItems.remove(j);
 		PC.invItems.add(j, temp);
 	}
-	
+
+	/** 
+	 * Keeps track of important times such as cooldown, playtime, and etc.
+	 */
 	private void updateTimes(){
 		if(PC.getInvin()>0){
 			PC.setInvin(PC.getInvin() - 1);
@@ -870,6 +861,9 @@ public class Update implements Runnable {
 		currentTime = (System.currentTimeMillis() - startTime);
 	}
 	
+	/**
+	 * Checks collision and detects inability to move of the Player Character.
+	 */
 	private void movePC(){
 		if(!(healingTime > 0)){
 			nb = new Rectangle2D.Double(PC.getX() + 4, PC.getY() + 4, PC.getWidth() - 8, PC.getHeight() - 8);
@@ -897,6 +891,7 @@ public class Update implements Runnable {
 					}			
 				}
 			}
+			//Checks for Enemy Collisionbox
 			for(int i = 0; i < enemies.size(); i++){
 				Enemy rn = enemies.get(i);
 				if(nb.intersects(rn.getSmall())){
@@ -915,6 +910,7 @@ public class Update implements Runnable {
 					}			
 				}
 			}
+			//Checks for Area's Collisionbox
 			for(int i = 0; i < area.getCollisionRects().size(); i++){
 				Rectangle2D rn = area.getCollisionRects().get(i);
 				if(nb.intersects(rn)){
@@ -932,6 +928,7 @@ public class Update implements Runnable {
 					}			
 				}
 			}
+			//Checks to see if the player is intersecting the Area's portal, if it exists
 			if(area.hasPortal()){
 				if(nb.intersects(area.getPortal().getBoundbox())){
 					portalScreen = true;
@@ -950,7 +947,7 @@ public class Update implements Runnable {
 				PC.setYvelocity(0);
 			}
 			
-			//Done code regarding boundaries.
+			//Finite boundaries regarding screen area.
 			if(PC.getX() <= 2){
 				PC.setX(3);
 			}
@@ -1001,6 +998,4 @@ public class Update implements Runnable {
 			}
 		}
 	}
-	
-	
 }

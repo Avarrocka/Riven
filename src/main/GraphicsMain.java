@@ -9,13 +9,9 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.OverlayLayout;
-
-import java.net.URL;
-
 import basicplayer1.BasicPlayer;
 import res.ImagePanel;
 import listeners.ButtonListener;
@@ -46,7 +42,7 @@ public class GraphicsMain {
 	private KeyboardListener kl;
 	public MousekeyListener mouse; 
 	//Menu variables
-	private ImageIcon sButton, qButton, scButton;
+	private ImageIcon sButton, qButton;
 	public final String MAIN_MENU = "MAINMENU", SCORES_MENU = "SCORESMENU";
 	public String menuPane;
 	
@@ -73,7 +69,7 @@ public class GraphicsMain {
 		mouse = new MousekeyListener();
 		sButton = new ImageIcon(getClass().getClassLoader().getResource("UI/startButton.png"));
 		qButton = new ImageIcon(getClass().getClassLoader().getResource("UI/quitbutton.png"));
-		scButton = new ImageIcon(getClass().getClassLoader().getResource("UI/scoreButton.png"));
+		new ImageIcon(getClass().getClassLoader().getResource("UI/scoreButton.png"));
 		window.addMouseListener(mouse);
 		window.addMouseMotionListener(mouse);
 	}

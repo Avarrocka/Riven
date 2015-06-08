@@ -6,45 +6,30 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.LinkedList;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
-import main.GraphicsMain;
-import main.Main;
-import main.Render;
+import main.Update;
 
 /**
- * Class defines an enemy object with variables such as HP, location, etc.
+ * Class defines an Enemy object
  * @author Brian Chen
- *
  */
 public class Enemy implements Drawable{
 	private String ID;
 	private Rectangle2D boundBox;
 	private Rectangle2D smallBB;
 	private int x, y;
-	private int xBoundaryLow;
-	private int xBoundaryHigh;
-	private int yBoundaryLow;
-	private int yBoundaryHigh;
 	private int WIDTH = 56, HEIGHT = 64;
 	private int health;
 	private int maxHealth;
 	private int damage;
-	private int motionSpeed = 21;
+	private int motionSpeed = 21; //Animation counter
 	private int EXP;
-	private int face;
-	private int moveCounter;
-	private int vX;
-	private int vY;
 	private int trackTimer = 0;
 	private int attackSpeed = 20;
 	private int damaged = 0;
 	private int scroll = 30;
-	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image, immob, hitSplat, hpbar;
 	private BufferedImage movement[];
 	public boolean revMov;
@@ -53,8 +38,12 @@ public class Enemy implements Drawable{
 	private LinkedList<Armor> aDrops = new LinkedList<>();
 	private LinkedList<Sword> sDrops = new LinkedList<>();
 	Random RNG = new Random();
+
 	/**
-	 * Constructor. Creates a player character.
+	 * Creates an Enemy Object, a hostile NPC that damages the Player.
+	 * @param x	Location
+	 * @param y	Location
+	 * @param ID Type of Monster
 	 */
 	public Enemy(int x, int y, String ID) {
 		this.setX(x);
@@ -69,7 +58,6 @@ public class Enemy implements Drawable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.moveCounter = 0;
 		if(ID == "slime"){
 			movement = new BufferedImage[3];
 			try {
@@ -202,24 +190,40 @@ public class Enemy implements Drawable{
 		this.maxHealth = health;
 	}
 
-	@Override
+	/**
+	 * Returns the X location
+	 */
 	public int getX() {
 		return x;
 	}
 
+	/**
+	 * Sets the X position
+	 * @param x
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
-	@Override
+	/**
+	 * Returns the Y position
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * Sets the y position
+	 * @param y
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 	
+	/**
+	 * Draws the enemy onto the screen in the Render method
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		double hp = (((double)this.getHP() / (double)this.getMaxHealth()) * 50);
@@ -238,59 +242,10 @@ public class Enemy implements Drawable{
 		drawDamage(g);
 	}
 	
-	public int getWidth() {
-		return WIDTH;
-	}
-
-	public int getHeight() {
-	 return HEIGHT;
-	}
-	
-	public void setID(String ID){
-		this.ID = ID;
-	}
-	public void setHP(int HP){
-		this.health = HP;
-	}
-	public int getHP(){
-		return this.health;
-	}
-	public String getID(){
-		return this.ID;
-	}
-	public BufferedImage getImage() {
-		return this.image;
-	}
-	public Rectangle2D getBoundbox(){
-		return this.boundBox;
-	}
-	public Rectangle2D getSmall(){
-		return this.smallBB;
-	}
-	public int getLowBoundX(){
-		return this.xBoundaryLow;
-	}
-	public int getLowBoundY(){
-		return this.yBoundaryLow;
-	}
-	public int getHighBoundX(){
-		return this.xBoundaryHigh;
-	}
-	public int getHighBoundY(){
-		return this.yBoundaryHigh;
-	}
-	public int getMaxHealth(){
-		return this.maxHealth;
-	}
-	public void damage(int damage){
-		this.health -= damage;
-		this.damaged = damage;
-		this.scroll = 30;
-		if(this.health <= 0){
-			this.health = 0;
-			this.dead = true;
-		}
-	}
+	/**
+	 * Draws the damage sustained by the Enemy in Render
+	 * @param g
+	 */
 	public void drawDamage(Graphics2D g){
 		if(this.damaged > 0){
 			if(this.scroll > 0){
@@ -304,21 +259,123 @@ public class Enemy implements Drawable{
 				this.damaged = 0;
 		}
 	}
+	
+	/**
+	 * Gets the width of the enemy
+	 * @return
+	 */
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	/**
+	 * Gets the height of the enemy
+	 * @return
+	 */
+	public int getHeight() {
+	 return HEIGHT;
+	}
+	
+	/**
+	 * Gets the ID of the enemy
+	 * @return
+	 */
+	public String getID(){
+		return this.ID;
+	}
+	
+	/**
+	 * Sets the ID of the enemy
+	 * @param ID
+	 */
+	public void setID(String ID){
+		this.ID = ID;
+	}
+	
+	/**
+	 * Gets the HP of the enemy
+	 * @return
+	 */
+	public int getHP(){
+		return this.health;
+	}
+	
+	/**
+	 * Sets the HP of the enemy
+	 * @param HP
+	 */
+	public void setHP(int HP){
+		this.health = HP;
+	}
+	
+	/**
+	 * Returns the maximum health possible of Enemy
+	 * @return
+	 */
+	public int getMaxHealth(){
+		return this.maxHealth;
+	}
+	
+	/**
+	 * Gets the image of the enemy
+	 */
+	public BufferedImage getImage() {
+		return this.image;
+	}
+	
+	/**
+	 * Gets the boundbox of the Enemy
+	 * @return
+	 */
+	public Rectangle2D getBoundbox(){
+		return this.boundBox;
+	}
+	
+	/**
+	 * Gets the collision rectangle of the Enemy
+	 * @return
+	 */
+	public Rectangle2D getSmall(){
+		return this.smallBB;
+	}
+
+	/**
+	 * Applies damage to the Enemy and checks if death
+	 * @param damage
+	 */
+	public void damage(int damage){
+		this.health -= damage;
+		this.damaged = damage;
+		this.scroll = 30;
+		if(this.health <= 0){
+			this.health = 0;
+			this.dead = true;
+		}
+	}
+	
+	/**
+	 * Returns if the Enemy is dead
+	 * @return
+	 */
 	public boolean getDead(){
 		return this.dead;
 	}
+	
+	/**
+	 * Makes the Enemy track down and hunt the Player Character to attack them
+	 */
 	public void trackPC(){
-		if(!(this.boundBox.intersects(Main.update.PC.getBoundbox()))){
+		if(!(this.boundBox.intersects(Update.PC.getBoundbox()))){
 			if(trackTimer <= 0){
-				if(Main.update.PC.getX() > this.getX()){
+				if(Update.PC.getX() > this.getX()){
 					this.x++;
 				}
-				else if(Main.update.PC.getX() < this.getX())
+				else if(Update.PC.getX() < this.getX())
 					this.x--;
-				if(Main.update.PC.getY() > this.getY()){
+				if(Update.PC.getY() > this.getY()){
 					this.y++;
 				}
-				else if(Main.update.PC.getY() < this.getY())
+				else if(Update.PC.getY() < this.getY())
 					this.y--;
 				if(!isBoss)
 					trackTimer = 2;
@@ -331,15 +388,20 @@ public class Enemy implements Drawable{
 		else
 			retaliate();
 	}
+	
+	/**
+	 * Updates the status of the Enemy character
+	 */
 	public void update(){
 		if(stun>0)
 			stun--;
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+7, this.y+8, WIDTH-25, HEIGHT-24);
-		if(motionSpeed == 0){
+		if(motionSpeed == 0){ //Reverses movement animation if it has already looped
 			motionSpeed = 21;
 			revMov = !revMov;
 		}
+		//Movement animation
 		if(!revMov){
 			if(21 >= motionSpeed && 14 < motionSpeed){
 				this.image = movement[2];
@@ -362,23 +424,28 @@ public class Enemy implements Drawable{
 				this.image = movement[2];
 			}
 		}
-		if(moveCounter > 0){
-			if(x + vX <= xBoundaryHigh && x - vX >= xBoundaryLow){
-				this.setX(this.getX() + vX);
-			}
-			if(y + vY <= yBoundaryHigh && y - vY >= yBoundaryLow){
-				this.setY(this.getY() + vY);
-			}
-			moveCounter--;
-		}
 		motionSpeed--;
 	}
-	public int rollMoney(String s){
+	
+	/**
+	 * Randomly generates the money obtained by PC dependent on the EXP Enemy gives
+	 * @return
+	 */
+	public int rollMoney(){
 		return RNG.nextInt(this.EXP) + 10;
 	}
+	
+	/**
+	 * Returns how much EXP this Enemy gives
+	 * @return
+	 */
 	public int getEXP(){
 		return this.EXP;
 	}
+	
+	/**
+	 * Checks the potential loot table and if Random is within the ChanceForLoot, then PC recieves an item
+	 */
 	public void rollLoot() {
 		if(!aDrops.isEmpty() && !sDrops.isEmpty()){
 			if(this.isBoss){
@@ -387,27 +454,27 @@ public class Enemy implements Drawable{
 					int armorDrop = RNG.nextInt(aDrops.size());
 					Armor dropped = aDrops.get(armorDrop);
 					boolean have = false;
-					for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
-						if(Main.update.PC.invArmor.get(i).getID() == dropped.getID()){
+					for(int i = 0; i < Update.PC.invArmor.size(); i++){
+						if(Update.PC.invArmor.get(i).getID() == dropped.getID()){
 							have = true;
 							break;
 						}
 					}
 					if(!have)
-						Main.update.PC.addItem(dropped);
+						Update.PC.addItem(dropped);
 				}
 				if(armorOrSword == 1){
 					int swordDrop = RNG.nextInt(sDrops.size());
 					Sword dropped = sDrops.get(swordDrop);
 					boolean have = false;
-					for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
-						if(Main.update.PC.invSwords.get(i).getID() == dropped.getID()){
+					for(int i = 0; i < Update.PC.invSwords.size(); i++){
+						if(Update.PC.invSwords.get(i).getID() == dropped.getID()){
 							have = true;
 							break;
 						}
 					}
 					if(!have)
-						Main.update.PC.addItem(dropped);
+						Update.PC.addItem(dropped);
 				}
 			}
 			else{
@@ -418,43 +485,52 @@ public class Enemy implements Drawable{
 						int armorDrop = RNG.nextInt(aDrops.size());
 						Armor dropped = aDrops.get(armorDrop);
 						boolean have = false;
-						for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
-							if(Main.update.PC.invArmor.get(i).getID() == dropped.getID()){
+						for(int i = 0; i < Update.PC.invArmor.size(); i++){
+							if(Update.PC.invArmor.get(i).getID() == dropped.getID()){
 								have = true;
 								break;
 							}
 						}
 						if(!have)
-							Main.update.PC.addItem(dropped);
+							Update.PC.addItem(dropped);
 					}
 					if(armorOrSword == 1){
 						int swordDrop = RNG.nextInt(sDrops.size());
 						Sword dropped = sDrops.get(swordDrop);
 						boolean have = false;
-						for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
-							if(Main.update.PC.invSwords.get(i).getID() == dropped.getID()){
+						for(int i = 0; i < Update.PC.invSwords.size(); i++){
+							if(Update.PC.invSwords.get(i).getID() == dropped.getID()){
 								have = true;
 								break;
 							}
 						}
 						if(!have)
-							Main.update.PC.addItem(dropped);
+							Update.PC.addItem(dropped);
 					}
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Basically an attack method for Enemy towards PC
+	 */
 	public void retaliate() {
 		if(stun <= 0){
 			if(attackSpeed <= 0){
 				int dmg = RNG.nextInt(this.damage/2)+(this.damage/2);
-				Main.update.PC.damage(dmg);
+				Update.PC.damage(dmg);
 				attackSpeed = 60;
 			}
 			else
 				attackSpeed--;
 		}
 	}
+	
+	/** 
+	 * Stuns the Enemy making them unable to attack for duration of time
+	 * @param time Duration the enemy is unable to attack
+	 */
 	public void stun(int time){
 		stun = time;
 	}

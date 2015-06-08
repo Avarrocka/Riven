@@ -3,8 +3,6 @@ package main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -12,17 +10,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
-
-import listeners.KeyboardListener;
 import listeners.MousekeyListener;
 import main.Update;
 import res.Armor;
 import res.Enemy;
 import res.Map;
-import res.Player;
 import res.NPC;
 import res.Sword;
 import res.Item;
@@ -47,8 +40,6 @@ public class Render implements Runnable {
 	BufferedImage sword[] = new BufferedImage[7];
 	BufferedImage TaverlySplash, TurandalSplash, RuinsSplash;
 	BufferedImage TurandalForest1, TurandalForest2, TurandalForest3, RuinsofLargos;
-	//thread resources
-	public volatile ReentrantReadWriteLock lck = Main.lck;
 	
 	/**
 	 * Constructs the render object
@@ -127,7 +118,7 @@ public class Render implements Runnable {
 			drawPrompts(g);
 			drawPlayer(g);
 			drawPortal(g);
-			//drawBounds(g);
+			drawBounds(g);
 			drawDialogue(g);
 			drawUIs(g);
 			drawMap(g);
@@ -193,8 +184,8 @@ public class Render implements Runnable {
 	private void drawHUD(Graphics2D g) {
 		g.drawImage(HPUI, GraphicsMain.WIDTH - 186, 25, 186, 46, null);
 		//HP and EXP Bars. Set to represent a % of total HP or EXP until next level
-		double hp = ((((double)Main.update.PC.getHealth() / (double)Main.update.PC.getMaxHealth()) * 174));
-		double exp = ((((double)Main.update.PC.getEXP() / (double)Main.update.PC.getReqLvl()) * 98));
+		double hp = ((((double)Update.PC.getHealth() / (double)Update.PC.getMaxHealth()) * 174));
+		double exp = ((((double)Update.PC.getEXP() / (double)Update.PC.getReqLvl()) * 98));
 		Rectangle2D HP = new Rectangle2D.Double(GraphicsMain.WIDTH-176+(174-hp), 35, hp, 10);
 		Rectangle2D EXP = new Rectangle2D.Double(GraphicsMain.WIDTH-100+(98-exp), 55, exp, 6);
 		g.setColor(Color.red);
@@ -214,7 +205,7 @@ public class Render implements Runnable {
 		//Draws the grapple onto the screen, if it exists
 		if(grapple != null){
 			g.draw(grapple);
-			if(grapple.getY2() <= Main.update.PC.getY())
+			if(grapple.getY2() <= Update.PC.getY())
 				g.drawImage(hook, (int)grapple.getX2(), (int)grapple.getY2()-20, 30, 30, null);
 			else
 				g.drawImage(hook2, (int)grapple.getX2()-20, (int)grapple.getY2()-10, 30, 30, null);
@@ -224,7 +215,7 @@ public class Render implements Runnable {
 			Main.update.darts.get(i).draw(g);
 		}
 		if(Main.update.healingTime > 0){
-			g.drawImage(meditateAura, Main.update.PC.getX()-2, Main.update.PC.getY()+20, Main.update.PC.getWidth()+10, Main.update.PC.getHeight(), null);
+			g.drawImage(meditateAura, Update.PC.getX()-2, Update.PC.getY()+20, Update.PC.getWidth()+10, Update.PC.getHeight(), null);
 			Main.update.healingTime--;
 		}
 	}
@@ -253,22 +244,22 @@ public class Render implements Runnable {
 			g.setFont(new Font("Rockwell", Font.BOLD, 22));
 			//Drawing Gold count
 			g.setColor(Color.yellow);
-			g.drawString("" + Main.update.PC.getGold(), 250, 670);
+			g.drawString("" + Update.PC.getGold(), 250, 670);
 			//Drawing Attack count
 			g.setColor(Color.black);
-			g.drawString("" + Main.update.PC.getDamage(), 90, 206);
+			g.drawString("" + Update.PC.getDamage(), 90, 206);
 			//Drawing Armor count
-			g.drawString("" + Main.update.PC.getDefense(), 90, 253);
+			g.drawString("" + Update.PC.getDefense(), 90, 253);
 			//Draws the HP of the player character (PC) and Location
 			g.setFont(new Font("Rockwell", Font.BOLD, 18));
 			g.setColor(Color.red);
-			g.drawString("HP               " + Main.update.PC.getHealth() + "/" + Main.update.PC.getMaxHealth(), 70, 80);
+			g.drawString("HP               " + Update.PC.getHealth() + "/" + Update.PC.getMaxHealth(), 70, 80);
 			g.setColor(Color.black);
-			g.drawString("EXP:            " + Main.update.PC.getEXP() + "/" + Main.update.PC.getReqLvl() + " to level", 70, 100);
+			g.drawString("EXP:            " + Update.PC.getEXP() + "/" + Update.PC.getReqLvl() + " to level", 70, 100);
 			g.drawString("Location     " + Main.update.area.getName(), 70, 120);
 			g.setColor(Color.blue);
 			g.setFont(new Font("Rockwell", Font.BOLD, 25));
-			g.drawString("Level " + Main.update.PC.getLevel(), 235, 200);
+			g.drawString("Level " + Update.PC.getLevel(), 235, 200);
 			g.setColor(Color.black);
 			g.setFont(new Font("Rockwell", Font.BOLD, 18));
 			//Time Elapsed counter
@@ -294,76 +285,76 @@ public class Render implements Runnable {
 			}
 			g.drawString("Playtime     " + time, 70, 140);
 			//Draws the equipped weapon
-			g.drawImage(Main.update.PC.getWeapon().getImage(), 252, 257, 91, 91, null);
+			g.drawImage(Update.PC.getWeapon().getImage(), 252, 257, 91, 91, null);
 			//Draws the equipped armor
-			g.drawImage(Main.update.PC.getArmor().getImage(), 252, 421, 91, 91, null);
+			g.drawImage(Update.PC.getArmor().getImage(), 252, 421, 91, 91, null);
 			//Draws all the items in inventory
 			g.drawString("Items -", 400, 80);
-			for(int i = 0; i < Main.update.PC.invItems.size(); i++){
+			for(int i = 0; i < Update.PC.invItems.size(); i++){
 				if(i < 9)
-					g.drawImage(Main.update.PC.invItems.get(i).getImage(), 400+(65 * i), 90, 50, 50, null);
+					g.drawImage(Update.PC.invItems.get(i).getImage(), 400+(65 * i), 90, 50, 50, null);
 			}
 			//Draws all the swords in inventory
 			g.drawString("Weapons -", 400, 210);
-			for(int i = 0; i < Main.update.PC.invSwords.size(); i++){
+			for(int i = 0; i < Update.PC.invSwords.size(); i++){
 				if(i < 9)
-					g.drawImage(Main.update.PC.invSwords.get(i).getImage(), 400+(65 * i), 220, 50, 50, null);
+					g.drawImage(Update.PC.invSwords.get(i).getImage(), 400+(65 * i), 220, 50, 50, null);
 			}
 			//Draws all the armor in inventory
 			g.drawString("Armor -", 400, 340);
-			for(int i = 0; i < Main.update.PC.invArmor.size(); i++){
+			for(int i = 0; i < Update.PC.invArmor.size(); i++){
 				if(i < 9)
-					g.drawImage(Main.update.PC.invArmor.get(i).getImage(), 400+(65 * i), 350, 50, 50, null);
+					g.drawImage(Update.PC.invArmor.get(i).getImage(), 400+(65 * i), 350, 50, 50, null);
 			}
 			//Draws all the Quest Items in inventory
 			g.drawString("Quest -", 400, 470);
-			for(int i = 0; i < Main.update.PC.qItems.size(); i++){
+			for(int i = 0; i < Update.PC.qItems.size(); i++){
 				if(i < 9)
-					g.drawImage(Main.update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
+					g.drawImage(Update.PC.qItems.get(i).getImage(), 400+(65 * i), 480, 50, 50, null);
 			}
 			if(Main.update.drawInvIndx >= 0 && Main.update.drawWhich > 0){
 				//Drawing descriptions for Inventory Items objects
-				if(Main.update.drawWhich == 1){
-					if(!Main.update.PC.invItems.isEmpty() && Main.update.drawInvIndx >= 0){
+				if(Main.update.drawWhich == 1 && Main.update.drawInvIndx >= 0){
+					if(!Update.PC.invItems.isEmpty() && Main.update.drawInvIndx >= 0 && Main.update.drawInvIndx < Update.PC.invItems.size()){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
-						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.drawString(Update.PC.invItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.drawString(Update.PC.invItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-						g.drawString(Main.update.PC.invItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+						g.drawString(Update.PC.invItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
 				//Drawing descriptions for Inventory Swords objects
 				else if (Main.update.drawWhich == 2){
-					if(!Main.update.PC.invSwords.isEmpty() && Main.update.drawInvIndx >= 0){
+					if(!Update.PC.invSwords.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
-						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.drawString(Update.PC.invSwords.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.drawString(Update.PC.invSwords.get(Main.update.drawInvIndx).getInfo(), 400, 630);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-						g.drawString(Main.update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+						g.drawString(Update.PC.invSwords.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
 				//Drawing descriptions for Inventory Armor objects
 				else if(Main.update.drawWhich == 3){
-					if(!Main.update.PC.invArmor.isEmpty() && Main.update.drawInvIndx >= 0){
+					if(!Update.PC.invArmor.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
-						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.drawString(Update.PC.invArmor.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.drawString(Update.PC.invArmor.get(Main.update.drawInvIndx).getInfo(), 400, 630);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-						g.drawString(Main.update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+						g.drawString(Update.PC.invArmor.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
 				//Drawing descriptions for Inventory Quest Item objects
 				else if(Main.update.drawWhich == 4){
-					if(!Main.update.PC.qItems.isEmpty() && Main.update.drawInvIndx >= 0){
+					if(!Update.PC.qItems.isEmpty() && Main.update.drawInvIndx >= 0){
 						g.setFont(new Font("Rockwell", Font.BOLD, 20));
-						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
+						g.drawString(Update.PC.qItems.get(Main.update.drawInvIndx).getID(), 400, 590);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 13));
-						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
+						g.drawString(Update.PC.qItems.get(Main.update.drawInvIndx).getInfo(), 400, 630);
 						g.setFont(new Font("Rockwell", Font.PLAIN, 12));
-						g.drawString(Main.update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
+						g.drawString(Update.PC.qItems.get(Main.update.drawInvIndx).getDescription(), 430, 670);
 					}
 				}
 			}
@@ -420,7 +411,7 @@ public class Render implements Runnable {
 			if(Main.update.commenceDialogue == 1 && (speak.getID() == "stranger")){
 				Item soulGem = new Item(0, 0, "Soul Gem");
 				if(!Main.update.gem){
-					Main.update.PC.addQuestItem(soulGem);
+					Update.PC.addQuestItem(soulGem);
 					Main.update.gem = true;
 					Main.update.speakingWith.updateLines();
 				}
@@ -431,9 +422,9 @@ public class Render implements Runnable {
 					Main.update.quests.add(new Quest("Fixing the Portal"));
 				}
 				if(Main.update.gem){
-					for(int i = 0; i < Main.update.PC.qItems.size(); i++){
-						if(Main.update.PC.qItems.get(i).getID() == "Soul Gem"){
-							Main.update.PC.qItems.remove(i);
+					for(int i = 0; i < Update.PC.qItems.size(); i++){
+						if(Update.PC.qItems.get(i).getID() == "Soul Gem"){
+							Update.PC.qItems.remove(i);
 						}
 					}
 					Main.update.portalOnline = true;
@@ -544,7 +535,7 @@ public class Render implements Runnable {
 		}
 		g.setFont(new Font("Rockwell", Font.BOLD, 16));
 		g.setColor(Color.yellow);
-		g.drawString("Gold: " + Main.update.PC.getGold(), GraphicsMain.WIDTH - 260, 60);
+		g.drawString("Gold: " + Update.PC.getGold(), GraphicsMain.WIDTH - 260, 60);
 		//Item description
 	}
 	
@@ -553,7 +544,7 @@ public class Render implements Runnable {
 	 * @param g Graphics2D Object to draw with.
 	 */
 	private void drawBounds(Graphics2D g){
-		Rectangle2D PlayerCharacter = Main.update.PC.getBoundbox();
+		Rectangle2D PlayerCharacter = Update.PC.getBoundbox();
 		g.setColor(Color.blue);
 		g.draw(PlayerCharacter);
 		g.setColor(Color.white);
@@ -591,7 +582,7 @@ public class Render implements Runnable {
 			Main.update.dialogueOptions--;
 		}
 		if(Main.update.levelUp > 0){
-			g.drawImage(levelUp, Main.update.PC.getX()-20, Main.update.PC.getY()-30 -((60-Main.update.levelUp)/4), null);
+			g.drawImage(levelUp, Update.PC.getX()-20, Update.PC.getY()-30 -((60-Main.update.levelUp)/4), null);
 			Main.update.levelUp--;
 		}
 	}
@@ -634,7 +625,7 @@ public class Render implements Runnable {
 	 * @param g Graphics2D Object to draw with.
 	 */
 	private void drawPlayer(Graphics2D g){
-		Main.update.PC.draw(g);
+		Update.PC.draw(g);
 	}
 	
 	/**
@@ -642,6 +633,6 @@ public class Render implements Runnable {
 	 * @param g Graphics2D Object to draw with.
 	 */
 	private void drawSKT(Graphics2D g){
-		Main.update.PC.getSkillTree().draw(g);
+		Update.PC.getSkillTree().draw(g);
 	}
 }

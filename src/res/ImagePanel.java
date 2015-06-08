@@ -4,13 +4,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
  * Class defines a JPanel with a custom background image
- * @author Tristan Monger
+ * @author Brian Chen
  *
  */
 public class ImagePanel extends JPanel {
@@ -36,7 +35,9 @@ public class ImagePanel extends JPanel {
 		setLayout(null);
 	}
 
-	@Override
+	/**
+	 * A Paint Component used for Drawing
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(img, 0, 0, null);

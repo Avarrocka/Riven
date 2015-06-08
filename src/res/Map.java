@@ -1,29 +1,20 @@
 package res;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
-
-import main.GraphicsMain;
 import main.Main;
-import main.Render;
-import res.Portal;
 
 /**
- * Class defines an enemy object
+ * Class defines an Map interface
  * @author Brian Chen
  *
  */
 public class Map implements Drawable{
-	private String ID;
 	private int x, y;
 	private int curX, curY;
 	private String desc;
@@ -32,6 +23,12 @@ public class Map implements Drawable{
 	private LinkedList<Rectangle2D> POI = new LinkedList<>();
 	private LinkedList<String> POINames = new LinkedList<>();
 	private LinkedList<String> POIDesc = new LinkedList<>();
+	
+	/**
+	 * Creates a Map object that directs the PC around the World. Spawns at X and Y location
+	 * @param x
+	 * @param y
+	 */
 	public Map(int x, int y) {
 		try {
 			this.image = ImageIO.read(getClass().getClassLoader().getResource("Icons/map.png"));
@@ -42,6 +39,7 @@ public class Map implements Drawable{
 		}
 		this.x = x;
 		this.y = y;
+		//Adds locations and descriptions of these locations
 		POI.add(new Rectangle2D.Double(310, 175, 20, 20));
 		POINames.add("Frostgorge");
 		POIDesc.add("A frozen isle dominated by ice elementals.");
@@ -68,6 +66,10 @@ public class Map implements Drawable{
 		POIDesc.add("Road between Varrock and Taverly. Blocked.");
 	}
 	
+	/**
+	 * Draws the Map onto the screen using Render
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		for(int i = 0; i < POI.size(); i++){
@@ -76,28 +78,55 @@ public class Map implements Drawable{
 		}
 	}
 	
+	/**
+	 * Returns the WIDTH of the Map object
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns the HEIGHT of the Map object
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}	
-	public String getID(){
-		return this.ID;
-	}
-	public String getDescription(int i){
+	
+	/**
+	 * Returns the description of the latest hovered POI in Map
+	 * @param i
+	 * @return
+	 */
+	public String getDescription(){
 		return this.desc;
 	}
+	
+	/**
+	 * Returns the Image of Map
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Returns the X location of Map
+	 */
 	public int getX() {
 		return this.x;
 	}
+	
+	/**
+	 * Returns the Y location of Map
+	 */
 	public int getY() {
 		return this.y;
 	}
+	
+	/**
+	 * Updates where the PC is on the Map, marked with a blue Star
+	 */
 	public void updateCurrentLocation(){
 		for(int i = 0; i < POINames.size(); i++){
 			if(Main.update.area.getName() == POINames.get(i)){
@@ -106,6 +135,12 @@ public class Map implements Drawable{
 			}
 		}
 	}
+	
+	/**
+	 * Checks for intersection of Mouse and POIs, and provides the Name of the Hovered Point of Interest
+	 * @param p
+	 * @return
+	 */
 	public String poiName(Point2D p){
 		for(int i = 0; i < POI.size(); i++){
 			if(POI.get(i).contains(p)){
@@ -114,6 +149,12 @@ public class Map implements Drawable{
 		}
 		return null;
 	}
+	
+	/**
+	 * Checks for intersection of Mouse and POIs, and provides the Decription of the Hovered Point of Interest
+	 * @param p
+	 * @return
+	 */
 	public String poiDesc(Point2D p){
 		for(int i = 0; i < POI.size(); i++){
 			if(POI.get(i).contains(p)){

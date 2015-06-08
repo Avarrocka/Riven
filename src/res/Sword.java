@@ -4,16 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
 
-import main.GraphicsMain;
-import main.Main;
-import main.Render;
-
 /**
- * Class defines an enemy object
+ * Class defines a Sword object
  * @author Brian Chen
  *
  */
@@ -27,13 +21,18 @@ public class Sword implements Drawable{
 	private Rectangle2D boundBox;
 	private static final int WIDTH = 100, HEIGHT = 100;
 	private BufferedImage image;
+	
 	/**
-	 * Constructor. Creates a player character.
+	 * Creates a Sword object with location values x and y, stats depend on ID
+	 * @param x
+	 * @param y
+	 * @param ID
 	 */
 	public Sword(int x, int y, String ID) {
 		this.setID(ID);
 		this.setX(x);
 		this.setY(y);
+		//Defines stats, damage, images, and value based on ID
 		if(this.ID == "Rusted Sword"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/swordRust.png"));
@@ -180,60 +179,132 @@ public class Sword implements Drawable{
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
+	/**
+	 * Draws the Sword object to the screen using Render
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 	}
 	
+	/**
+	 * Returns the WIDTH of the image associated with Sword
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns the HEIGHT of the image associated with Sword
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}	
 	
+	/**
+	 * Returns the X location of the image associated with Sword
+	 */
 	public int getX(){
 		return this.x;
 	}
 	
-	public int getY(){
-		return this.y;
-	}
-	
+	/**
+	 * Sets the X location of the image associated with Sword
+	 */
 	public void setX(int x){
 		this.x = x;
 	}
 	
+	/**
+	 * Returns the Y location of the image associated with Sword
+	 */
+	public int getY(){
+		return this.y;
+	}
+
+	/** 
+	 * Sets the Y location of the image associated with Sword
+	 * @param y
+	 */
 	public void setY(int y){
 		this.y = y;
 	}
+	
+	/**
+	 * Returns the damage value of the Sword
+	 */
 	public int getDamage(){
 		return this.damage;
 	}
+	
+	/**
+	 * Returns the monetary value of the Sword
+	 * @return
+	 */
 	public int getValue(){
 		return this.value;
 	}
-	public void setID(String ID){
-		this.ID = ID;
-	}
+	
+	/**
+	 * Returns the ID of Sword
+	 * @return
+	 */
 	public String getID(){
 		return this.ID;
 	}
+	
+	/**
+	 * Sets the ID of Sword
+	 * @param ID
+	 */
+	public void setID(String ID){
+		this.ID = ID;
+	}
+	
+	/**
+	 * Returns the description (flavor text) of Sword
+	 * @return
+	 */
 	public String getDescription(){
 		return this.desc;
 	}
+	
+	/**
+	 * Returns the numerical information of Sword
+	 * @return
+	 */
 	public String getInfo(){
 		return this.info;
 	}
+	
+	/**
+	 * Returns the image associated with Sword
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Sets the image associated with Sword
+	 * @param image
+	 */
 	public void setImage(BufferedImage image){
 		this.image = image;
 	}
+	
+	/**
+	 * Returns the boundbox of the image associated with Sword
+	 * @return
+	 */
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
 	}
+	
+	/**
+	 * Updates the boundbox of the image associated with Sword
+	 */
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}

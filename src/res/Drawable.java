@@ -3,7 +3,7 @@ package res;
 import java.awt.image.BufferedImage;
 
 /**
- * Interface defines common methods for a drawable moving object on screen
+ * Interface defines common methods for a Drawable moving object on screen
  * @author Brian Chen
  *
  */

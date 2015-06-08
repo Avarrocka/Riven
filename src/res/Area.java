@@ -1,21 +1,16 @@
 package res;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.imageio.ImageIO;
 
 import main.GraphicsMain;
 import main.Main;
-import main.Render;
 import res.Portal;
 
 /**
@@ -27,14 +22,12 @@ public class Area implements Drawable{
 	private String ID, name;
 	private BufferedImage image, splash, entrance;
 	private final int x=0, y=0;
-	private final int WIDTH = GraphicsMain.WIDTH, HEIGHT = GraphicsMain.HEIGHT;
 	private LinkedList<NPC> NPCs = new LinkedList<>();
 	private LinkedList<String> availEnemy = new LinkedList<>();
 	private LinkedList<Rectangle2D> colli = new LinkedList<>();
-	private LinkedList<Rectangle2D> leaveArea = new LinkedList<>();
-	private LinkedList<String> leaveAreaName = new LinkedList<>();
-	private LinkedList<Integer> moveDir = new LinkedList<>();
-	private LinkedList<Enemy> enemies = new LinkedList<>();
+	private LinkedList<Rectangle2D> leaveArea = new LinkedList<>();	//Leave Area collision box
+	private LinkedList<String> leaveAreaName = new LinkedList<>();	//Leave Area ID
+	private LinkedList<Integer> moveDir = new LinkedList<>();		//Leave Area direction (where PC appears afterwards)
 	private CollisionRects creator = new CollisionRects();
 	private Portal portal;
 	public Random RNG = new Random();
@@ -43,7 +36,13 @@ public class Area implements Drawable{
 	private boolean bossSlain = false;
 	private boolean spawnedMoreNPCs = false, spawnedAreas = false;
 	public final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
+	
+	/**
+	 * Creates an Area using the ID given, with Images, Potential Enemies, and other Assets
+	 * @param ID Area ID, where the PC is.
+	 */
 	public Area(String ID) {
+		//Clears all leftover information from previous Area
 		leaveArea.clear();
 		leaveAreaName.clear();
 		moveDir.clear();
@@ -51,6 +50,7 @@ public class Area implements Drawable{
 		Main.update.grapple = null;
 		Main.update.enemies.clear();
 		this.ID = ID;
+		//Finds what assets to define based on Map name, as well as other variables and triggers
 		if(ID == "Taverly"){
 			this.name = "Taverly";
 			try {
@@ -252,13 +252,33 @@ public class Area implements Drawable{
 			leaveAreaName.add("Frostgorge1");
 			moveDir.add(LEFT);
 		}
-		spawnCollisionRects(ID);
+		//Spawns Collision Rectangles dependent on the ID of this.Area
+		spawnCollisionRects(ID); 
+		//Spawns Boss of Area
 		if(this.hasBoss)
 			spawnBoss();
 	}
+	
+	/**
+	 * Returns the name of the Area. Name is the colloquial name, not ID
+	 * @return
+	 */
 	public String getName(){
 		return this.name;
 	}
+	
+	/**
+	 * Returns the ID of the Area. ID is the professional name, not Name
+	 * @return
+	 */
+	public String getID(){
+		return this.ID;
+	}
+	
+	/**
+	 * Draws the Area including any hidden entrances/assets
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		if(this.ID == "Frostgorge4" && Main.update.frostBoss == true){
@@ -278,59 +298,119 @@ public class Area implements Drawable{
 		}
 	}
 	
-	public int getWidth() {
-		return WIDTH;
-	}
-	public int getHeight() {
-	 return HEIGHT;
-	}	
-	public String getID(){
-		return this.ID;
-	}
+	/**
+	 * Returns the Image of this Area
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Returns the Splash Art of this Area
+	 * @return
+	 */
 	public BufferedImage getSplash(){
 		return this.splash;
 	}
+	
+	/**
+	 * Adds an NPC to the NPCs present in this Area
+	 * @param npc
+	 */
 	public void addNPC(NPC npc){
 		this.NPCs.add(npc);
 	}
+	
+	/**
+	 * Spawns the collision rectangles associated with the ID of this Area
+	 * @param ID
+	 */
 	public void spawnCollisionRects(String ID){
 		this.colli = creator.createRectangles(ID);
 	}
+	
+	/**
+	 * Returns the X value of this Area
+	 */
 	public int getX() {
 		return this.x;
 	}
+	
+	/**
+	 * Returns the Y value of this Area
+	 */
 	public int getY() {
 		return this.y;
 	}
+	
+	/**
+	 * Returns the collision rectangles of this Area
+	 * @return
+	 */
 	public LinkedList<Rectangle2D> getCollisionRects(){
 		return this.colli;
 	}
+	
+	/**
+	 * Returns the areas where PC can leave this Area
+	 * @return
+	 */
 	public LinkedList<Rectangle2D> getLeaveAreas(){
 		return this.leaveArea;
 	}
+	
+	/**
+	 * Returns the destinations of PC if they choose to leave Area
+	 * @return
+	 */
 	public LinkedList<String> getLeaveAreaNames(){
 		return this.leaveAreaName;
 	}
+	
+	/**
+	 * Returns which way the PC is traveling to leave Area
+	 * @return
+	 */
 	public LinkedList<Integer> getMoveDir(){
 		return this.moveDir;
 	}
+	
+	/**
+	 * Returns the NPCs in Area
+	 * @return
+	 */
 	public LinkedList<NPC> getNPCs(){
 		return this.NPCs;
 	}
+	
+	/**
+	 * Returns if Area contains a Portal Object
+	 * @return
+	 */
 	public boolean hasPortal(){
 		return this.hasPortal;
 	}
+	
+	/**
+	 * Returns the Portal Object
+	 * @return
+	 */
 	public Portal getPortal(){
 		return portal;
 	}
+	
+	/**
+	 * Adds a Boss Enemy to the Area
+	 */
 	public void spawnBoss(){	
 		if(this.ID == "Frostgorge4" && Main.update.frostBoss == false){
 			Main.update.enemies.add(new Enemy(500, 300, "squid"));
 		}
 	}
+	
+	/**
+	 * Updates values in Area including boss status, NPCs, Enemies, etc.
+	 */
 	public void update(){
 		if(this.hasBoss && this.bossSlain){
 			if(this.ID == "Frostgorge4"){
@@ -348,13 +428,20 @@ public class Area implements Drawable{
 			spawnedMoreNPCs = true;
 		}
 	}
+	
+	/**
+	 * Spawns an Enemy based on available Enemies in this Area. Adds enemy to 
+	 * @return
+	 */
 	public Enemy spawnEnemy(){
 		if(!(this.availEnemy.isEmpty())){
+			//Randomly generates ID of Enemy
 			int RNGINT = RNG.nextInt(this.availEnemy.size());
 			String enemy = availEnemy.get(RNGINT);
 			Enemy e = new Enemy(RNG.nextInt(1024), RNG.nextInt(700), enemy);
 			Rectangle2D eBox = e.getBoundbox();
 			boolean notInCorners = true;
+			//Checks to see Enemy doesn't spawn in an unreachable zone
 			for(int i = 0; i < this.getCollisionRects().size(); i++){
 				if(this.getCollisionRects().get(i).intersects(eBox)){
 					notInCorners = false;

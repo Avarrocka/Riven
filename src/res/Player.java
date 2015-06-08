@@ -7,19 +7,16 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
+import java.util.Random;
 import javax.imageio.ImageIO;
-
 import listeners.KeyboardListener;
 import main.GraphicsMain;
 import main.Main;
-import main.Render;
 import res.Sword;
 import res.Item;
 
 /**
- * Class defines an enemy object
+ * Class defines an Player object
  * @author Brian Chen
  *
  */
@@ -28,7 +25,7 @@ public class Player implements Drawable{
 	private int Vx, Vy;
 	private int EXP;
 	private int gold;
-	private int skillPoints = 15;
+	private int skillPoints = 1;
 	private Sword weapon;
 	private Armor armor;
 	private SkillTree skt = new SkillTree();
@@ -65,23 +62,28 @@ public class Player implements Drawable{
 	private BufferedImage drop;
 	private String dropName;
 	public boolean oozeQuest;
+	private Random RNG = new Random();
+	
 	/**
-	 * Constructor. Creates a player character.
+	 * Creates Player class at X and Y co-ordinates
+	 * @param x
+	 * @param y
 	 */
 	public Player(int x, int y) {
 		this.setX(x);
 		this.setY(y);
 		this.setXvelocity(0);
 		this.setYvelocity(0);
-		this.setGold(12000);
+		this.setGold(150);
 		this.mhp = 100;
 		this.setHealth(mhp);
 		this.baseAttack = 2;
 		this.baseDefense = 2;
 		this.EXP = 0;
 		this.level = 1;
-		this.setWeapon(new Sword(0, 0, "Lunus Blade"), -1);
+		this.setWeapon(new Sword(0, 0, "Rusted Sword"), -1);
 		this.setArmor(new Armor(0, 0, "Leather Armor"), -1);
+		//Loads all associated sprites and images of Player
 		try {
 			defL = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDL.png"));
 			defR = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CDR.png"));
@@ -90,6 +92,7 @@ public class Player implements Drawable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		//Movement animation images
 		try {
 			Left[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL1.png"));
 			Left[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/CL2.png"));
@@ -122,6 +125,7 @@ public class Player implements Drawable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		//Attack animation images
 		try {
 			RAttack[0] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA1.png"));
 			RAttack[1] = ImageIO.read(getClass().getClassLoader().getResource("Sprites/Chrom/RA2.png"));
@@ -159,60 +163,108 @@ public class Player implements Drawable{
 	}
 
 	/**
-	 * Translates typeCode into waste type.
-	 * @return
+	 * Returns X location value of Player
 	 */
-
-	@Override
 	public int getX() {
 		return x;
 	}
 
+	/**
+	 * Sets X location value of Player
+	 * @param x
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
-	@Override
+	/**
+	 * Returns Y location value of Player
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * Sets Y location value of Player
+	 * @param y
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 	
+	/**
+	 * Returns X velocity
+	 * @return
+	 */
 	public int getXvelocity() {
 		return this.Vx;
 	}
 	
+	/**
+	 * Sets X velocity
+	 * @param Vx
+	 */
+	public void setXvelocity(int Vx) {
+		this.Vx = Vx;
+	}
+	
+	/**
+	 * Returns Y velocity
+	 * @return
+	 */
 	public int getYvelocity() {
 		return this.Vy;
 	}
 	
-	public void setXvelocity(int Vx) {
-		this.Vx = Vx;
-	}
-
+	/**
+	 * Sets Y velocity
+	 * @param Vy
+	 */
 	public void setYvelocity(int Vy) {
 		this.Vy = Vy;
 	}
 
+	/**
+	 * Returns Player's current Health
+	 * @return
+	 */
 	public int getHealth() {
 		return hp;
 	}
 
+	/**
+	 * Sets Player's current Health
+	 * @param hp
+	 */
 	public void setHealth(int hp) {
 		this.hp = hp;
 	}
 	
+	/** 
+	 * Return's Player's Maximum Health
+	 */
+	public int getMaxHealth() {
+		return mhp;
+	}
+	
+	/**
+	 * Draws Player to the screen, with any information necessary, using Render
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		drawDamage(g);
 		drawDrop(g);
 	}
 	
+	/**
+	 * Draws the sustained damage that PC just took
+	 * @param g
+	 */
 	public void drawDamage(Graphics2D g){
+		//Integer time remaining to draw Damage
 		if(this.damaged > 0){
+			// Scrolls damage Hit Splat upwards
 			if(this.scroll > 0){
 				g.setFont(new Font("Arial", Font.BOLD, 12));
 				g.setColor(Color.white);
@@ -225,8 +277,14 @@ public class Player implements Drawable{
 		}
 	}
 	
+	/**
+	 * Draws a Item Obtained notification for the Player
+	 * @param g
+	 */
 	public void drawDrop(Graphics2D g){
+		//Checks if object exists
 		if(o != null){
+			//Scrolls message upwards
 			if(this.scroll2 > 0){
 				g.setFont(new Font("Arial", Font.BOLD, 14));
 				g.setColor(Color.white);
@@ -242,26 +300,49 @@ public class Player implements Drawable{
 		}
 	}
 	
+	/**
+	 * Returns WIDTH of Player
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns HEIGHT of Player
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}
 	
-	public void setGold(int gold){
-		this.gold = gold;
-	}
-	
+	/**
+	 * Returns the Gold of Player
+	 * @return
+	 */
 	public int getGold(){
 		return this.gold;
 	}
 	
+	/**
+	 * Sets the Gold of Player
+	 * @param gold
+	 */
+	public void setGold(int gold){
+		this.gold = gold;
+	}
+	
+	/**
+	 * Returns the way Player is facing
+	 * @return
+	 */
 	public int getFace(){
 		return this.face;
 	}
 	
+	/**
+	 * Updates where the Player is facing
+	 */
 	public void updateDir(){
 		if(this.Vx > 0){
 			dir = 1;
@@ -276,25 +357,57 @@ public class Player implements Drawable{
 			dir = 2;
 		}
 	}
+	
+	/**
+	 * Updates what direction the player is in
+	 * @return
+	 */
 	public int getDir(){
 		return dir;
 	}
 	
-	public void setWeapon(Sword weapon, int index){
-		if(index >= 0){
-			this.invSwords.remove(index);
-			this.invSwords.add(index, this.getWeapon());
-		}
-		this.weapon = weapon;
-	}
+	/**
+	 * Returns the current Sword Player is using
+	 * @return
+	 */
 	public Sword getWeapon(){
 		return this.weapon;
 	}
+	
+	/**
+	 * Sets the player's current Sword to new Sword
+	 * @param weapon
+	 * @param index
+	 */
+	public void setWeapon(Sword weapon, int index){
+		if(index >= 0){
+			//Removes sword from inventory, adds current sword to inventory
+			this.invSwords.remove(index);
+			this.invSwords.add(index, this.getWeapon());
+		}
+		//Uses new sword
+		this.weapon = weapon;
+	}
+	
+	/**
+	 * Returns the current Armor Player is using
+	 * @return
+	 */
+	public Armor getArmor(){
+		return this.armor;
+	}
+	
+	/**
+	 * Sets the current Armor to new Armor
+	 * @param armor
+	 * @param index
+	 */
 	public void setArmor(Armor armor, int index){
 		if(index >= 0){
 			this.invArmor.remove(index);
 			this.invArmor.add(index, this.getArmor());
 		}
+		//Checks special effects of Darksteel Armor (HP Boon)
 		if(armor.getID() == "Darksteel Armor" && !hpBuff){
 			mhp = mhp+20;
 			hpBuff = true;
@@ -305,9 +418,11 @@ public class Player implements Drawable{
 		}
 		this.armor = armor;
 	}
-	public Armor getArmor(){
-		return this.armor;
-	}
+	
+	/**
+	 * Adds an Item to the Items slot of Player
+	 * @param item
+	 */
 	public void addItem(Item item){
 		invItems.add(item);
 		scroll2 = 60;
@@ -315,6 +430,11 @@ public class Player implements Drawable{
 		drop = item.getImage();
 		dropName = item.getID();
 	}
+	
+	/**
+	 * Adds an Armor object to the Armor slot of Player
+	 * @param armor
+	 */
 	public void addItem(Armor armor){
 		invArmor.add(armor);
 		scroll2 = 60;
@@ -322,6 +442,11 @@ public class Player implements Drawable{
 		drop = armor.getImage();
 		dropName = armor.getID();
 	}
+	
+	/**
+	 * Adds a Sword object to the Sword slot of Player
+	 * @param sword
+	 */
 	public void addItem(Sword sword){
 		invSwords.add(sword);
 		scroll2 = 60;
@@ -329,6 +454,11 @@ public class Player implements Drawable{
 		drop = sword.getImage();
 		dropName = sword.getID();
 	}
+	
+	/**
+	 * Adds an Item to the Quest Items slot of Player
+	 * @param item
+	 */
 	public void addQuestItem(Item item){
 		qItems.add(item);
 		scroll2 = 60;
@@ -336,6 +466,18 @@ public class Player implements Drawable{
 		drop = item.getImage();
 		dropName = item.getID();
 	}
+	
+	/**
+	 * Returns the current sprite image of Player
+	 */
+	public BufferedImage getImage() {
+		return image;
+	}
+	
+	/**
+	 * Sets the sprite of Player depending on how far along they are in their movement sequence as well as facing direction
+	 * @param face
+	 */
 	public void setImage(int face){
 		if(motionSpeed == 0){
 			motionSpeed = 60;
@@ -479,12 +621,18 @@ public class Player implements Drawable{
 		}
 		motionSpeed--;
 	}
-	public BufferedImage getImage() {
-		return image;
-	}
+	
+	/**
+	 * Returns the boundbox for Player
+	 * @return
+	 */
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
 	}
+	
+	/**
+	 * Updates the boundbox for Player
+	 */
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		if(attackSpeed > 0){
@@ -498,9 +646,19 @@ public class Player implements Drawable{
 			attackSpeed = -1;
 		}
 	}
+	
+	/**
+	 * Returns current EXP of Player
+	 * @return
+	 */
 	public int getEXP(){
 		return this.EXP;
 	}
+	
+	/**
+	 * Sets more EXP for player (additive to current EXP)
+	 * @param EXP
+	 */
 	public void setEXP(int EXP){
 		int exp = EXP;
 		this.EXP += exp;
@@ -508,9 +666,18 @@ public class Player implements Drawable{
 			this.levelUp();
 		}
 	}
+	
+	/**
+	 * Returns the current level of Player
+	 * @return
+	 */
 	public int getLevel(){
 		return this.level;
 	}
+	
+	/**
+	 * Levels player up by One level, increasing base stats and ramping up level curve
+	 */
 	private void levelUp() {
 		this.EXP = this.EXP - reqLvl;
 		this.updateLevelCurve();
@@ -524,21 +691,42 @@ public class Player implements Drawable{
 			levelUp();
 		}
 	}
+	
+	/**
+	 * Returns EXP required for next level
+	 * @return
+	 */
 	public int getReqLvl(){
 		return this.reqLvl;
 	}
+	
+	/**
+	 * Updates EXP required for next level per level, incrementally higher by 1.5x
+	 */
 	private void updateLevelCurve(){
 		reqLvl = ((int) (reqLvl*1.5));
 	}
+	
+	/**
+	 * Heals the Player for an amount of Health
+	 * @param heal
+	 */
 	public void heal(int heal){
 		if(this.hp + heal <= mhp)
 			this.hp = this.hp+heal;
 		else
 			this.hp = mhp;	
 	}
+	
+	/**
+	 * Uses an item. Effect depends on item type
+	 * @param item
+	 * @param i
+	 */
 	public void activateItem(Item item, int i) {
 		invItems.remove(i);
 		Item using = item;
+		//Basic healing items
 		if(using.getID() == "Fish Steak"){
 			if(this.getHealth() + using.getHeal() <= mhp)
 				this.setHealth(this.getHealth() + using.getHeal());
@@ -560,12 +748,14 @@ public class Player implements Drawable{
 				this.setHealth(mhp);
 			}
 		}
+		//Full heal, Cooldown inducing item
 		else if(using.getID() == "Healing Salve"){
 			Main.update.qCD = 100;
 			Main.update.wCD = 3001;
 			Main.update.eCD = 801;
 			this.setHealth(mhp);
 		}
+		//Teleports PC to Taverly, default neutral Town
 		else if(using.getID() == "Teleport to Town"){
 			Main.update.area = new Area("Taverly");
 			Main.update.splashScreenTime = 50;
@@ -574,20 +764,35 @@ public class Player implements Drawable{
 			this.setY(GraphicsMain.HEIGHT - GraphicsMain.HEIGHT/16 - 96);
 		}
 	}
-
+	
+	/**
+	 * Returns the current Damage value that Player is capable of dealing
+	 * @return
+	 */
 	public int getDamage() {
 		return baseAttack + this.getWeapon().getDamage();
 	}
+	
+	/**
+	 * Returns the current Defense value that Player has
+	 * @return
+	 */
 	public int getDefense(){
 		return baseDefense + this.getArmor().getArmor();
 	}
 
-	public int getMaxHealth() {
-		return mhp;
-	}
+	/**
+	 * Sets the attacking timer wherein Player cannot attack again
+	 * @param i
+	 */
 	public void attacking(int i){
 		attackSpeed = i;
 	}
+	
+	/**
+	 * Returns if Player is currently in an attacking motion
+	 * @return
+	 */
 	public boolean getAttacking(){
 		if(attackSpeed > 0){
 			return true;
@@ -595,6 +800,10 @@ public class Player implements Drawable{
 		else
 			return false;
 	}
+	
+	/**
+	 * Commences the Attack Animation
+	 */
 	public void attack() {
 		if(face == UP){
 			if(40 >= attackSpeed && 30 < attackSpeed){
@@ -664,14 +873,26 @@ public class Player implements Drawable{
 		attackSpeed--;
 	}
 	
+	/**
+	 * Sets the Player invincible to damage for a duration of time
+	 * @param duration
+	 */
 	public void setInvin(int duration){
 		invin = duration;
 	}
 	
+	/**
+	 * Checks if the Player is invincible
+	 * @return
+	 */
 	public int getInvin(){
 		return this.invin;
 	}
 
+	/**
+	 * Damages the Player a certain amount of damage, taking into account Armor/Defense values
+	 * @param damage
+	 */
 	public void damage(int damage) {
 		if(invin == 0){
 			int inflictedDamage = damage - (this.armor.getArmor()/2);
@@ -683,14 +904,57 @@ public class Player implements Drawable{
 			this.scroll = 30;
 		}
 	}
+	
+	/**
+	 * Returns avaliable Skill Points of Player
+	 * @return
+	 */
 	public int getPoints(){
 		return this.skillPoints;
 	}
+	
+	/**
+	 * Sets the amount of avaliable Skill Points for Player
+	 * @param points
+	 */
 	public void setPoints(int points){
 		this.skillPoints = points;
 	}
+	
+	/**
+	 * Returns the Skill Tree that Player has
+	 * @return
+	 */
 	public SkillTree getSkillTree(){
 		skt.updatePoints();
 		return skt;
+	}
+
+	/**
+	 * Lets the Player commence an Attack in the direction he is facing
+	 */
+	public void doAttack() {
+		Rectangle2D attackBox = new Rectangle2D.Double();
+		this.updateBoundbox();
+		int face = this.getFace();
+		if(face == 1){
+			attackBox = new Rectangle2D.Double(this.getX()-10, this.getY()-20, this.getWidth()+20, 20);
+		}
+		else if(face == 2){
+			attackBox = new Rectangle2D.Double(this.getX()-10, this.getY()+this.getHeight(), this.getWidth()+20, 20);
+		}
+		else if(face == 3){
+			attackBox = new Rectangle2D.Double(this.getX()-20, this.getY()-10, 20, this.getHeight()+20);
+		}
+		else if(face == 4){
+			attackBox = new Rectangle2D.Double(this.getX() + this.getWidth(), this.getY()-10, 20, this.getHeight()+20);
+		}
+		for(int i = 0; i < Main.update.enemies.size(); i++){
+			if(Main.update.enemies.get(i).getBoundbox().intersects(attackBox)){
+				int dmg = RNG.nextInt(this.getDamage()/2) + this.getDamage()/2;
+				Main.update.enemies.get(i).damage(dmg);
+			}
+		}
+		attackBox = null;
 	}
 }

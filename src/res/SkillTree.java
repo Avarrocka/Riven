@@ -3,26 +3,17 @@ package res;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
-
 import listeners.MousekeyListener;
-import main.GraphicsMain;
-import main.Main;
-import main.Render;
-import res.Portal;
+import main.Update;
 
 /**
- * Class defines an enemy object
+ * Class defines an skill tree interface
  * @author Brian Chen
  *
  */
@@ -55,7 +46,7 @@ public class SkillTree implements Drawable{
 		desc.add("Dexterous movements reduce the cooldown of a dagger throw by 30%.");
 		desc.add("A well balanced throw allows the dagger to travel 25% faster.");
 		desc.add("A more forceful throw allows daggers to deal 100% weapon damage instead of 50%.");
-		//Defense Tree
+		//Utility Tree
 		collision.add(new Rectangle2D.Double(696, 79, 71, 71));
 		collision.add(new Rectangle2D.Double(585, 110, 71, 71));
 		collision.add(new Rectangle2D.Double(670, 200, 71, 71));
@@ -65,6 +56,7 @@ public class SkillTree implements Drawable{
 		desc.add("Strength training allows the user to throw out another hook 30% faster.");
 		desc.add("Improved chains constrain monsters, rendering them unable to attack for a while.");
 		desc.add("Sharpened hooks slice monsters, dealing 300% weapon damage instead of 100%.");
+		//Defense Tree
 		collision.add(new Rectangle2D.Double(517, 420, 71, 71));
 		collision.add(new Rectangle2D.Double(440, 326, 71, 71));
 		collision.add(new Rectangle2D.Double(597, 325, 71, 71));
@@ -76,6 +68,10 @@ public class SkillTree implements Drawable{
 		desc.add("Deep focus during meditation allows the user to heal 50% of Max HP up from 30%.");
 	}
 	
+	/**
+	 * Draws the interface for Skill Tree
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 		g.setColor(Color.white);
@@ -83,11 +79,13 @@ public class SkillTree implements Drawable{
 		g.drawString(points+"", 545, 292);
 		int mx = MousekeyListener.getX();
 		int my = MousekeyListener.getY();
+		//Checks to see if skill perk is obtained, and highlights it
 		for(int i = 0; i < collision.size(); i++){
 			if(got.get(i)){
 				g.drawImage(obtained, (int)collision.get(i).getX(), (int)collision.get(i).getY(), null);
 			}
 		}
+		//Hovering over skill perks draws an aura and writes description of skill perk
 		Point2D p = new Point2D.Double((int)mx, (int)my);
 		for(int i = 0; i < collision.size(); i++){
 			if(collision.get(i).contains(p)){
@@ -99,43 +97,43 @@ public class SkillTree implements Drawable{
 				if(MousekeyListener.mouseClicked && !got.get(i) && this.points >= 1 && (i!= 0) && (i!= 3) && (i!=6)){
 					got.remove(i);
 					got.add(i, true);
-					Main.update.PC.setPoints(Main.update.PC.getPoints()-1);
+					Update.PC.setPoints(Update.PC.getPoints()-1);
 					if(i == 1)
-						Main.update.PC.q1 = true;
+						Update.PC.q1 = true;
 					else if(i == 2)
-						Main.update.PC.q2 = true;
+						Update.PC.q2 = true;
 					else if(i == 4)
-						Main.update.PC.e1 = true;
+						Update.PC.e1 = true;
 					else if(i == 5)
-						Main.update.PC.e2 = true;
+						Update.PC.e2 = true;
 					else if(i == 7)
-						Main.update.PC.w1 = true;
+						Update.PC.w1 = true;
 					else if(i == 8)
-						Main.update.PC.w2 = true;
+						Update.PC.w2 = true;
 				}
 				if(MousekeyListener.mouseClicked && !got.get(i) && this.points >= 2 && (i == 0 || i == 3 || i == 6)){
 					if(i == 0){
 						if(got.get(1) || got.get(2)){
 							got.remove(i);
 							got.add(i, true);
-							Main.update.PC.q3 = true;
-							Main.update.PC.setPoints(Main.update.PC.getPoints()-2);
+							Update.PC.q3 = true;
+							Update.PC.setPoints(Update.PC.getPoints()-2);
 						}
 					}
 					if(i == 3){
 						if(got.get(4) || got.get(5)){
 							got.remove(i);
 							got.add(i, true);
-							Main.update.PC.e3 = true;
-							Main.update.PC.setPoints(Main.update.PC.getPoints()-2);
+							Update.PC.e3 = true;
+							Update.PC.setPoints(Update.PC.getPoints()-2);
 						}
 					}
 					if(i == 6){
 						if(got.get(7) || got.get(8)){
 							got.remove(i);
 							got.add(i, true);
-							Main.update.PC.w3 = true;
-							Main.update.PC.setPoints(Main.update.PC.getPoints()-2);
+							Update.PC.w3 = true;
+							Update.PC.setPoints(Update.PC.getPoints()-2);
 						}
 					}
 				}
@@ -143,23 +141,47 @@ public class SkillTree implements Drawable{
 		}
 	}
 	
+	/**
+	 * Returns WIDTH of Skill Tree Interface
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns HEIGHT of Skill Tree Interface
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}	
+	
+	/**
+	 * Returns Image of Skill Tree
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Returns X Location of Skill Tree
+	 */
 	public int getX() {
-		return this.x;
+		return SkillTree.x;
 	}
+	
+	/**
+	 * Returns Y Location of Skill Tree
+	 */
 	public int getY() {
-		return this.y;
+		return SkillTree.y;
 	}
+	
+	/**
+	 * Updates skill points from Player class
+	 */
 	public void updatePoints(){
-		this.points = Main.update.PC.getPoints();
+		this.points = Update.PC.getPoints();
 	}
 }

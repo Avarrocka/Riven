@@ -4,18 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
 
-import main.GraphicsMain;
-import main.Main;
-import main.Render;
-
 /**
- * Class defines armor for Player Character, including value, armor, etc.
+ * Class defines an Armor Object
  * @author Brian Chen
- *
  */
 public class Armor implements Drawable{
 	private String ID;
@@ -27,13 +20,18 @@ public class Armor implements Drawable{
 	private Rectangle2D boundBox;
 	private static final int WIDTH = 100, HEIGHT = 100;
 	private BufferedImage image;
+
 	/**
-	 * Constructor. Creates a player character.
+	 * Creates a new piece of Armor defining Armor Value, Value, etc.
+	 * @param x
+	 * @param y
+	 * @param ID
 	 */
 	public Armor(int x, int y, String ID) {
 		this.setID(ID);
 		this.setX(x);
 		this.setY(y);
+		//Sets image, armor value, value, etc., dependent on ID
 		if(this.ID == "Leather Armor"){
 			try {
 				this.image = ImageIO.read(getClass().getClassLoader().getResource("Equip/armorLeather.png"));
@@ -180,60 +178,134 @@ public class Armor implements Drawable{
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, 64, 64);
 	}
 	
+	/**
+	 * Draws the icon of Armor to Render
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 	}
 	
+	/**
+	 * Returns the WIDTH of Armor's image
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns the HEIGHT of Armor's image
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}	
 	
+	/**
+	 * Returns the X value of Armor's image
+	 */
 	public int getX(){
 		return this.x;
 	}
 	
+	/**
+	 * Returns the Y value of Armor's image
+	 */
 	public int getY(){
 		return this.y;
 	}
 	
+	/**
+	 * Sets the X value of Armor's image
+	 * @param x
+	 */
 	public void setX(int x){
 		this.x = x;
 	}
 	
+	/**
+	 * Returns the Y value of Armor's image
+	 * @param y
+	 */
 	public void setY(int y){
 		this.y = y;
 	}
+	
+	/**
+	 * Returns the protection rating of this Armor
+	 * @return
+	 */
 	public int getArmor(){
 		return this.armor;
 	}
+	
+	/**
+	 * Returns the monetary value of this Armor
+	 * @return
+	 */
 	public int getValue(){
 		return this.value;
 	}
+	
+	/**
+	 * Sets the ID of this Armor
+	 * @param ID
+	 */
 	public void setID(String ID){
 		this.ID = ID;
 	}
+	
+	/**
+	 * Returns the ID of this Armor
+	 * @return
+	 */
 	public String getID(){
 		return this.ID;
 	}
+	
+	/**
+	 * Returns the flavor text of this Armor
+	 * @return
+	 */
 	public String getDescription(){
 		return this.desc;
 	}
+	
+	/**
+	 * Returns the numerical information of this Armor
+	 * @return
+	 */
 	public String getInfo(){
 		return this.info;
 	}
+	
+	/**
+	 * Returns the image associated with this Armor
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Sets the image associated with this Armor
+	 * @param image
+	 */
 	public void setImage(BufferedImage image){
 		this.image = image;
 	}
+	
+	/**
+	 * Returns the Collision Rectangle associated with this Armor
+	 * @return
+	 */
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
 	}
+	
+	/**
+	 * Updates the Collision Rectangle associated with this Armor
+	 */
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}

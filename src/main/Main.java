@@ -1,7 +1,5 @@
 package main;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import listeners.KeyboardListener;
 
 /**
@@ -17,7 +15,6 @@ public class Main {
 	public static final int MENU_BUILD_STATE = 0, GAME_STATE = 1, MENU_STATE = 2, INFO_STATE = 3, DEAD_STATE = 4;
 	public static GraphicsMain gMain;
 	public static int appState = 0;
-	public static final ReentrantReadWriteLock lck = new ReentrantReadWriteLock();
 	private static KeyboardListener kl;
 	public static boolean isNew = true, basics = false;
 	

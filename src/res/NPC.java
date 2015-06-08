@@ -4,16 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.imageio.ImageIO;
-
-import main.GraphicsMain;
 import main.Main;
-import main.Render;
 
 /**
- * Class defines an enemy object
+ * Class defines an Non-Player-Character object
  * @author Brian Chen
  *
  */
@@ -27,29 +22,22 @@ public class NPC implements Drawable{
 	private Rectangle2D smallBB;
 	private int dialogueLines;
 	private int x, y;
-	private int Vx, Vy;
-	private int xBoundaryLow;
-	private int xBoundaryHigh;
-	private int yBoundaryLow;
-	private int yBoundaryHigh;
 	private static final int WIDTH = 56, HEIGHT = 64;
-	private static final int DEFAULT = 0, UP = 1, DOWN = 2, RIGHT = 3, LEFT = 4;
 	private BufferedImage image;
 	private BufferedImage head;
-	private BufferedImage def, up, down, right, left;
+	private BufferedImage def;
+	
 	/**
-	 * Constructor. Creates a player character.
+	 * Creates a Non-Player Character at X and Y, defined by ID
+	 * @param x
+	 * @param y
+	 * @param ID
 	 */
 	public NPC(int x, int y, String ID) {
 		this.setX(x);
 		this.setY(y);
-		this.setXvelocity(0);
-		this.setYvelocity(0);
 		this.setID(ID);
-		this.xBoundaryLow = x - 40;
-		this.xBoundaryHigh = x + 40;
-		this.yBoundaryLow = y - 40;
-		this.yBoundaryHigh = y + 40;
+		//Defines dialogue and other variables based on ID
 		if(ID == "shop"){
 			try {
 				def = ImageIO.read(getClass().getClassLoader().getResource("Sprites/annaDef.png"));
@@ -142,12 +130,12 @@ public class NPC implements Drawable{
 			dialogueLines = 6;
 			dialogue = new String[dialogueLines];
 			name = "Guard Priam";	
-			dialogue[0] = "Whatever. Just rough up about ten oozes and I'll teach you a few tactics with the sword.";
-			dialogue[1] = "Rewards? Well I don't suppose you'd accept half my sandwhich as payment?";
-			dialogue[2] = "You think you could pop a couple for me? If you clean up about 5 I could go on lunch break.";
-			dialogue[3] = "I mean what are they going to do - slobber all over the cobblestone?";
+			dialogue[0] = "Anyway... Just rough up about five oozes and I suppose I'll teach you a few tactics with the sword.";
+			dialogue[1] = "Rewards? Well I don't suppose you'd accept half my sandwhich as payment? Haha, I'd never offer.";
+			dialogue[2] = "If only someone *cough* could tidy up the numbers a bit around here, I could go off to lunch break.";
+			dialogue[3] = "I mean what are they going to do? Slide around? Perhaps even slobber all over the cobblestone?";
 			dialogue[4] = "Stuck here guarding this stupid gate all day. Against what? Oozes? Slimes?";
-			dialogue[5] = "Ugh being a guard is such a bore. I'm literally losing my mind here.";
+			dialogue[5] = "Out vile jelly! Away! I kid, really, my job is boring as a sack of stones. I mean, really -";
 			if(Main.update.priamDone){
 				updateLines();
 			}
@@ -229,122 +217,170 @@ public class NPC implements Drawable{
 			dialogue[3] = "Levels reward you with skill points. These points can be used to improve skills.";
 			dialogue[4] = "Greetings adventurer. I'm here to hone your skills and refine them into art.";
 		}
-		this.setImage(0);
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
+		this.image = def;
 	}
 
 	/**
-	 * Translates typeCode into waste type.
-	 * @return
+	 * Returns the X position of the NPC
 	 */
-
-	@Override
 	public int getX() {
 		return x;
 	}
-
+	
+	/**
+	 * Sets the X position of the NPC
+	 * @param x
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
-	@Override
+	/**
+	 * Returns the Y position of the NPC
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * Sets the Y position of the NPC
+	 * @param y
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 	
-	public int getXvelocity() {
-		return this.Vx;
-	}
-	
-	public int getYvelocity() {
-		return this.Vy;
-	}
-	
-	public void setXvelocity(int Vx) {
-		this.Vx = Vx;
-	}
-
-	public void setYvelocity(int Vy) {
-		this.Vy = Vy;
-	}
-	
+	/**
+	 * Draws the NPC to the screen through Render
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		g.drawImage(image, null, x, y);
 	}
 	
+	/**
+	 * Returns the WIDTH of the NPC
+	 * @return
+	 */
 	public int getWidth() {
 		return WIDTH;
 	}
 
+	/**
+	 * Returns the HEIGHT of the NPC
+	 * @return
+	 */
 	public int getHeight() {
 	 return HEIGHT;
 	}
 	
+	/**
+	 * Checks if the NPC has Dialogue to impart
+	 * @return
+	 */
 	public boolean hasDialogue(){
 		return speak;
 	}
 	
-	public void setID(String ID){
-		this.ID = ID;
-	}
-	
+	/**
+	 * Returns the ID of the NPC
+	 * @return
+	 */
 	public String getID(){
 		return this.ID;
 	}
 	
+	/**
+	 * Sets the ID of the NPC
+	 * @param ID
+	 */
+	public void setID(String ID){
+		this.ID = ID;
+	}
+	
+	/**
+	 * Returns the Name of the NPC
+	 * @return
+	 */
 	public String getName(){
 		return this.name;
 	}
 	
+	/**
+	 * Returns the number of dialogue lines NPC has 
+	 * @return
+	 */
 	public int getDialogueLines(){
 		return this.dialogueLines;
 	}
 	
+	/**
+	 * Returns the dialogue at index of index for NPC
+	 * @param index
+	 * @return
+	 */
 	public String getPhrase(int index){
 		return dialogue[index];
 	}
-	
-	public void setImage(int face){
-		this.image = def;
-	}
-	public void setHead(BufferedImage head){
-		this.head = head;
-	}
+
+	/**
+	 * Returns the avatar head for NPC
+	 * @return
+	 */
 	public BufferedImage getHead(){
 		return this.head;
 	}
+	
+	/**
+	 * Sets the avatar head for NPC
+	 * @param head
+	 */
+	public void setHead(BufferedImage head){
+		this.head = head;
+	}
+	
+	/**
+	 * Returns the sprite image for NPC
+	 */
 	public BufferedImage getImage() {
 		return this.image;
 	}
+	
+	/**
+	 * Returns the boundary box for NPC
+	 * @return
+	 */
 	public Rectangle2D getBoundbox(){
 		return this.boundBox;
 	}
-	public Rectangle2D getSmall(){
-		return this.smallBB;
-	}
-	public int getLowBoundX(){
-		return this.xBoundaryLow;
-	}
-	public int getLowBoundY(){
-		return this.yBoundaryLow;
-	}
-	public int getHighBoundX(){
-		return this.xBoundaryHigh;
-	}
-	public int getHighBoundY(){
-		return this.yBoundaryHigh;
-	}
+	
+	/**
+	 * Updates the boundbox for NPC
+	 */
 	public void updateBoundbox(){
 		this.boundBox = new Rectangle2D.Double(this.x, this.y, WIDTH, HEIGHT);
 	}
+	
+	/**
+	 * Returns the collision rectangle for NPC
+	 * @return
+	 */
+	public Rectangle2D getSmall(){
+		return this.smallBB;
+	}
+	
+	/**
+	 * Updates the collision rectangle for NPC
+	 */
 	public void updateSmall(){
 		this.smallBB = new Rectangle2D.Double(this.x+13, this.y+8, WIDTH-30, HEIGHT-24);
 	}
+	
+	/**
+	 * Updates the NPC's lines if quests are completed or other things
+	 */
 	public void updateLines(){
 		if(ID == "stranger"){
 			dialogueLines = 5;
@@ -381,6 +417,9 @@ public class NPC implements Drawable{
 			dialogue[0] = "Sure, they don't do much damage, but they do keep the monsters away.";
 		}
 	}
+	/**
+	 * Updates the NPC when map is changed
+	 */
 	public void onMapUpdate(){
 		if(ID == "guard"){
 			if(Main.update.priamDone){
