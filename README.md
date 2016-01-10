@@ -1,2 +1,2 @@
-# Syzygy
-SciFi Dungeon Crawler - Experimenting with generation
+# Riven
+Fantasy RPG - CS Final
