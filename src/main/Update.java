@@ -157,7 +157,7 @@ public class Update implements Runnable {
 	}
 	
 	private void init() {
-		mapID = "Frostgorge4";
+		mapID = "Taverly";
 		splashScreenTime = 10;
 		grapple = new Line2D.Double(0,0,0,0);
 		nb = PC.getBoundbox();
@@ -185,6 +185,7 @@ public class Update implements Runnable {
 	 */
 	private void playMusic() {
 		player = new BasicPlayer();
+		System.out.print("playing music");
 		try {
 			player.stop();
 			player.open(getClass().getClassLoader().getResource("Music/Town.mp3"));
