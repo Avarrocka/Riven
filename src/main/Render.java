@@ -540,36 +540,6 @@ public class Render implements Runnable {
 	}
 	
 	/**
-	 * Draws the debugging boundaries for Collision for NPCs, Enemies, LeaveAreas, CollisionAreas, and Main.update.PC
-	 * @param g Graphics2D Object to draw with.
-	 */
-	private void drawBounds(Graphics2D g){
-		Rectangle2D PlayerCharacter = Update.PC.getBoundbox();
-		g.setColor(Color.blue);
-		g.draw(PlayerCharacter);
-		g.setColor(Color.white);
-		Rectangle2D nb = Main.update.nb;
-		g.draw(nb);
-		for(int i = 0; i < Main.update.NPCs.size(); i++){
-			g.draw(Main.update.NPCs.get(i).getSmall());
-		}
-		for(int i = 0; i < Main.update.area.getLeaveAreas().size(); i++){
-			g.draw(Main.update.area.getLeaveAreas().get(i));
-		}
-		for(int i = 0; i < Main.update.enemies.size(); i++){
-			g.draw(Main.update.enemies.get(i).getSmall());
-		}
-		for(int i = 0; i < Main.update.area.getCollisionRects().size(); i++){
-			g.draw(Main.update.area.getCollisionRects().get(i));
-		}
-		if(Main.update.attackBox != null)
-			g.draw(Main.update.attackBox);
-		for(int i = 0; i < Main.update.darts.size(); i++){
-			g.draw(Main.update.darts.get(i).getBoundbox());
-		}
-	}
-	
-	/**
 	 * Draws the prompts and notifications (e.g. Chat, LevelUP)
 	 * @param g Graphics2D Object to draw with.
 	 */

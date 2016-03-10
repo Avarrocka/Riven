@@ -68,7 +68,7 @@ public class GraphicsMain {
 	private void init() {
 		mouse = new MousekeyListener();
 		sButton = new ImageIcon(getClass().getClassLoader().getResource("UI/startButton.png"));
-		qButton = new ImageIcon(getClass().getClassLoader().getResource("UI/quitbutton.png"));
+		qButton = new ImageIcon(getClass().getClassLoader().getResource("UI/quitButton.png"));
 		new ImageIcon(getClass().getClassLoader().getResource("UI/scoreButton.png"));
 		window.addMouseListener(mouse);
 		window.addMouseMotionListener(mouse);
